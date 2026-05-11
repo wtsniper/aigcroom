@@ -28,14 +28,38 @@ function ensureDbExists() {
 }
 
 function readDb() {
-  ensureDbExists()
-  const data = fs.readFileSync(DB_PATH, 'utf-8')
-  return JSON.parse(data)
+  try {
+    ensureDbExists()
+    const data = fs.readFileSync(DB_PATH, 'utf-8')
+    return JSON.parse(data)
+  } catch (error) {
+    console.error('Error reading database:', error)
+    // 返回空数据库结构
+    return {
+      users: [],
+      tools: [],
+      reviews: [],
+      solutions: [],
+      affiliateLinks: [],
+      affiliateClicks: [],
+      subscriptions: [],
+      comparisons: [],
+      pricingPlans: [],
+      favorites: [],
+      accounts: [],
+      sessions: [],
+    }
+  }
 }
 
 function writeDb(data: any) {
-  ensureDbExists()
-  fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2))
+  try {
+    ensureDbExists()
+    fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2))
+  } catch (error) {
+    console.error('Error writing database:', error)
+    throw new Error('Failed to save data')
+  }
 }
 
 function generateId() {

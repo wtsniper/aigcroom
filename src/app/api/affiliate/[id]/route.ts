@@ -3,11 +3,13 @@ import { db } from '@/lib/db-simple'
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
+    
     const link = await db.affiliateLink.findMany({}).then(links => 
-      links.find(l => l.id === params.id)
+      links.find(l => l.id === id)
     )
     
     if (!link) {
@@ -29,13 +31,14 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const data = await request.json()
     
     const link = await db.affiliateLink.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         toolId: data.toolId || null,
         url: data.url,
@@ -55,11 +58,13 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
+    
     await db.affiliateLink.delete({
-      where: { id: params.id },
+      where: { id },
     })
     
     return NextResponse.json({ success: true })

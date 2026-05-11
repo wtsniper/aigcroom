@@ -8,6 +8,15 @@
       "role": "ADMIN",
       "createdAt": "2026-05-10T12:06:24.436Z",
       "updatedAt": "2026-05-10T12:06:24.436Z"
+    },
+    {
+      "name": "wt",
+      "email": "123701135@qq.com",
+      "password": "$2b$12$a.c8PiiB6ZA/UT33KHAg0.FhzgoxH7cye.TUpaQ0kfBE6FnplvCJu",
+      "role": "USER",
+      "id": "j65n0e5vp8mmp1eesxf",
+      "createdAt": "2026-05-11T16:10:39.987Z",
+      "updatedAt": "2026-05-11T16:10:39.987Z"
     }
   ],
   "tools": [
@@ -430,7 +439,7 @@
       "author": "Admin",
       "authorId": "fckadsn7skgmozq8tys",
       "status": "PUBLISHED",
-      "rating": 7.0,
+      "rating": 7,
       "createdAt": "2026-05-10T12:06:24.436Z",
       "updatedAt": "2026-05-10T12:06:24.436Z"
     },
@@ -605,7 +614,16 @@
     }
   ],
   "affiliateClicks": [],
-  "subscriptions": [],
+  "subscriptions": [
+    {
+      "userId": "j65n0e5vp8mmp1eesxf",
+      "planType": "FREE",
+      "status": "ACTIVE",
+      "id": "ltldmf7l5hlmp1eesxg",
+      "createdAt": "2026-05-11T16:10:39.988Z",
+      "updatedAt": "2026-05-11T16:10:39.988Z"
+    }
+  ],
   "comparisons": [],
   "pricingPlans": [],
   "favorites": [],

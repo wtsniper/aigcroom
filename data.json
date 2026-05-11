@@ -1,0 +1,17 @@
+{
+  "users": [
+    {
+      "id": "c719bad6-2923-419e-90bf-23de7fc0821d",
+      "name": "Admin",
+      "email": "admin@aigcroom.com",
+      "password": "622324c5db7753ae4131924940488014069d88fc169136b61d7be0a6770776c5",
+      "role": "ADMIN",
+      "createdAt": "2026-05-11T13:51:35.879Z"
+    }
+  ],
+  "tools": [],
+  "reviews": [],
+  "subscriptions": [],
+  "affiliateLinks": [],
+  "solutions": []
+}

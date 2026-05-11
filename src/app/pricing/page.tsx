@@ -49,28 +49,29 @@ export default function PricingPage() {
     {
       name: 'FREE',
       price: '$0',
-      period: '/month',
-      features: ['Browse tool library', 'Basic reviews', '2-tool compare', 'Industry news'],
-      cta: 'Current Plan',
+      period: '/月',
+      features: ['浏览AI工具库', '基础评测文章', '最多2个工具对比', '行业新闻'],
+      cta: '当前套餐',
       highlighted: false,
     },
     {
       name: 'PRO',
       price: '$29',
-      period: '/month',
-      features: ['All Free features', 'Deep comparisons', 'ROI Calculator', 'Basic templates', 'Exclusive discounts (10-20%)', 'Price tracking', 'Ad-free experience'],
-      cta: 'Subscribe',
+      period: '/月',
+      features: ['所有免费功能', '深度对比分析', 'ROI计算器', '基础模板库', '专属折扣（10-20%）', '价格追踪', '无广告体验'],
+      cta: '立即订阅',
       highlighted: true,
     },
     {
       name: 'ENTERPRISE',
       price: '$99',
-      period: '/month',
-      features: ['All Pro features', 'Advanced templates', 'Exclusive discounts (20-40%)', '1v1 Consulting (2x/month)', 'Custom solutions', 'Early access', 'Exclusive community'],
-      cta: 'Subscribe',
+      period: '/月',
+      features: ['所有Pro功能', '高级模板库', '专属折扣（20-40%）', '每月2次1对1咨询', '定制化解决方案', '抢先体验新功能', '专属社区访问权限'],
+      cta: '立即订阅',
       highlighted: false,
     },
   ]
+
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">

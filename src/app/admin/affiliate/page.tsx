@@ -140,7 +140,7 @@ export default function AdminAffiliate() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Affiliate Links Management</h1>
+        <h1 className="text-2xl font-bold">联盟链接管理</h1>
         <button
           onClick={() => {
             setShowForm(true)
@@ -149,25 +149,25 @@ export default function AdminAffiliate() {
           }}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
         >
-          + New Link
+          + 新建链接
         </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <div className="bg-white rounded-lg border border-gray-200 p-4">
-          <div className="text-sm text-gray-500 mb-1">Total Links</div>
+          <div className="text-sm text-gray-500 mb-1">链接总数</div>
           <div className="text-2xl font-bold">{links.length}</div>
         </div>
         <div className="bg-white rounded-lg border border-gray-200 p-4">
-          <div className="text-sm text-gray-500 mb-1">Total Clicks</div>
+          <div className="text-sm text-gray-500 mb-1">总点击数</div>
           <div className="text-2xl font-bold">{totalClicks.toLocaleString()}</div>
         </div>
         <div className="bg-white rounded-lg border border-gray-200 p-4">
-          <div className="text-sm text-gray-500 mb-1">Conversions</div>
+          <div className="text-sm text-gray-500 mb-1">转化数</div>
           <div className="text-2xl font-bold">{totalConversions.toLocaleString()}</div>
         </div>
         <div className="bg-white rounded-lg border border-gray-200 p-4">
-          <div className="text-sm text-gray-500 mb-1">Revenue</div>
+          <div className="text-sm text-gray-500 mb-1">收入</div>
           <div className="text-2xl font-bold text-green-600">${totalRevenue.toFixed(2)}</div>
         </div>
       </div>
@@ -175,19 +175,19 @@ export default function AdminAffiliate() {
       {showForm && (
         <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
           <h2 className="text-lg font-semibold mb-4">
-            {editingLink ? 'Edit Link' : 'New Affiliate Link'}
+            {editingLink ? '编辑链接' : '新建联盟链接'}
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Related Tool</label>
+              <label className="block text-sm font-medium mb-2">关联工具</label>
               <select
                 name="toolId"
                 value={formData.toolId}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg"
               >
-                <option value="">None</option>
+                <option value="">无</option>
                 {tools.map(tool => (
                   <option key={tool.id} value={tool.id}>{tool.name}</option>
                 ))}
@@ -195,7 +195,7 @@ export default function AdminAffiliate() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Slug *</label>
+              <label className="block text-sm font-medium mb-2">别名 *</label>
               <input
                 type="text"
                 name="slug"
@@ -203,12 +203,12 @@ export default function AdminAffiliate() {
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                placeholder="e.g. chatgpt-promo"
+                placeholder="例如：chatgpt-promo"
               />
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium mb-2">Affiliate URL *</label>
+              <label className="block text-sm font-medium mb-2">联盟链接 *</label>
               <input
                 type="url"
                 name="url"
@@ -226,7 +226,7 @@ export default function AdminAffiliate() {
               type="submit"
               className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
             >
-              {editingLink ? 'Update' : 'Create'} Link
+              {editingLink ? '更新' : '创建'}链接
             </button>
             <button
               type="button"
@@ -236,7 +236,7 @@ export default function AdminAffiliate() {
               }}
               className="text-gray-600 hover:text-gray-800"
             >
-              Cancel
+              取消
             </button>
           </div>
         </form>
@@ -246,13 +246,13 @@ export default function AdminAffiliate() {
         <table className="w-full">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
-              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Tool</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Slug</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Clicks</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Conversions</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Revenue</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Rate</th>
-              <th className="text-right px-6 py-3 text-xs font-medium text-gray-500 uppercase">Actions</th>
+              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">工具</th>
+              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">别名</th>
+              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">点击</th>
+              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">转化</th>
+              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">收入</th>
+              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">转化率</th>
+              <th className="text-right px-6 py-3 text-xs font-medium text-gray-500 uppercase">操作</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
@@ -261,7 +261,7 @@ export default function AdminAffiliate() {
               return (
                 <tr key={link.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4">
-                    <div className="font-medium">{link.tool?.name || 'General'}</div>
+                    <div className="font-medium">{link.tool?.name || '通用'}</div>
                   </td>
                   <td className="px-6 py-4 text-sm font-mono">{link.slug}</td>
                   <td className="px-6 py-4 text-sm">{link.clicks.toLocaleString()}</td>
@@ -273,13 +273,13 @@ export default function AdminAffiliate() {
                       onClick={() => handleEdit(link)}
                       className="text-blue-600 hover:text-blue-800 mr-3"
                     >
-                      Edit
+                      编辑
                     </button>
                     <button
                       onClick={() => handleDelete(link.id)}
                       className="text-red-600 hover:text-red-800"
                     >
-                      Delete
+                      删除
                     </button>
                   </td>
                 </tr>
@@ -290,7 +290,7 @@ export default function AdminAffiliate() {
         
         {links.length === 0 && (
           <div className="p-6 text-center text-gray-500">
-            No affiliate links found
+            未找到联盟链接
           </div>
         )}
       </div>

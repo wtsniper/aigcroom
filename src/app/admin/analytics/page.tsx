@@ -68,54 +68,54 @@ export default function AdminAnalytics() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Analytics Dashboard</h1>
+      <h1 className="text-2xl font-bold mb-6">数据分析仪表盘</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="text-sm text-gray-500 mb-1">Total Users</div>
+          <div className="text-sm text-gray-500 mb-1">用户总数</div>
           <div className="text-3xl font-bold">{data.totalUsers.toLocaleString()}</div>
-          <div className="text-xs text-gray-400 mt-2">Registered users</div>
+          <div className="text-xs text-gray-400 mt-2">注册用户</div>
         </div>
         
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="text-sm text-gray-500 mb-1">Total Tools</div>
+          <div className="text-sm text-gray-500 mb-1">工具总数</div>
           <div className="text-3xl font-bold">{data.totalTools.toLocaleString()}</div>
-          <div className="text-xs text-gray-400 mt-2">AI tools listed</div>
+          <div className="text-xs text-gray-400 mt-2">AI工具数量</div>
         </div>
 
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="text-sm text-gray-500 mb-1">Total Reviews</div>
+          <div className="text-sm text-gray-500 mb-1">评测总数</div>
           <div className="text-3xl font-bold">{data.totalReviews.toLocaleString()}</div>
-          <div className="text-xs text-gray-400 mt-2">Published articles</div>
+          <div className="text-xs text-gray-400 mt-2">已发布文章</div>
         </div>
 
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="text-sm text-gray-500 mb-1">Paid Subscribers</div>
+          <div className="text-sm text-gray-500 mb-1">付费订阅用户</div>
           <div className="text-3xl font-bold text-green-600">{data.paidSubscriptions.toLocaleString()}</div>
-          <div className="text-xs text-gray-400 mt-2">Active paying users</div>
+          <div className="text-xs text-gray-400 mt-2">活跃付费用户</div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="text-sm text-gray-500 mb-1">Affiliate Clicks</div>
+          <div className="text-sm text-gray-500 mb-1">联盟链接点击</div>
           <div className="text-3xl font-bold">{data.totalAffiliateClicks.toLocaleString()}</div>
         </div>
         
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="text-sm text-gray-500 mb-1">Conversions</div>
+          <div className="text-sm text-gray-500 mb-1">转化数</div>
           <div className="text-3xl font-bold">{data.totalAffiliateConversions.toLocaleString()}</div>
         </div>
 
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="text-sm text-gray-500 mb-1">Affiliate Revenue</div>
+          <div className="text-sm text-gray-500 mb-1">联盟收入</div>
           <div className="text-3xl font-bold text-green-600">${data.totalAffiliateRevenue.toFixed(2)}</div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold mb-4">Top Performing Tools</h2>
+          <h2 className="text-lg font-semibold mb-4">热门工具排行</h2>
           <div className="space-y-3">
             {data.topTools.length > 0 ? (
               data.topTools.map((tool, index) => (
@@ -125,19 +125,19 @@ export default function AdminAnalytics() {
                     <span className="font-medium">{tool.name}</span>
                   </div>
                   <div className="text-right">
-                    <div className="text-sm font-medium">{tool.clicks} clicks</div>
+                    <div className="text-sm font-medium">{tool.clicks} 次点击</div>
                     <div className="text-xs text-green-600">${tool.revenue.toFixed(2)}</div>
                   </div>
                 </div>
               ))
             ) : (
-              <div className="text-gray-500 text-center py-4">No data yet</div>
+              <div className="text-gray-500 text-center py-4">暂无数据</div>
             )}
           </div>
         </div>
 
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold mb-4">Recent Users</h2>
+          <h2 className="text-lg font-semibold mb-4">最近注册用户</h2>
           <div className="space-y-3">
             {data.recentUsers.length > 0 ? (
               data.recentUsers.slice(0, 5).map((user) => (
@@ -152,14 +152,14 @@ export default function AdminAnalytics() {
                 </div>
               ))
             ) : (
-              <div className="text-gray-500 text-center py-4">No users yet</div>
+              <div className="text-gray-500 text-center py-4">暂无用户</div>
             )}
           </div>
         </div>
       </div>
 
       <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h2 className="text-lg font-semibold mb-4">Recent Reviews</h2>
+        <h2 className="text-lg font-semibold mb-4">最近评测文章</h2>
         <div className="space-y-3">
           {data.recentReviews.length > 0 ? (
             data.recentReviews.slice(0, 5).map((review) => (
@@ -175,12 +175,12 @@ export default function AdminAnalytics() {
                     ? 'bg-green-100 text-green-800' 
                     : 'bg-yellow-100 text-yellow-800'
                 }`}>
-                  {review.status}
+                  {review.status === 'PUBLISHED' ? '已发布' : review.status === 'DRAFT' ? '草稿' : review.status}
                 </span>
               </div>
             ))
           ) : (
-            <div className="text-gray-500 text-center py-4">No reviews yet</div>
+            <div className="text-gray-500 text-center py-4">暂无评测文章</div>
           )}
         </div>
       </div>

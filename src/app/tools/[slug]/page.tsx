@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
+import CommentSection from '@/components/CommentSection'
 
 interface Tool {
   id: string
@@ -191,6 +192,8 @@ export default function ToolDetailPage() {
           </ul>
         </div>
       </div>
+
+      <CommentSection toolId={tool.id} />
     </div>
   )
 }

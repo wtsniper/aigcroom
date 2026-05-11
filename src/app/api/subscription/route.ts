@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { db } from '@/lib/db-simple'
+import { prisma } from '@/lib/prisma'
 
 export async function GET(request: Request) {
   try {
@@ -7,21 +7,15 @@ export async function GET(request: Request) {
     const userId = searchParams.get('userId')
 
     if (!userId) {
-      return NextResponse.json(
-        { error: 'User ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'User ID is required' }, { status: 400 })
     }
 
-    const subscription = await db.subscription.findUnique({
+    const subscription = await prisma.subscription.findUnique({
       where: { userId },
     })
 
     if (!subscription) {
-      return NextResponse.json(
-        { error: 'Subscription not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Subscription not found' }, { status: 404 })
     }
 
     return NextResponse.json({
@@ -33,9 +27,6 @@ export async function GET(request: Request) {
     })
   } catch (error) {
     console.error('Get subscription error:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch subscription' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch subscription' }, { status: 500 })
   }
 }

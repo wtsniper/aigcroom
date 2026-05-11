@@ -1,28 +1,27 @@
-import { NextResponse } from 'next/server';
-import { db } from '@/lib/db-simple';
+import { NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
 
 export async function GET() {
   try {
-    const tools = await db.tool.findMany({
-      orderBy: {
-        createdAt: 'desc',
+    const tools = await prisma.tool.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: {
+        pricingPlans: true,
+        affiliateLinks: true,
       },
-    });
-    return NextResponse.json(tools);
+    })
+    return NextResponse.json(tools)
   } catch (error) {
-    console.error('Error fetching tools:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch tools' },
-      { status: 500 }
-    );
+    console.error('Error fetching tools:', error)
+    return NextResponse.json({ error: 'Failed to fetch tools' }, { status: 500 })
   }
 }
 
 export async function POST(request: Request) {
   try {
-    const data = await request.json();
+    const data = await request.json()
     
-    const tool = await db.tool.create({
+    const tool = await prisma.tool.create({
       data: {
         name: data.name,
         slug: data.slug,
@@ -44,26 +43,28 @@ export async function POST(request: Request) {
         cons: Array.isArray(data.cons) ? JSON.stringify(data.cons) : data.cons,
         isFeatured: data.isFeatured || false,
       },
-    });
+    })
     
     if (data.pricingPlans && data.pricingPlans.length > 0) {
       for (const plan of data.pricingPlans) {
-        await db.pricingPlan.create({
+        await prisma.pricingPlan.create({
           data: {
-            ...plan,
-            toolId: tool.id,
+            name: plan.name,
+            description: plan.description,
+            priceMonthly: plan.priceMonthly,
+            priceYearly: plan.priceYearly,
             features: Array.isArray(plan.features) ? JSON.stringify(plan.features) : plan.features,
+            affiliateUrl: plan.affiliateUrl,
+            isPopular: plan.isPopular || false,
+            toolId: tool.id,
           },
-        });
+        })
       }
     }
     
-    return NextResponse.json(tool, { status: 201 });
+    return NextResponse.json(tool, { status: 201 })
   } catch (error) {
-    console.error('Error creating tool:', error);
-    return NextResponse.json(
-      { error: 'Failed to create tool' },
-      { status: 500 }
-    );
+    console.error('Error creating tool:', error)
+    return NextResponse.json({ error: 'Failed to create tool' }, { status: 500 })
   }
 }

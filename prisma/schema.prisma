@@ -27,6 +27,7 @@ model User {
   favorites     Favorite[]
   subscriptions Subscription?
   reviews       Review[]
+  comments      Comment[]
 
   @@map("users")
 }
@@ -98,6 +99,7 @@ model Tool {
   pricingPlans    PricingPlan[]
   reviews         Review[]
   affiliateLinks  AffiliateLink[]
+  comments        Comment[]
 
   @@map("tools")
 }
@@ -151,6 +153,7 @@ model Review {
 
   tool        Tool?     @relation(fields: [toolId], references: [id], onDelete: SetNull)
   author      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  comments    Comment[]
 
   @@map("reviews")
 }
@@ -245,4 +248,44 @@ model Comparison {
   updatedAt DateTime @updatedAt
 
   @@map("comparisons")
+}
+
+// ==========================================
+// 模块 8: 邮箱验证码
+// ==========================================
+model EmailVerification {
+  id        String   @id @default(cuid())
+  email     String
+  code      String
+  type      String   @default("REGISTER")
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([email, code])
+  @@map("email_verifications")
+}
+
+// ==========================================
+// 模块 9: 评论系统
+// ==========================================
+model Comment {
+  id        String    @id @default(cuid())
+  content   String
+  userId    String
+  toolId    String?
+  reviewId  String?
+  parentId  String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tool      Tool?     @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  review    Review?   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   Comment[] @relation("CommentReplies")
+
+  @@index([toolId])
+  @@index([reviewId])
+  @@map("comments")
 }

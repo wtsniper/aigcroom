@@ -2,18 +2,13 @@ import { NextResponse } from 'next/server'
 import bcrypt from 'bcrypt'
 import { prisma } from '@/lib/prisma'
 
-// 输入验证函数
 function validateEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return emailRegex.test(email)
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 }
 
 function validatePassword(password: string): boolean {
-  // 至少6位，包含字母和数字
   if (password.length < 6 || password.length > 128) return false
-  const hasLetter = /[a-zA-Z]/.test(password)
-  const hasNumber = /\d/.test(password)
-  return hasLetter && hasNumber
+  return /[a-zA-Z]/.test(password) && /\d/.test(password)
 }
 
 function validateName(name: string): boolean {
@@ -22,29 +17,21 @@ function validateName(name: string): boolean {
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json()
-    const { name, email, password } = body
+    const { name, email, password, verificationCode } = await request.json()
 
-    // 验证输入
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !verificationCode) {
       return NextResponse.json(
-        { error: 'Name, email and password are required' },
+        { error: 'Name, email, password and verification code are required' },
         { status: 400 }
       )
     }
 
     if (!validateName(name)) {
-      return NextResponse.json(
-        { error: 'Name must be 2-50 characters' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Name must be 2-50 characters' }, { status: 400 })
     }
 
     if (!validateEmail(email)) {
-      return NextResponse.json(
-        { error: 'Invalid email format' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid email format' }, { status: 400 })
     }
 
     if (!validatePassword(password)) {
@@ -54,58 +41,54 @@ export async function POST(request: Request) {
       )
     }
 
-    // 检查用户是否已存在
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
+    const verification = await prisma.emailVerification.findFirst({
+      where: {
+        email,
+        code: verificationCode,
+        type: 'REGISTER',
+        used: true,
+        expiresAt: { gt: new Date() },
+      },
+      orderBy: { createdAt: 'desc' },
     })
 
-    if (existingUser) {
+    if (!verification) {
       return NextResponse.json(
-        { error: 'User already exists' },
-        { status: 409 }
+        { error: 'Please verify your email first' },
+        { status: 400 }
       )
     }
 
-    // 加密密码
+    const existingUser = await prisma.user.findUnique({ where: { email } })
+    if (existingUser) {
+      return NextResponse.json({ error: 'User already exists' }, { status: 409 })
+    }
+
     const hashedPassword = await bcrypt.hash(password, 12)
 
-    // 创建用户
     const user = await prisma.user.create({
       data: {
         name,
         email,
         password: hashedPassword,
+        emailVerified: new Date(),
         role: 'USER',
       },
     })
 
-    // 创建免费订阅
     await prisma.subscription.create({
-      data: {
-        userId: user.id,
-        planType: 'FREE',
-        status: 'ACTIVE',
-      },
+      data: { userId: user.id, planType: 'FREE', status: 'ACTIVE' },
     })
 
-    // 不返回密码
     return NextResponse.json(
       {
         message: 'User created successfully',
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-        },
+        user: { id: user.id, name: user.name, email: user.email, role: user.role },
       },
       { status: 201 }
     )
   } catch (error) {
     console.error('Registration error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

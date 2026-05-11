@@ -1,15 +1,13 @@
 import { NextResponse } from 'next/server'
-import { db } from '@/lib/db-simple'
+import { prisma } from '@/lib/prisma'
 
 export async function POST(request: Request) {
   try {
     const { userId } = await request.json()
 
-    await db.subscription.update({
+    await prisma.subscription.update({
       where: { userId },
-      data: {
-        cancelAtPeriodEnd: true,
-      },
+      data: { cancelAtPeriodEnd: true },
     })
 
     return NextResponse.json({
@@ -18,9 +16,6 @@ export async function POST(request: Request) {
     })
   } catch (error) {
     console.error('Cancel subscription error:', error)
-    return NextResponse.json(
-      { error: 'Failed to cancel subscription' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to cancel subscription' }, { status: 500 })
   }
 }

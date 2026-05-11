@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { db } from '@/lib/db-simple'
+import { prisma } from '@/lib/prisma'
+import CommentSection from '@/components/CommentSection'
 
 interface Review {
   id: string
@@ -11,7 +12,6 @@ interface Review {
   status: string
   createdAt: string
   publishedAt: string | null
-  rating: number
   tool: {
     id: string
     name: string
@@ -20,7 +20,7 @@ interface Review {
 }
 
 async function getReview(slug: string): Promise<Review | null> {
-  const review = await db.review.findUnique({
+  const review = await prisma.review.findUnique({
     where: { slug },
     include: {
       tool: true,
@@ -161,7 +161,6 @@ export default async function ReviewDetailPage({ params }: { params: Promise<{ s
           )}
           
           <div className="flex items-center gap-4 mt-4 text-sm text-gray-500">
-            <span>Rating: <span className="text-yellow-500 font-semibold">{review.rating}/10</span></span>
             <span>Published: {new Date(review.publishedAt || review.createdAt).toLocaleDateString()}</span>
           </div>
         </header>
@@ -170,6 +169,8 @@ export default async function ReviewDetailPage({ params }: { params: Promise<{ s
           {renderMarkdown(review.content)}
         </div>
       </article>
+
+      <CommentSection reviewId={review.id} />
     </div>
   )
 }

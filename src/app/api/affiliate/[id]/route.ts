@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { db } from '@/lib/db-simple'
+import { prisma } from '@/lib/prisma'
 
 export async function GET(
   request: Request,
@@ -7,25 +7,14 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-    
-    const link = await db.affiliateLink.findMany({}).then(links => 
-      links.find((l: any) => l.id === id)
-    )
-    
+    const link = await prisma.affiliateLink.findUnique({ where: { id } })
     if (!link) {
-      return NextResponse.json(
-        { error: 'Affiliate link not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Affiliate link not found' }, { status: 404 })
     }
-    
     return NextResponse.json(link)
   } catch (error) {
     console.error('Error fetching affiliate link:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch affiliate link' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch affiliate link' }, { status: 500 })
   }
 }
 
@@ -36,8 +25,7 @@ export async function PUT(
   try {
     const { id } = await params
     const data = await request.json()
-    
-    const link = await db.affiliateLink.update({
+    const link = await prisma.affiliateLink.update({
       where: { id },
       data: {
         toolId: data.toolId || null,
@@ -45,14 +33,10 @@ export async function PUT(
         slug: data.slug,
       },
     })
-    
     return NextResponse.json(link)
   } catch (error) {
     console.error('Error updating affiliate link:', error)
-    return NextResponse.json(
-      { error: 'Failed to update affiliate link' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to update affiliate link' }, { status: 500 })
   }
 }
 
@@ -62,17 +46,10 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params
-    
-    await db.affiliateLink.delete({
-      where: { id },
-    })
-    
+    await prisma.affiliateLink.delete({ where: { id } })
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Error deleting affiliate link:', error)
-    return NextResponse.json(
-      { error: 'Failed to delete affiliate link' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to delete affiliate link' }, { status: 500 })
   }
 }

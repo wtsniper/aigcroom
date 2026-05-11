@@ -100,11 +100,6 @@ function LoginForm() {
         <p className="mt-6 text-center text-sm text-gray-600">
           Don't have an account? <Link href="/register" className="text-blue-600 hover:underline">Sign up</Link>
         </p>
-        
-        <div className="mt-4 p-3 bg-gray-50 rounded-lg text-xs text-gray-500">
-          <p className="font-medium mb-1">Test Account:</p>
-          <p>Admin: admin@aigcroom.com / admin123</p>
-        </div>
       </div>
     </div>
   )

@@ -18,20 +18,22 @@ const CONTENT_STATUSES = {
 } as const;
 
 async function main() {
-  console.log('🌱 开始初始化数据库...');
+  console.log('开始初始化数据库...');
 
   // 1. 创建示例用户（管理员）
-  const hashedPassword = await bcrypt.hash('admin123', 10);
+  // 注意：密码通过环境变量 ADMIN_PASSWORD 设置，不要在代码中硬编码
+  const adminPassword = process.env.ADMIN_PASSWORD || 'ChangeMe123!@#'
+  const hashedPassword = await bcrypt.hash(adminPassword, 12);
   const adminUser = await prisma.user.create({
     data: {
-      name: 'Admin User',
-      email: 'admin@aigcroom.com',
+      name: 'Admin',
+      email: process.env.ADMIN_EMAIL || 'admin@aigcroom.com',
       password: hashedPassword,
       role: 'ADMIN',
     },
   });
-  console.log('✅ 创建管理员用户:', adminUser.email);
-  console.log(' 默认密码: admin123');
+  console.log('创建管理员用户:', adminUser.email);
+  console.log('请通过 Vercel 环境变量设置 ADMIN_PASSWORD');
 
   // 2. 创建免费订阅
   await prisma.subscription.create({
@@ -294,7 +296,7 @@ async function main() {
       data: toolData,
     });
     createdTools.push(tool);
-    console.log('✅ 创建工具:', tool.name);
+    console.log('创建工具:', tool.name);
     
     // 创建价格方案
     await prisma.pricingPlan.createMany({
@@ -459,7 +461,7 @@ If you need high-quality AI art and can handle Discord, Midjourney is unmatched.
         publishedAt: new Date(),
       },
     });
-    console.log('✅ 创建评测:', review.title);
+    console.log('创建评测:', review.title);
   }
 
   // 5. 创建行业解决方案
@@ -478,7 +480,7 @@ If you need high-quality AI art and can handle Discord, Midjourney is unmatched.
       slug: 'content-marketing-stack',
       description: 'Essential AI tools for content creators and marketing teams. Write, edit, and optimize content faster.',
       industry: 'Marketing',
-      icon: '📢',
+      icon: '',
       toolIds: JSON.stringify([createdTools[0].id, createdTools[1].id, createdTools[5].id]),
       isFeatured: true,
     },
@@ -496,7 +498,7 @@ If you need high-quality AI art and can handle Discord, Midjourney is unmatched.
       slug: 'creative-studio',
       description: 'AI tools for designers, artists, and video creators. Generate stunning visuals and professional videos.',
       industry: 'Creative & Design',
-      icon: '🎨',
+      icon: '',
       toolIds: JSON.stringify([createdTools[2].id, createdTools[4].id, createdTools[6].id]),
       isFeatured: false,
     },
@@ -506,17 +508,16 @@ If you need high-quality AI art and can handle Discord, Midjourney is unmatched.
     const solution = await prisma.solution.create({
       data: solutionData,
     });
-    console.log('✅ 创建解决方案:', solution.title);
+    console.log('创建解决方案:', solution.title);
   }
 
-  console.log('\n🎉 数据库初始化完成！');
-  console.log('📝 管理员邮箱:', adminUser.email);
-  console.log('🔧 你可以通过注册页面设置密码！');
+  console.log('\n数据库初始化完成！');
+  console.log('管理员邮箱:', adminUser.email);
 }
 
 main()
   .catch((e) => {
-    console.error('❌ 初始化错误:', e);
+    console.error('初始化错误:', e);
     process.exit(1);
   })
   .finally(async () => {

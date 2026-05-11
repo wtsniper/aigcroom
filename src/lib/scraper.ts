@@ -46,7 +46,7 @@ const TECH_BLOGGERS_RSS = [
     focus: 'AI tools reviews and tutorials',
   },
   {
-    name: 'Ben's Bites',
+    name: "Ben's Bites",
     url: 'https://bensbites.beehiiv.com/feed',
     focus: 'AI news and tool reviews',
   },

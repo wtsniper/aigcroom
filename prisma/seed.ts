@@ -1,4 +1,20 @@
-import { PrismaClient, PricingType, ContentStatus } from '@prisma/client';
+// 类型定义（SQLite不支持枚举，使用字符串常量）
+const PricingType = {
+  FREE: 'FREE',
+  FREEMIUM: 'FREEMIUM',
+  PAID: 'PAID',
+} as const;
+
+const ContentStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  ARCHIVED: 'ARCHIVED',
+} as const;
+
+type PricingType = typeof PricingType[keyof typeof PricingType];
+type ContentStatus = typeof ContentStatus[keyof typeof ContentStatus];
+
+import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();

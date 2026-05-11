@@ -83,7 +83,7 @@ model Tool {
   ratingEase      Float         @default(0)
   ratingValue     Float         @default(0)
   ratingSupport   Float         @default(0)
-  pricingType     String        @default("FREE")
+  pricingType     String @default("FREE")
   priceMonthly    Float?
   priceYearly     Float?
   tags            String?       // JSON array as string
@@ -144,7 +144,7 @@ model Review {
   content     String    // Markdown 或 HTML
   toolId      String?
   authorId    String
-  status      String    @default("DRAFT")
+  status      String @default("DRAFT")
   publishedAt DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt

@@ -27,7 +27,7 @@ interface Tool {
 
 export default function SolutionDetailPage() {
   const params = useParams()
-  const slug = params.slug as string
+  const slug = params?.slug as string
   
   const [solution, setSolution] = useState<Solution | null>(null)
   const [relatedTools, setRelatedTools] = useState<Tool[]>([])

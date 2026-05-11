@@ -31,7 +31,7 @@ interface Tool {
 
 export default function ToolDetailPage() {
   const params = useParams()
-  const slug = params.slug as string
+  const slug = params?.slug as string
   
   const [tool, setTool] = useState<Tool | null>(null)
   const [loading, setLoading] = useState(true)

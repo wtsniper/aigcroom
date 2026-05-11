@@ -6,7 +6,7 @@ import { useRouter, useParams } from 'next/navigation'
 export default function EditTool() {
   const router = useRouter()
   const params = useParams()
-  const toolId = params.id as string
+  const toolId = params?.id as string
   
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)

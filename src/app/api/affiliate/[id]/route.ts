@@ -9,7 +9,7 @@ export async function GET(
     const { id } = await params
     
     const link = await db.affiliateLink.findMany({}).then(links => 
-      links.find(l => l.id === id)
+      links.find((l: any) => l.id === id)
     )
     
     if (!link) {

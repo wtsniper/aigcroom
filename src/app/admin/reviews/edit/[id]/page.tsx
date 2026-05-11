@@ -11,7 +11,7 @@ interface Tool {
 export default function EditReview() {
   const router = useRouter()
   const params = useParams()
-  const reviewId = params.id as string
+  const reviewId = params?.id as string
   
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(true)

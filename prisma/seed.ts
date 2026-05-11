@@ -1,23 +1,21 @@
-// 类型定义（SQLite不支持枚举，使用字符串常量）
-const PricingType = {
+// SQLite不支持枚举类型，使用字符串常量
+import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcrypt';
+
+const prisma = new PrismaClient();
+
+// 定义类型常量
+const PRICING_TYPES = {
   FREE: 'FREE',
   FREEMIUM: 'FREEMIUM',
   PAID: 'PAID',
 } as const;
 
-const ContentStatus = {
+const CONTENT_STATUSES = {
   DRAFT: 'DRAFT',
   PUBLISHED: 'PUBLISHED',
   ARCHIVED: 'ARCHIVED',
 } as const;
-
-type PricingType = typeof PricingType[keyof typeof PricingType];
-type ContentStatus = typeof ContentStatus[keyof typeof ContentStatus];
-
-import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcrypt';
-
-const prisma = new PrismaClient();
 
 async function main() {
   console.log('🌱 开始初始化数据库...');
@@ -33,7 +31,7 @@ async function main() {
     },
   });
   console.log('✅ 创建管理员用户:', adminUser.email);
-  console.log('🔑 默认密码: admin123');
+  console.log(' 默认密码: admin123');
 
   // 2. 创建免费订阅
   await prisma.subscription.create({
@@ -59,22 +57,22 @@ async function main() {
       ratingEase: 9.0,
       ratingValue: 8.8,
       ratingSupport: 8.5,
-      pricingType: PricingType.FREEMIUM,
+      pricingType: PRICING_TYPES.FREEMIUM,
       priceMonthly: 20,
       priceYearly: 200,
-      tags: ['Writing', 'Coding', 'Analysis', 'General', 'Chatbot'],
-      pros: [
+      tags: JSON.stringify(['Writing', 'Coding', 'Analysis', 'General', 'Chatbot']),
+      pros: JSON.stringify([
         'Exceptional natural language understanding',
         'Excellent at code generation and debugging',
         'Large context window (128K tokens)',
         'Versatile across multiple use cases',
         'Strong plugin ecosystem',
-      ],
-      cons: [
+      ]),
+      cons: JSON.stringify([
         'Occasional hallucinations on factual queries',
         'Can be costly for heavy usage',
         'Rate limits on free tier',
-      ],
+      ]),
       isFeatured: true,
     },
     {
@@ -90,21 +88,21 @@ async function main() {
       ratingEase: 9.3,
       ratingValue: 9.1,
       ratingSupport: 8.8,
-      pricingType: PricingType.FREEMIUM,
+      pricingType: PRICING_TYPES.FREEMIUM,
       priceMonthly: 20,
       priceYearly: 180,
-      tags: ['Writing', 'Analysis', 'Long Context', 'Research'],
-      pros: [
+      tags: JSON.stringify(['Writing', 'Analysis', 'Long Context', 'Research']),
+      pros: JSON.stringify([
         '200K token context window',
         'More honest and transparent responses',
         'Excellent at document analysis',
         'Strong safety guardrails',
-      ],
-      cons: [
+      ]),
+      cons: JSON.stringify([
         'Less creative than competitors',
         'Sometimes overly cautious',
         'Smaller plugin ecosystem',
-      ],
+      ]),
       isFeatured: true,
     },
     {
@@ -120,22 +118,22 @@ async function main() {
       ratingEase: 7.5,
       ratingValue: 8.2,
       ratingSupport: 7.8,
-      pricingType: PricingType.PAID,
+      pricingType: PRICING_TYPES.PAID,
       priceMonthly: 30,
       priceYearly: 288,
-      tags: ['Image', 'Art', 'Design', 'Creative'],
-      pros: [
+      tags: JSON.stringify(['Image', 'Art', 'Design', 'Creative']),
+      pros: JSON.stringify([
         'Best-in-class artistic quality',
         'Active and helpful community',
         'Constant model improvements',
         'Strong style control',
-      ],
-      cons: [
+      ]),
+      cons: JSON.stringify([
         'Requires Discord to use',
         'No free tier available',
         'Steep learning curve',
         'Can be slow during peak hours',
-      ],
+      ]),
       isFeatured: true,
     },
     {
@@ -151,21 +149,21 @@ async function main() {
       ratingEase: 9.2,
       ratingValue: 9.3,
       ratingSupport: 8.5,
-      pricingType: PricingType.PAID,
+      pricingType: PRICING_TYPES.PAID,
       priceMonthly: 19,
       priceYearly: 192,
-      tags: ['Coding', 'Developer', 'IDE', 'Automation'],
-      pros: [
+      tags: JSON.stringify(['Coding', 'Developer', 'IDE', 'Automation']),
+      pros: JSON.stringify([
         'Excellent IDE integration',
         'Significantly speeds up development',
         'Good value for money',
         'Supports multiple languages',
-      ],
-      cons: [
+      ]),
+      cons: JSON.stringify([
         'Can suggest outdated code patterns',
         'Limited understanding of project context',
         'Potential licensing concerns',
-      ],
+      ]),
       isFeatured: true,
     },
     {
@@ -181,21 +179,21 @@ async function main() {
       ratingEase: 7.8,
       ratingValue: 7.9,
       ratingSupport: 8.3,
-      pricingType: PricingType.FREEMIUM,
+      pricingType: PRICING_TYPES.FREEMIUM,
       priceMonthly: 28,
       priceYearly: 270,
-      tags: ['Video', 'Editing', 'Generative', 'Creative'],
-      pros: [
+      tags: JSON.stringify(['Video', 'Editing', 'Generative', 'Creative']),
+      pros: JSON.stringify([
         'Professional-grade video tools',
         'Gen-3 produces stunning results',
         'Intuitive interface',
         'Strong creative controls',
-      ],
-      cons: [
+      ]),
+      cons: JSON.stringify([
         'Expensive for casual users',
         'Credit-based system can run out fast',
         'Video generation can be slow',
-      ],
+      ]),
       isFeatured: true,
     },
     {
@@ -211,21 +209,21 @@ async function main() {
       ratingEase: 8.9,
       ratingValue: 7.5,
       ratingSupport: 8.7,
-      pricingType: PricingType.PAID,
+      pricingType: PRICING_TYPES.PAID,
       priceMonthly: 49,
       priceYearly: 468,
-      tags: ['Marketing', 'Writing', 'Templates', 'Brand'],
-      pros: [
+      tags: JSON.stringify(['Marketing', 'Writing', 'Templates', 'Brand']),
+      pros: JSON.stringify([
         'Excellent marketing templates',
         'Strong brand voice customization',
         'Good for team collaboration',
         'SEO-optimized content',
-      ],
-      cons: [
+      ]),
+      cons: JSON.stringify([
         'Expensive compared to alternatives',
         'Can produce generic-sounding content',
         'Learning curve for advanced features',
-      ],
+      ]),
       isFeatured: false,
     },
     {
@@ -241,21 +239,21 @@ async function main() {
       ratingEase: 9.1,
       ratingValue: 8.5,
       ratingSupport: 7.8,
-      pricingType: PricingType.FREEMIUM,
+      pricingType: PRICING_TYPES.FREEMIUM,
       priceMonthly: 10,
       priceYearly: 96,
-      tags: ['Audio', 'Music', 'Creative', 'Generation'],
-      pros: [
+      tags: JSON.stringify(['Audio', 'Music', 'Creative', 'Generation']),
+      pros: JSON.stringify([
         'Amazing music generation quality',
         'Very easy to use',
         'Good free tier',
         'Surprisingly good vocals',
-      ],
-      cons: [
+      ]),
+      cons: JSON.stringify([
         'Limited control over specific elements',
         'Copyright questions remain',
         'Can be repetitive in style',
-      ],
+      ]),
       isFeatured: true,
     },
     {
@@ -271,21 +269,21 @@ async function main() {
       ratingEase: 8.8,
       ratingValue: 8.0,
       ratingSupport: 7.5,
-      pricingType: PricingType.FREEMIUM,
+      pricingType: PRICING_TYPES.FREEMIUM,
       priceMonthly: 10,
       priceYearly: 96,
-      tags: ['Productivity', 'Writing', 'Knowledge', 'Workspace'],
-      pros: [
+      tags: JSON.stringify(['Productivity', 'Writing', 'Knowledge', 'Workspace']),
+      pros: JSON.stringify([
         'Seamless Notion integration',
         'Great for summarizing documents',
         'Useful for knowledge management',
         'Good value if already using Notion',
-      ],
-      cons: [
+      ]),
+      cons: JSON.stringify([
         'Limited standalone capabilities',
         'Requires Notion subscription',
         'Not as powerful as standalone AI',
-      ],
+      ]),
       isFeatured: false,
     },
   ];
@@ -307,7 +305,7 @@ async function main() {
           description: 'Basic access with limitations',
           priceMonthly: 0,
           priceYearly: 0,
-          features: ['Basic access', 'Limited usage', 'Community support'],
+          features: JSON.stringify(['Basic access', 'Limited usage', 'Community support']),
           isPopular: false,
         },
         {
@@ -316,7 +314,7 @@ async function main() {
           description: 'Full access with priority support',
           priceMonthly: tool.priceMonthly || 20,
           priceYearly: tool.priceYearly || 200,
-          features: ['Full access', 'Priority support', 'Early access'],
+          features: JSON.stringify(['Full access', 'Priority support', 'Early access']),
           isPopular: true,
         },
       ],
@@ -369,7 +367,7 @@ At $20/month, it's worth it if you use it daily. For casual users, the free tier
 ChatGPT 4.0 remains the best all-around AI assistant, but Claude 3.5 is a very close second for specific use cases.
       `,
       authorId: adminUser.id,
-      status: ContentStatus.PUBLISHED,
+      status: 'PUBLISHED',
     },
     {
       title: 'Claude 3.5 vs ChatGPT 4 - The Honest Comparison You Need',
@@ -415,7 +413,7 @@ Both are $20/month for their premium tiers.
 For power users, having both is ideal - they complement each other well.
       `,
       authorId: adminUser.id,
-      status: ContentStatus.PUBLISHED,
+      status: 'PUBLISHED',
     },
     {
       title: 'Midjourney v6 Review - Still Worth $30/Month?',
@@ -449,7 +447,7 @@ At $30/month for 15 hours of GPU time:
 If you need high-quality AI art and can handle Discord, Midjourney is unmatched. For casual use, consider DALL-E 3 instead.
       `,
       authorId: adminUser.id,
-      status: ContentStatus.PUBLISHED,
+      status: 'PUBLISHED',
     },
   ];
 
@@ -471,8 +469,8 @@ If you need high-quality AI art and can handle Discord, Midjourney is unmatched.
       slug: 'ecommerce-ai-toolkit',
       description: 'Complete AI solution for e-commerce businesses including product descriptions, image generation, and customer service automation.',
       industry: 'E-commerce',
-      icon: '🛒',
-      toolIds: [createdTools[0].id, createdTools[2].id, createdTools[5].id],
+      icon: '',
+      toolIds: JSON.stringify([createdTools[0].id, createdTools[2].id, createdTools[5].id]),
       isFeatured: true,
     },
     {
@@ -481,7 +479,7 @@ If you need high-quality AI art and can handle Discord, Midjourney is unmatched.
       description: 'Essential AI tools for content creators and marketing teams. Write, edit, and optimize content faster.',
       industry: 'Marketing',
       icon: '📢',
-      toolIds: [createdTools[0].id, createdTools[1].id, createdTools[5].id],
+      toolIds: JSON.stringify([createdTools[0].id, createdTools[1].id, createdTools[5].id]),
       isFeatured: true,
     },
     {
@@ -489,8 +487,8 @@ If you need high-quality AI art and can handle Discord, Midjourney is unmatched.
       slug: 'developer-productivity-suite',
       description: 'AI-powered tools for modern developers. Code faster, debug smarter, and document automatically.',
       industry: 'Software Development',
-      icon: '💻',
-      toolIds: [createdTools[0].id, createdTools[3].id],
+      icon: '',
+      toolIds: JSON.stringify([createdTools[0].id, createdTools[3].id]),
       isFeatured: true,
     },
     {
@@ -499,7 +497,7 @@ If you need high-quality AI art and can handle Discord, Midjourney is unmatched.
       description: 'AI tools for designers, artists, and video creators. Generate stunning visuals and professional videos.',
       industry: 'Creative & Design',
       icon: '🎨',
-      toolIds: [createdTools[2].id, createdTools[4].id, createdTools[6].id],
+      toolIds: JSON.stringify([createdTools[2].id, createdTools[4].id, createdTools[6].id]),
       isFeatured: false,
     },
   ];

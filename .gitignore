@@ -10,6 +10,11 @@ dist/
 .env*.local
 .env
 
+# Database
+*.db
+*.db-journal
+prisma/dev.db
+
 # IDE
 .vscode/
 .idea/
@@ -26,6 +31,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+debug.log
 
 # Testing
 coverage/
@@ -34,3 +40,10 @@ coverage/
 # Misc
 .cache/
 *.tsbuildinfo
+
+# Data files
+data.json
+
+# Custom scripts (not needed in repo)
+run-next.js
+start-dev.js

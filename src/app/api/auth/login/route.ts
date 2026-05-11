@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import bcrypt from 'bcrypt'
-import { db } from '@/lib/db-simple'
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 // 输入验证函数
 function validateEmail(email: string): boolean {
@@ -40,7 +42,7 @@ export async function POST(request: Request) {
     }
 
     // 查找用户
-    const user = await db.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: { email },
     })
 

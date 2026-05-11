@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import bcrypt from 'bcrypt'
-import { db } from '@/lib/db-simple'
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 // 输入验证函数
 function validateEmail(email: string): boolean {
@@ -55,7 +57,7 @@ export async function POST(request: Request) {
     }
 
     // 检查用户是否已存在
-    const existingUser = await db.user.findUnique({
+    const existingUser = await prisma.user.findUnique({
       where: { email },
     })
 
@@ -70,7 +72,7 @@ export async function POST(request: Request) {
     const hashedPassword = await bcrypt.hash(password, 12)
 
     // 创建用户
-    const user = await db.user.create({
+    const user = await prisma.user.create({
       data: {
         name,
         email,
@@ -80,7 +82,7 @@ export async function POST(request: Request) {
     })
 
     // 创建免费订阅
-    await db.subscription.create({
+    await prisma.subscription.create({
       data: {
         userId: user.id,
         planType: 'FREE',

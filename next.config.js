@@ -9,10 +9,7 @@ const nextConfig = {
       },
     ],
   },
-  webpack: (config) => {
-    config.resolve.alias['@prisma/client'] = require.resolve('@prisma/client')
-    return config
-  },
+  turbopack: {},
 }
 
 module.exports = nextConfig

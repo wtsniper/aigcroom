@@ -1,10 +1,12 @@
-
 import type { Metadata } from 'next';
 import './globals.css';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 
+const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://aigcroom.com').replace(/\/$/, '');
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
     default: 'AIGC Room - Discover the Best AI Tools for Your Business',
     template: '%s | AIGC Room',
@@ -18,7 +20,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://aigcroom.com',
+    url: siteUrl,
     siteName: 'AIGC Room',
     title: 'AIGC Room - Discover the Best AI Tools',
     description: 'In-depth reviews, comparisons, and curated AI tool solutions to help you choose the right AI tools.',
@@ -38,7 +40,7 @@ export const metadata: Metadata = {
     images: ['/og-image.png'],
   },
   alternates: {
-    canonical: 'https://aigcroom.com',
+    canonical: siteUrl,
   },
   icons: {
     icon: '/favicon.ico',

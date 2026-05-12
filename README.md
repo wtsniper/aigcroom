@@ -4,19 +4,16 @@
 
 ## 项目状态
 
-✅ **已完成**：
-- 需求分析文档
-- 产品设计文档
-- 系统架构文档
-- 完整的前端代码结构
-- 所有页面和组件实现
+✅ **已完成（摘要）**：
+- 需求 / 产品 / 架构文档：`docs/01-requirements.md`、`docs/02-product.md`、`docs/03-architecture.md`
+- 工具库（搜索、分类/价格筛选、排序、分页）、工具详情（按 slug API）、评测与方案前台
+- PostgreSQL + Prisma、管理后台、评论、联盟追踪、收藏与用户中心 `/account`
+- SEO：`metadataBase`、Open Graph、动态 `sitemap.xml`、`robots.txt`
+- Stripe：配置密钥后 Checkout；`POST /api/stripe/webhook` 更新订阅（未配置时定价页为开发写库模式）
 
-🔧 **待完成**：
-- Node.js 环境问题调试
-- 数据库连接配置
-- NextAuth 集成
-- Stripe 集成
-- 测试
+🔧 **建议后续**：
+- 用 HttpOnly Cookie + 服务端会话替代 `localStorage` 传 `userId`（收藏/订阅 API 加固）
+- 结构化数据（JSON-LD）、更细的 E2E 测试
 
 ---
 
@@ -140,10 +137,12 @@ git push -u origin main
 
 ## 文档
 
-详细文档请查看 `docs/` 目录：
-- [需求文档](docs/01-requirements.md)
-- [产品文档](docs/02-product.md)
-- [架构文档](docs/03-architecture.md)
+详细文档见 `docs/` 目录（仓库内已包含）：
+- [需求说明](docs/01-requirements.md)
+- [产品说明](docs/02-product.md)
+- [架构说明](docs/03-architecture.md)
+
+根目录 [`REQUIREMENTS_CHECK.md`](REQUIREMENTS_CHECK.md) 为与代码同步的核对表。
 
 ---
 

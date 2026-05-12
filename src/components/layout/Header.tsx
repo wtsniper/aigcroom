@@ -54,6 +54,9 @@ export default function Header() {
           <div className="flex items-center gap-4">
             {user ? (
               <div className="flex items-center gap-4">
+                <Link href="/account" className="text-gray-700 hover:text-blue-600 transition-colors text-sm">
+                  Account
+                </Link>
                 {user.role === 'ADMIN' && (
                   <Link href="/admin" className="text-gray-700 hover:text-blue-600 transition-colors">
                     Admin
@@ -119,6 +122,16 @@ export default function Header() {
               <Link href="/pricing" className="text-gray-700 hover:text-blue-600 py-2">
                 Pricing
               </Link>
+              {user && (
+                <Link href="/account" className="text-gray-700 hover:text-blue-600 py-2">
+                  Account
+                </Link>
+              )}
+              {user?.role === 'ADMIN' && (
+                <Link href="/admin" className="text-gray-700 hover:text-blue-600 py-2">
+                  Admin
+                </Link>
+              )}
             </div>
           </nav>
         )}

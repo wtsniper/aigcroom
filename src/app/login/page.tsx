@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect, Suspense } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useState, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
 function LoginForm() {
@@ -9,7 +9,6 @@ function LoginForm() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const router = useRouter()
   const searchParams = useSearchParams()
   const redirect = searchParams?.get('redirect') || '/'
 
@@ -29,14 +28,13 @@ function LoginForm() {
 
       if (res.ok) {
         localStorage.setItem('user', JSON.stringify(data.user))
-        
+
         if (redirect.startsWith('/admin') && data.user.role !== 'ADMIN') {
           setError('You do not have admin privileges')
           setLoading(false)
           return
         }
-        
-        router.push(redirect)
+
         window.location.href = redirect
       } else {
         setError(data.error || 'Login failed')

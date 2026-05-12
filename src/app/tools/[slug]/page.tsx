@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import CommentSection from '@/components/CommentSection'
 
 interface Tool {
@@ -40,49 +40,95 @@ interface AffiliateLink {
   platform?: string
 }
 
+interface StoredUser {
+  id: string
+  name: string | null
+  email: string
+  role: string
+}
+
 export default function ToolDetailPage() {
   const params = useParams()
+  const router = useRouter()
   const slug = params?.slug as string
-  
+
   const [tool, setTool] = useState<Tool | null>(null)
   const [affiliateLinks, setAffiliateLinks] = useState<AffiliateLink[]>([])
   const [loading, setLoading] = useState(true)
+  const [user, setUser] = useState<StoredUser | null>(null)
+  const [isFavorite, setIsFavorite] = useState(false)
+  const [favBusy, setFavBusy] = useState(false)
+
+  useEffect(() => {
+    const raw = typeof window !== 'undefined' ? localStorage.getItem('user') : null
+    if (raw) {
+      try {
+        setUser(JSON.parse(raw))
+      } catch {
+        setUser(null)
+      }
+    }
+  }, [])
 
   useEffect(() => {
     fetchTool()
   }, [slug])
 
+  useEffect(() => {
+    if (!user || !tool) return
+    fetch(`/api/favorites?userId=${encodeURIComponent(user.id)}`)
+      .then((r) => (r.ok ? r.json() : []))
+      .then((list: { toolId: string }[]) => {
+        setIsFavorite(list.some((f) => f.toolId === tool.id))
+      })
+      .catch(() => setIsFavorite(false))
+  }, [user, tool])
+
   const fetchTool = async () => {
     try {
-      const res = await fetch(`/api/tools`)
+      const res = await fetch(`/api/tools/slug/${encodeURIComponent(slug)}`)
       if (res.ok) {
-        const tools = await res.json()
-        const foundTool = tools.find((t: Tool) => t.slug === slug)
-        if (foundTool) {
-          setTool(foundTool)
-          // 获取该工具的联盟链接
-          if (foundTool.id) {
-            fetchAffiliateLinks(foundTool.id)
-          }
-        }
+        const foundTool = (await res.json()) as Tool
+        setTool(foundTool)
+        setAffiliateLinks(foundTool.affiliateLinks || [])
+      } else {
+        setTool(null)
+        setAffiliateLinks([])
       }
     } catch (error) {
       console.error('Error fetching tool:', error)
+      setTool(null)
     } finally {
       setLoading(false)
     }
   }
 
-  const fetchAffiliateLinks = async (toolId: string) => {
+  const toggleFavorite = async () => {
+    if (!tool) return
+    if (!user) {
+      router.push(`/login?redirect=${encodeURIComponent(`/tools/${slug}`)}`)
+      return
+    }
+    setFavBusy(true)
     try {
-      const res = await fetch(`/api/affiliate`)
-      if (res.ok) {
-        const links = await res.json()
-        const toolLinks = links.filter((link: AffiliateLink) => link.toolId === toolId)
-        setAffiliateLinks(toolLinks)
+      if (isFavorite) {
+        const res = await fetch(
+          `/api/favorites?userId=${encodeURIComponent(user.id)}&toolId=${encodeURIComponent(tool.id)}`,
+          { method: 'DELETE' }
+        )
+        if (res.ok) setIsFavorite(false)
+      } else {
+        const res = await fetch('/api/favorites', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: user.id, toolId: tool.id }),
+        })
+        if (res.ok) setIsFavorite(true)
       }
-    } catch (error) {
-      console.error('Error fetching affiliate links:', error)
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setFavBusy(false)
     }
   }
 
@@ -99,15 +145,47 @@ export default function ToolDetailPage() {
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="text-center py-12">
           <h1 className="text-2xl font-bold mb-4">Tool Not Found</h1>
-          <Link href="/tools" className="text-blue-600 hover:underline">Back to Tools</Link>
+          <Link href="/tools" className="text-blue-600 hover:underline">
+            Back to Tools
+          </Link>
         </div>
       </div>
     )
   }
 
-  const tags = tool.tags ? (Array.isArray(tool.tags) ? tool.tags : (() => { try { return JSON.parse(tool.tags) } catch { return [] } })()) : []
-  const pros = tool.pros ? (Array.isArray(tool.pros) ? tool.pros : (() => { try { return JSON.parse(tool.pros) } catch { return [] } })()) : []
-  const cons = tool.cons ? (Array.isArray(tool.cons) ? tool.cons : (() => { try { return JSON.parse(tool.cons) } catch { return [] } })()) : []
+  const tags = tool.tags
+    ? Array.isArray(tool.tags)
+      ? tool.tags
+      : (() => {
+          try {
+            return JSON.parse(tool.tags as string) as string[]
+          } catch {
+            return []
+          }
+        })()
+    : []
+  const pros = tool.pros
+    ? Array.isArray(tool.pros)
+      ? tool.pros
+      : (() => {
+          try {
+            return JSON.parse(tool.pros as string) as string[]
+          } catch {
+            return []
+          }
+        })()
+    : []
+  const cons = tool.cons
+    ? Array.isArray(tool.cons)
+      ? tool.cons
+      : (() => {
+          try {
+            return JSON.parse(tool.cons as string) as string[]
+          } catch {
+            return []
+          }
+        })()
+    : []
   const features = tool.features || []
   const websiteUrl = tool.websiteUrl || tool.website || '#'
   const pricingType = tool.pricingType || tool.pricing || 'Unknown'
@@ -117,22 +195,35 @@ export default function ToolDetailPage() {
   const ratingValue = tool.ratingValue || rating
   const ratingSupport = tool.ratingSupport || rating
 
-  // 获取追踪链接
   const getTrackingUrl = (linkSlug: string) => `/api/affiliate/track/${linkSlug}`
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="mb-4 text-sm text-gray-500">
-        <Link href="/" className="hover:text-blue-600">Home</Link> &gt; 
-        <Link href="/tools" className="hover:text-blue-600"> Tools</Link> &gt; 
-        <span> {tool.name}</span>
+        <Link href="/" className="hover:text-blue-600">
+          Home
+        </Link>{' '}
+        &gt;
+        <Link href="/tools" className="hover:text-blue-600">
+          {' '}
+          Tools
+        </Link>{' '}
+        &gt;<span> {tool.name}</span>
       </div>
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8">
         <div className="flex items-start gap-6">
           <div className="w-20 h-20 bg-gray-100 rounded-xl flex items-center justify-center overflow-hidden">
             {tool.logoUrl ? (
-              <img src={tool.logoUrl} alt={tool.name} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden') }} />
+              <img
+                src={tool.logoUrl}
+                alt={tool.name}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  ;(e.target as HTMLImageElement).style.display = 'none'
+                  ;(e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden')
+                }}
+              />
             ) : null}
             <span className={`text-3xl ${tool.logoUrl ? 'hidden' : ''}`}>🤖</span>
           </div>
@@ -145,19 +236,32 @@ export default function ToolDetailPage() {
             </div>
             <div className="mt-4 flex gap-2 flex-wrap">
               {tags.map((tag: string, index: number) => (
-                <span key={index} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">{tag}</span>
+                <span key={index} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                  {tag}
+                </span>
               ))}
             </div>
           </div>
         </div>
-        
-        {/* 联盟按钮区域 */}
+
         <div className="mt-6 flex gap-4 flex-wrap">
-          <a href={websiteUrl} target="_blank" rel="noopener noreferrer" className="bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-700">
+          <button
+            type="button"
+            disabled={favBusy}
+            onClick={toggleFavorite}
+            className="bg-amber-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-amber-600 disabled:opacity-50"
+          >
+            {isFavorite ? '★ Saved' : '☆ Save tool'}
+          </button>
+          <a
+            href={websiteUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-700"
+          >
             🌐 Visit Website
           </a>
-          
-          {/* 显示联盟链接按钮 */}
+
           {affiliateLinks.length > 0 ? (
             affiliateLinks.map((link) => (
               <a
@@ -171,7 +275,12 @@ export default function ToolDetailPage() {
               </a>
             ))
           ) : tool.affiliateUrl ? (
-            <a href={tool.affiliateUrl} target="_blank" rel="noopener noreferrer" className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700">
+            <a
+              href={tool.affiliateUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700"
+            >
               💰 Try for Free
             </a>
           ) : null}

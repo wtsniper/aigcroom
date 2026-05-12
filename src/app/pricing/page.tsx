@@ -1,26 +1,78 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
+
+interface StoredUser {
+  id: string
+  name: string | null
+  email: string
+  role: string
+}
 
 export default function PricingPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="container mx-auto px-4 py-16 text-center text-gray-600">Loading pricing…</div>
+      }
+    >
+      <PricingContent />
+    </Suspense>
+  )
+}
+
+function PricingContent() {
   const router = useRouter()
-  const [user, setUser] = useState<any>(null)
+  const searchParams = useSearchParams()
+  const [user, setUser] = useState<StoredUser | null>(null)
   const [loading, setLoading] = useState<string | null>(null)
+  const [currentPlan, setCurrentPlan] = useState<string>('FREE')
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user')
-    if (storedUser) {
-      setUser(JSON.parse(storedUser))
+    const raw = localStorage.getItem('user')
+    if (raw) {
+      try {
+        setUser(JSON.parse(raw))
+      } catch {
+        setUser(null)
+      }
     }
   }, [])
 
-  const handleSubscribe = async (planType: string) => {
-    if (!user) {
-      router.push('/login')
+  useEffect(() => {
+    if (!user?.id) {
+      setCurrentPlan('FREE')
       return
     }
+    fetch(`/api/subscription?userId=${encodeURIComponent(user.id)}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data?.planType) setCurrentPlan(String(data.planType))
+        else setCurrentPlan('FREE')
+      })
+      .catch(() => setCurrentPlan('FREE'))
+  }, [user])
+
+  useEffect(() => {
+    if (searchParams?.get('checkout') === 'success' && user?.id) {
+      fetch(`/api/subscription?userId=${encodeURIComponent(user.id)}`)
+        .then((r) => (r.ok ? r.json() : null))
+        .then((data) => {
+          if (data?.planType) setCurrentPlan(String(data.planType))
+        })
+        .catch(() => {})
+    }
+  }, [searchParams, user])
+
+  const handleSubscribe = async (planType: string) => {
+    if (!user) {
+      router.push('/login?redirect=/pricing')
+      return
+    }
+
+    if (planType === 'FREE') return
 
     setLoading(planType)
     try {
@@ -32,13 +84,19 @@ export default function PricingPage() {
 
       const data = await res.json()
 
+      if (res.ok && data.url && typeof data.url === 'string') {
+        window.location.href = data.url
+        return
+      }
+
       if (res.ok) {
-        alert(`Subscription activated! Plan: ${planType}`)
-        window.location.reload()
+        alert(`Subscription updated. Plan: ${planType}`)
+        setCurrentPlan(planType)
+        window.location.href = '/pricing'
       } else {
         alert(data.error || 'Failed to activate subscription')
       }
-    } catch (error) {
+    } catch {
       alert('Failed to process subscription')
     } finally {
       setLoading(null)
@@ -58,7 +116,15 @@ export default function PricingPage() {
       name: 'PRO',
       price: '$29',
       period: '/月',
-      features: ['所有免费功能', '深度对比分析', 'ROI计算器', '基础模板库', '专属折扣（10-20%）', '价格追踪', '无广告体验'],
+      features: [
+        '所有免费功能',
+        '深度对比分析',
+        'ROI计算器',
+        '基础模板库',
+        '专属折扣（10-20%）',
+        '价格追踪',
+        '无广告体验',
+      ],
       cta: '立即订阅',
       highlighted: true,
     },
@@ -66,23 +132,35 @@ export default function PricingPage() {
       name: 'ENTERPRISE',
       price: '$99',
       period: '/月',
-      features: ['所有Pro功能', '高级模板库', '专属折扣（20-40%）', '每月2次1对1咨询', '定制化解决方案', '抢先体验新功能', '专属社区访问权限'],
+      features: [
+        '所有Pro功能',
+        '高级模板库',
+        '专属折扣（20-40%）',
+        '每月2次1对1咨询',
+        '定制化解决方案',
+        '抢先体验新功能',
+        '专属社区访问权限',
+      ],
       cta: '立即订阅',
       highlighted: false,
     },
   ]
-
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <div className="text-center mb-12">
         <h1 className="text-3xl font-bold mb-4">Choose Your Plan</h1>
         <p className="text-gray-600">Unlock the full potential of AI tools with our premium features</p>
+        {user && (
+          <p className="text-sm text-gray-500 mt-2">
+            Your current plan: <strong>{currentPlan}</strong>
+          </p>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
         {plans.map((plan) => {
-          const isCurrentPlan = user && (plan.name === 'FREE' || user.role === 'USER')
+          const isCurrentPlan = currentPlan === plan.name
           return (
             <div
               key={plan.name}
@@ -109,15 +187,26 @@ export default function PricingPage() {
                 ))}
               </ul>
               <button
+                type="button"
                 onClick={() => handleSubscribe(plan.name)}
-                disabled={loading === plan.name || (plan.name === 'FREE' && isCurrentPlan)}
+                disabled={
+                  loading === plan.name ||
+                  isCurrentPlan ||
+                  (plan.name === 'FREE' && currentPlan !== 'FREE')
+                }
                 className={`mt-8 w-full py-3 rounded-lg font-semibold transition-colors ${
                   plan.highlighted
                     ? 'bg-blue-600 text-white hover:bg-blue-700'
                     : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
                 } disabled:opacity-50 disabled:cursor-not-allowed`}
               >
-                {loading === plan.name ? 'Processing...' : plan.cta}
+                {loading === plan.name
+                  ? 'Processing…'
+                  : isCurrentPlan
+                    ? 'Current plan'
+                    : plan.name === 'FREE' && currentPlan !== 'FREE'
+                      ? 'Included'
+                      : plan.cta}
               </button>
             </div>
           )
@@ -125,7 +214,13 @@ export default function PricingPage() {
       </div>
 
       <p className="text-center text-gray-500 mt-8 text-sm">
-        💡 All plans include a 14-day money-back guarantee.
+        💡 When Stripe keys and price IDs are set in the environment, checkout uses Stripe. Otherwise
+        subscription is activated in the database for local testing only.
+      </p>
+      <p className="text-center mt-4 text-sm">
+        <Link href="/" className="text-blue-600 hover:underline">
+          ← Back home
+        </Link>
       </p>
     </div>
   )

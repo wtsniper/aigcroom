@@ -46,6 +46,7 @@ export default function AdminLayout({
     { name: '评测管理', href: '/admin/reviews' },
     { name: '解决方案', href: '/admin/solutions' },
     { name: '联盟链接', href: '/admin/affiliate' },
+    { name: '收入报表', href: '/admin/revenue' },
     { name: '数据抓取', href: '/admin/data-fetch' },
     { name: '数据分析', href: '/admin/analytics' },
     { name: '系统设置', href: '/admin/settings' },

@@ -21,6 +21,7 @@ export async function POST(request: Request) {
         toolId: data.toolId || null,
         url: data.url,
         slug: data.slug,
+        platform: data.platform || null,
       },
     })
     return NextResponse.json(link, { status: 201 })

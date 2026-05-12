@@ -31,6 +31,7 @@ export async function PUT(
         toolId: data.toolId || null,
         url: data.url,
         slug: data.slug,
+        platform: data.platform || null,
       },
     })
     return NextResponse.json(link)

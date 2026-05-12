@@ -28,6 +28,16 @@ interface Tool {
   pros?: string | string[] | null
   cons?: string | string[] | null
   features?: string[]
+  affiliateLinks?: AffiliateLink[]
+}
+
+interface AffiliateLink {
+  id: string
+  toolId: string | null
+  url: string
+  slug: string
+  clicks: number
+  platform?: string
 }
 
 export default function ToolDetailPage() {
@@ -35,6 +45,7 @@ export default function ToolDetailPage() {
   const slug = params?.slug as string
   
   const [tool, setTool] = useState<Tool | null>(null)
+  const [affiliateLinks, setAffiliateLinks] = useState<AffiliateLink[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -49,12 +60,29 @@ export default function ToolDetailPage() {
         const foundTool = tools.find((t: Tool) => t.slug === slug)
         if (foundTool) {
           setTool(foundTool)
+          // 获取该工具的联盟链接
+          if (foundTool.id) {
+            fetchAffiliateLinks(foundTool.id)
+          }
         }
       }
     } catch (error) {
       console.error('Error fetching tool:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const fetchAffiliateLinks = async (toolId: string) => {
+    try {
+      const res = await fetch(`/api/affiliate`)
+      if (res.ok) {
+        const links = await res.json()
+        const toolLinks = links.filter((link: AffiliateLink) => link.toolId === toolId)
+        setAffiliateLinks(toolLinks)
+      }
+    } catch (error) {
+      console.error('Error fetching affiliate links:', error)
     }
   }
 
@@ -89,6 +117,9 @@ export default function ToolDetailPage() {
   const ratingValue = tool.ratingValue || rating
   const ratingSupport = tool.ratingSupport || rating
 
+  // 获取追踪链接
+  const getTrackingUrl = (linkSlug: string) => `/api/affiliate/track/${linkSlug}`
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="mb-4 text-sm text-gray-500">
@@ -119,15 +150,31 @@ export default function ToolDetailPage() {
             </div>
           </div>
         </div>
-        <div className="mt-6 flex gap-4">
-          <a href={websiteUrl} target="_blank" rel="noopener noreferrer" className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700">
+        
+        {/* 联盟按钮区域 */}
+        <div className="mt-6 flex gap-4 flex-wrap">
+          <a href={websiteUrl} target="_blank" rel="noopener noreferrer" className="bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-700">
             🌐 Visit Website
           </a>
-          {tool.affiliateUrl && (
+          
+          {/* 显示联盟链接按钮 */}
+          {affiliateLinks.length > 0 ? (
+            affiliateLinks.map((link) => (
+              <a
+                key={link.id}
+                href={getTrackingUrl(link.slug)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 flex items-center gap-2"
+              >
+                💰 {link.platform || 'Get Deal'}
+              </a>
+            ))
+          ) : tool.affiliateUrl ? (
             <a href={tool.affiliateUrl} target="_blank" rel="noopener noreferrer" className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700">
               💰 Try for Free
             </a>
-          )}
+          ) : null}
         </div>
       </div>
 

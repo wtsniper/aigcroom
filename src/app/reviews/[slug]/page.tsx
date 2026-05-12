@@ -10,8 +10,8 @@ interface Review {
   excerpt: string
   content: string
   status: string
-  createdAt: string
-  publishedAt: string | null
+  createdAt: Date
+  publishedAt: Date | null
   tool: {
     id: string
     name: string

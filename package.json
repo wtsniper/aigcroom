@@ -6,6 +6,8 @@
     "seed": "npx ts-node --transpile-only prisma/seed.ts"
   },
   "scripts": {
+    "clean": "node -e \"try { require('fs').rmSync('.next', { recursive: true, force: true }) } catch (e) {}\"",
+    "build:clean": "npm run clean && npm run build",
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",

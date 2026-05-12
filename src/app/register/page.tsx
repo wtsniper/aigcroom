@@ -16,7 +16,7 @@ function RegisterForm() {
   const [countdown, setCountdown] = useState(0)
   const router = useRouter()
   const searchParams = useSearchParams()
-  const redirectUrl = searchParams.get('redirect') || '/'
+  const redirectUrl = searchParams?.get('redirect') || '/'
 
   const startCountdown = () => {
     setCountdown(60)

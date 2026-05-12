@@ -45,9 +45,6 @@ export default function Header() {
             <Link href="/compare" className="text-gray-700 hover:text-blue-600 transition-colors">
               Compare
             </Link>
-            <Link href="/pricing" className="text-gray-700 hover:text-blue-600 transition-colors">
-              Pricing
-            </Link>
           </nav>
 
           {/* User Menu */}
@@ -118,9 +115,6 @@ export default function Header() {
               </Link>
               <Link href="/compare" className="text-gray-700 hover:text-blue-600 py-2">
                 Compare
-              </Link>
-              <Link href="/pricing" className="text-gray-700 hover:text-blue-600 py-2">
-                Pricing
               </Link>
               {user && (
                 <Link href="/account" className="text-gray-700 hover:text-blue-600 py-2">

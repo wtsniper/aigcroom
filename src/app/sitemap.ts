@@ -1,6 +1,9 @@
 import type { MetadataRoute } from 'next'
 import { prisma } from '@/lib/prisma'
 
+// Always render at request time so DATABASE_URL is available and content stays fresh
+export const dynamic = 'force-dynamic'
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://aigcroom.com').replace(/\/$/, '')
 

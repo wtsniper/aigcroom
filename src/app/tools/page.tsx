@@ -81,18 +81,17 @@ export default function ToolsPage() {
 
   const totalPages = Math.max(1, Math.ceil(filteredTools.length / PAGE_SIZE))
 
+  // Clamp page inline to avoid race conditions between two competing useEffects
+  const effectivePage = Math.min(page, totalPages)
+
   const pagedTools = useMemo(() => {
-    const start = (page - 1) * PAGE_SIZE
+    const start = (effectivePage - 1) * PAGE_SIZE
     return filteredTools.slice(start, start + PAGE_SIZE)
-  }, [filteredTools, page])
+  }, [filteredTools, effectivePage])
 
   useEffect(() => {
     setPage(1)
   }, [searchTerm, categoryFilter, priceFilter, sortBy])
-
-  useEffect(() => {
-    if (page > totalPages) setPage(totalPages)
-  }, [page, totalPages])
 
   if (loading) {
     return (
@@ -147,8 +146,8 @@ export default function ToolsPage() {
       </div>
 
       <p className="text-sm text-gray-500 mb-4">
-        Showing {filteredTools.length === 0 ? 0 : (page - 1) * PAGE_SIZE + 1}–
-        {Math.min(page * PAGE_SIZE, filteredTools.length)} of {filteredTools.length} tools
+        Showing {filteredTools.length === 0 ? 0 : (effectivePage - 1) * PAGE_SIZE + 1}–
+        {Math.min(effectivePage * PAGE_SIZE, filteredTools.length)} of {filteredTools.length} tools
       </p>
 
       {filteredTools.length === 0 ? (
@@ -200,18 +199,18 @@ export default function ToolsPage() {
             <div className="flex justify-center items-center gap-2 mt-10">
               <button
                 type="button"
-                disabled={page <= 1}
+                disabled={effectivePage <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 className="px-4 py-2 rounded-lg border border-gray-300 disabled:opacity-40"
               >
                 Previous
               </button>
               <span className="text-sm text-gray-600">
-                Page {page} / {totalPages}
+                Page {effectivePage} / {totalPages}
               </span>
               <button
                 type="button"
-                disabled={page >= totalPages}
+                disabled={effectivePage >= totalPages}
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 className="px-4 py-2 rounded-lg border border-gray-300 disabled:opacity-40"
               >

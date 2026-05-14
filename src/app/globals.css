@@ -2,22 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ─── Custom fonts ─────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background: #030712;
+  --foreground: #f9fafb;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 * {
@@ -30,3 +32,179 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
+/* ─── Scroll-triggered entrance animations ─────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-32px);
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.93);
+  transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-scale.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Stagger delay helpers */
+.delay-100 { transition-delay: 0.1s; }
+.delay-200 { transition-delay: 0.2s; }
+.delay-300 { transition-delay: 0.3s; }
+.delay-400 { transition-delay: 0.4s; }
+.delay-500 { transition-delay: 0.5s; }
+
+/* ─── Gradient text utility ────────────────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 50%, #34d399 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-vb {
+  background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ─── Glass card ───────────────────────────────────────────────────── */
+.glass {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-hover:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(139, 92, 246, 0.35);
+}
+
+/* ─── Glow effects ─────────────────────────────────────────────────── */
+.glow-violet {
+  box-shadow: 0 0 40px -10px rgba(139, 92, 246, 0.5);
+}
+
+.glow-blue {
+  box-shadow: 0 0 40px -10px rgba(59, 130, 246, 0.5);
+}
+
+/* ─── Noise texture overlay ────────────────────────────────────────── */
+.noise::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── Grid dot pattern ─────────────────────────────────────────────── */
+.dot-pattern {
+  background-image: radial-gradient(rgba(139, 92, 246, 0.15) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* ─── Shimmer / skeleton ───────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.06) 50%,
+    rgba(255,255,255,0) 100%
+  );
+  background-size: 200% auto;
+  animation: shimmer 2.5s linear infinite;
+}
+
+/* ─── Floating orb ─────────────────────────────────────────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) scale(1); }
+  50%       { transform: translateY(-24px) scale(1.04); }
+}
+
+.orb {
+  border-radius: 9999px;
+  filter: blur(80px);
+  animation: float 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ─── Animated gradient border ─────────────────────────────────────── */
+@keyframes border-spin {
+  0%   { background-position: 0%   50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0%   50%; }
+}
+
+.gradient-border {
+  position: relative;
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #8b5cf6, #3b82f6, #34d399, #8b5cf6);
+  background-size: 300% 300%;
+  animation: border-spin 4s ease infinite;
+  z-index: -1;
+}
+
+/* ─── Pulse ring ───────────────────────────────────────────────────── */
+@keyframes pulse-ring {
+  0%   { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
+  70%  { transform: scale(1);    box-shadow: 0 0 0 16px rgba(139, 92, 246, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+}
+
+.pulse-ring {
+  animation: pulse-ring 2.5s ease-in-out infinite;
+}
+
+/* ─── Fade-up for hero words ───────────────────────────────────────── */
+@keyframes fade-up {
+  0%   { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ─── Scrollbar ────────────────────────────────────────────────────── */
+::-webkit-scrollbar        { width: 6px; }
+::-webkit-scrollbar-track  { background: #030712; }
+::-webkit-scrollbar-thumb  { background: #374151; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #6b7280; }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 
 interface Tool {
@@ -33,137 +33,247 @@ interface Solution {
   isFeatured: boolean
 }
 
+// ─── Scroll reveal hook ───────────────────────────────────────────────────────
+function useReveal() {
+  const ref = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { el.classList.add('visible'); observer.disconnect() } },
+      { threshold: 0.12 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+  return ref
+}
+
+// ─── Stats ────────────────────────────────────────────────────────────────────
+const STATS = [
+  { value: '50K+',   label: 'Professionals' },
+  { value: '500+',   label: 'AI Tools' },
+  { value: '1,200+', label: 'Expert Reviews' },
+  { value: '98%',    label: 'Satisfaction' },
+]
+
+// ─── Category icons ───────────────────────────────────────────────────────────
+const CATEGORY_ICON: Record<string, string> = {
+  Writing: '✍️', Image: '🎨', Code: '💻', Video: '🎬',
+  Audio: '🎵', Data: '📊', Marketing: '📣', Research: '🔬',
+}
+
 export default function Home() {
-  const [featuredTools, setFeaturedTools] = useState<Tool[]>([])
-  const [recentReviews, setRecentReviews] = useState<Review[]>([])
-  const [featuredSolutions, setFeaturedSolutions] = useState<Solution[]>([])
+  const [featuredTools,     setFeaturedTools]     = useState<Tool[]>([])
+  const [recentReviews,     setRecentReviews]      = useState<Review[]>([])
+  const [featuredSolutions, setFeaturedSolutions]  = useState<Solution[]>([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetchData()
-  }, [])
+  const heroRef      = useRef<HTMLDivElement>(null)
+  const statsRef     = useReveal()
+  const toolsRef     = useReveal()
+  const reviewsRef   = useReveal()
+  const solutionsRef = useReveal()
+  const ctaRef       = useReveal()
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const [toolsRes, reviewsRes, solutionsRes] = await Promise.all([
         fetch('/api/tools'),
         fetch('/api/reviews'),
         fetch('/api/solutions'),
       ])
-
-      if (toolsRes.ok) {
-        const tools = await toolsRes.json()
-        setFeaturedTools(tools.slice(0, 4))
-      }
-
-      if (reviewsRes.ok) {
-        const reviews = await reviewsRes.json()
-        setRecentReviews(reviews.filter((r: Review) => r.status === 'PUBLISHED').slice(0, 3))
-      }
-
-      if (solutionsRes.ok) {
-        const solutions = await solutionsRes.json()
-        setFeaturedSolutions(solutions.slice(0, 4))
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error)
+      if (toolsRes.ok)     setFeaturedTools((await toolsRes.json()).slice(0, 4))
+      if (reviewsRes.ok)   setRecentReviews((await reviewsRes.json()).filter((r: Review) => r.status === 'PUBLISHED').slice(0, 3))
+      if (solutionsRes.ok) setFeaturedSolutions((await solutionsRes.json()).slice(0, 4))
+    } catch (err) {
+      console.error('Error fetching data:', err)
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
+
+  useEffect(() => { fetchData() }, [fetchData])
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-950">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-500 to-blue-500 animate-pulse" />
+          <div className="text-gray-500 text-sm">Loading…</div>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-950">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden py-32">
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-600/20 via-gray-950 to-blue-600/20"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,80,255,0.15),transparent_50%)]"></div>
+    <div className="min-h-screen bg-gray-950 overflow-x-hidden">
+
+      {/* ─── Hero ───────────────────────────────────────────────────────── */}
+      <section ref={heroRef} className="relative overflow-hidden py-28 md:py-36">
+
+        {/* Background orbs */}
+        <div className="orb absolute -top-40 -left-40 w-[600px] h-[600px] bg-violet-600/20" style={{ animationDelay: '0s' }} />
+        <div className="orb absolute -bottom-40 -right-40 w-[500px] h-[500px] bg-blue-600/20" style={{ animationDelay: '3s' }} />
+        <div className="orb absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-violet-500/10" style={{ animationDelay: '6s' }} />
+
+        {/* Dot grid */}
+        <div className="absolute inset-0 dot-pattern opacity-40" />
+
+        {/* Radial vignette */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(120,80,255,0.15),transparent)]" />
+
         <div className="container mx-auto px-4 max-w-7xl relative z-10 text-center">
-          <div className="inline-block px-4 py-1.5 bg-violet-500/10 border border-violet-500/20 rounded-full text-violet-400 text-sm font-medium mb-8">
-            ✨ Trusted by 50,000+ professionals
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-400 text-sm font-medium mb-8 animate-fade-up">
+            <span className="w-2 h-2 rounded-full bg-violet-400 animate-pulse-slow" />
+            Trusted by 50,000+ professionals worldwide
           </div>
-          <h1 className="text-6xl md:text-7xl font-bold text-white mb-6 leading-tight">
-            Discover the <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-blue-400">Best AI Tools</span>
+
+          {/* Headline */}
+          <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-[1.1] tracking-tight animate-fade-up" style={{ animationDelay: '0.1s' }}>
+            Discover the{' '}
+            <span className="gradient-text">Best AI Tools</span>
+            <br />
+            <span className="text-gray-300">for Your Workflow</span>
           </h1>
-          <p className="text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-            Expert reviews, detailed comparisons, and real user insights to help you choose the perfect AI tools for your workflow.
+
+          <p className="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-up" style={{ animationDelay: '0.2s' }}>
+            Expert reviews, side-by-side comparisons, and real user insights — everything you need to choose the perfect AI stack.
           </p>
-          <div className="flex gap-4 justify-center">
-            <Link href="/tools" className="bg-gradient-to-r from-violet-600 to-blue-600 text-white px-8 py-4 rounded-xl font-semibold hover:opacity-90 transition-opacity shadow-lg shadow-violet-500/25">
+
+          <div className="flex flex-wrap gap-4 justify-center animate-fade-up" style={{ animationDelay: '0.3s' }}>
+            <Link
+              href="/tools"
+              className="group relative inline-flex items-center gap-2 bg-gradient-to-r from-violet-600 to-blue-600 text-white px-8 py-3.5 rounded-xl font-semibold shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 hover:scale-[1.03] active:scale-100 transition-all duration-200"
+            >
               Explore Tools
+              <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
             </Link>
-            <Link href="/reviews" className="bg-white/5 text-white px-8 py-4 rounded-xl font-semibold border border-white/10 hover:bg-white/10 transition-colors">
+            <Link
+              href="/reviews"
+              className="inline-flex items-center gap-2 glass glass-hover text-white px-8 py-3.5 rounded-xl font-semibold hover:scale-[1.03] active:scale-100 transition-all duration-200"
+            >
               Read Reviews
             </Link>
           </div>
+
+          {/* Floating tags */}
+          <div className="mt-14 flex flex-wrap justify-center gap-2 animate-fade-up" style={{ animationDelay: '0.45s' }}>
+            {['ChatGPT', 'Midjourney', 'Cursor', 'Notion AI', 'Claude', 'GitHub Copilot', 'Gemini'].map((tag) => (
+              <span key={tag} className="px-3 py-1 text-xs rounded-full border border-white/10 text-gray-500 bg-white/[0.03] hover:border-violet-500/40 hover:text-violet-400 transition-all cursor-default">
+                {tag}
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Featured Tools */}
-      {featuredTools.length > 0 && (
-        <section className="py-20 bg-gray-950">
-          <div className="container mx-auto px-4 max-w-7xl">
-            <div className="flex items-center justify-between mb-12">
-              <div>
-                <h2 className="text-3xl font-bold text-white">Featured Tools</h2>
-                <p className="text-gray-400 mt-2">Hand-picked AI tools recommended by our experts</p>
+      {/* ─── Stats ──────────────────────────────────────────────────────── */}
+      <section className="py-12 border-y border-white/[0.05]">
+        <div ref={statsRef} className="reveal container mx-auto px-4 max-w-7xl">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {STATS.map(({ value, label }, i) => (
+              <div key={label} className={`text-center delay-${(i + 1) * 100}`}>
+                <div className="text-3xl md:text-4xl font-extrabold gradient-text-vb mb-1">{value}</div>
+                <div className="text-sm text-gray-500">{label}</div>
               </div>
-              <Link href="/tools" className="text-violet-400 hover:text-violet-300 font-medium">View all →</Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── Featured Tools ─────────────────────────────────────────────── */}
+      {featuredTools.length > 0 && (
+        <section className="py-24">
+          <div ref={toolsRef} className="reveal container mx-auto px-4 max-w-7xl">
+            <div className="flex items-end justify-between mb-12">
+              <div>
+                <span className="text-violet-400 text-sm font-semibold uppercase tracking-widest">Curated</span>
+                <h2 className="text-3xl md:text-4xl font-bold text-white mt-2">Featured Tools</h2>
+                <p className="text-gray-400 mt-2">Hand-picked by our expert team</p>
+              </div>
+              <Link href="/tools" className="hidden md:flex items-center gap-1 text-violet-400 hover:text-violet-300 font-medium text-sm transition-colors">
+                View all <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+              </Link>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {featuredTools.map((tool) => (
-                <Link href={`/tools/${tool.slug}`} key={tool.id} className="group bg-gray-900 rounded-2xl border border-gray-800 p-6 hover:border-violet-500/50 transition-all hover:shadow-lg hover:shadow-violet-500/10">
-                  <div className="w-14 h-14 bg-gray-800 rounded-xl flex items-center justify-center mb-5 overflow-hidden group-hover:scale-105 transition-transform">
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+              {featuredTools.map((tool, i) => (
+                <Link
+                  key={tool.id}
+                  href={`/tools/${tool.slug}`}
+                  className={`group glass glass-hover rounded-2xl p-6 hover:scale-[1.02] hover:-translate-y-1 active:scale-100 transition-all duration-300 delay-${(i + 1) * 100}`}
+                >
+                  <div className="w-14 h-14 bg-gray-800 rounded-xl flex items-center justify-center mb-5 overflow-hidden group-hover:scale-110 transition-transform duration-300 ring-1 ring-white/10">
                     {tool.logoUrl ? (
                       <img src={tool.logoUrl} alt={tool.name} className="w-full h-full object-cover" />
                     ) : (
-                      <span className="text-2xl">🤖</span>
+                      <span className="text-2xl">{CATEGORY_ICON[tool.category] || '🤖'}</span>
                     )}
                   </div>
-                  <h3 className="font-semibold text-lg text-white mb-2">{tool.name}</h3>
-                  <p className="text-gray-400 text-sm mb-5 line-clamp-2">{tool.description}</p>
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-800">
-                    <span className="text-sm text-yellow-400 font-medium">⭐ {tool.rating.toFixed(1)}</span>
-                    <span className="text-xs bg-gray-800 text-gray-300 px-3 py-1.5 rounded-lg">{tool.pricingType}</span>
+                  <h3 className="font-semibold text-lg text-white mb-2 group-hover:text-violet-300 transition-colors">{tool.name}</h3>
+                  <p className="text-gray-400 text-sm mb-5 line-clamp-2 leading-relaxed">{tool.description}</p>
+                  <div className="flex items-center justify-between pt-4 border-t border-white/[0.06]">
+                    <span className="text-sm text-yellow-400 font-medium flex items-center gap-1">
+                      ⭐ {tool.rating.toFixed(1)}
+                    </span>
+                    <span className={`text-xs px-2.5 py-1 rounded-lg font-medium ${
+                      tool.pricingType === 'FREE' ? 'bg-green-500/10 text-green-400' :
+                      tool.pricingType === 'FREEMIUM' ? 'bg-blue-500/10 text-blue-400' :
+                      'bg-orange-500/10 text-orange-400'
+                    }`}>
+                      {tool.pricingType}
+                    </span>
                   </div>
                 </Link>
               ))}
+            </div>
+
+            <div className="mt-8 text-center md:hidden">
+              <Link href="/tools" className="text-violet-400 hover:text-violet-300 font-medium text-sm">View all tools →</Link>
             </div>
           </div>
         </section>
       )}
 
-      {/* Recent Reviews */}
+      {/* ─── Latest Reviews ─────────────────────────────────────────────── */}
       {recentReviews.length > 0 && (
-        <section className="py-20 bg-gray-900/50">
-          <div className="container mx-auto px-4 max-w-7xl">
-            <div className="flex items-center justify-between mb-12">
+        <section className="py-24 relative">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-violet-950/10 to-transparent pointer-events-none" />
+          <div ref={reviewsRef} className="reveal container mx-auto px-4 max-w-7xl relative">
+            <div className="flex items-end justify-between mb-12">
               <div>
-                <h2 className="text-3xl font-bold text-white">Latest Reviews</h2>
-                <p className="text-gray-400 mt-2">In-depth analysis and honest opinions</p>
+                <span className="text-violet-400 text-sm font-semibold uppercase tracking-widest">In-depth</span>
+                <h2 className="text-3xl md:text-4xl font-bold text-white mt-2">Latest Reviews</h2>
+                <p className="text-gray-400 mt-2">Honest analysis you can trust</p>
               </div>
-              <Link href="/reviews" className="text-violet-400 hover:text-violet-300 font-medium">View all →</Link>
+              <Link href="/reviews" className="hidden md:flex items-center gap-1 text-violet-400 hover:text-violet-300 font-medium text-sm transition-colors">
+                View all <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+              </Link>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {recentReviews.map((review) => (
-                <Link href={`/reviews/${review.slug}`} key={review.id} className="group bg-gray-900 rounded-2xl border border-gray-800 p-8 hover:border-violet-500/50 transition-all hover:shadow-lg hover:shadow-violet-500/10">
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              {recentReviews.map((review, i) => (
+                <Link
+                  key={review.id}
+                  href={`/reviews/${review.slug}`}
+                  className={`group glass glass-hover rounded-2xl p-7 hover:scale-[1.02] hover:-translate-y-1 active:scale-100 transition-all duration-300 delay-${(i + 1) * 100}`}
+                >
                   <div className="flex items-center gap-3 mb-5">
-                    <div className="w-10 h-10 bg-violet-500/10 rounded-lg flex items-center justify-center">
-                      <span className="text-violet-400">📝</span>
+                    <div className="w-9 h-9 bg-violet-500/10 rounded-lg flex items-center justify-center ring-1 ring-violet-500/20">
+                      <span className="text-violet-400 text-sm">📝</span>
                     </div>
-                    <span className="text-sm text-gray-500">{new Date(review.createdAt).toLocaleDateString()}</span>
+                    <span className="text-xs text-gray-500">{new Date(review.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                   </div>
-                  <h3 className="font-semibold text-xl text-white mb-4 line-clamp-2 group-hover:text-violet-400 transition-colors">{review.title}</h3>
-                  <p className="text-gray-400 text-sm mb-6 line-clamp-3 leading-relaxed">{review.excerpt}</p>
-                  <div className="text-violet-400 font-medium text-sm">Read full review →</div>
+                  <h3 className="font-semibold text-lg text-white mb-3 line-clamp-2 group-hover:text-violet-300 transition-colors leading-snug">{review.title}</h3>
+                  <p className="text-gray-400 text-sm mb-5 line-clamp-3 leading-relaxed">{review.excerpt}</p>
+                  <div className="flex items-center gap-1 text-violet-400 font-medium text-sm group-hover:gap-2 transition-all">
+                    Read review
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                  </div>
                 </Link>
               ))}
             </div>
@@ -171,26 +281,34 @@ export default function Home() {
         </section>
       )}
 
-      {/* Featured Solutions */}
+      {/* ─── Industry Solutions ──────────────────────────────────────────── */}
       {featuredSolutions.length > 0 && (
-        <section className="py-20 bg-gray-950">
-          <div className="container mx-auto px-4 max-w-7xl">
-            <div className="flex items-center justify-between mb-12">
+        <section className="py-24">
+          <div ref={solutionsRef} className="reveal container mx-auto px-4 max-w-7xl">
+            <div className="flex items-end justify-between mb-12">
               <div>
-                <h2 className="text-3xl font-bold text-white">Industry Solutions</h2>
-                <p className="text-gray-400 mt-2">AI-powered solutions for every industry</p>
+                <span className="text-blue-400 text-sm font-semibold uppercase tracking-widest">Use Cases</span>
+                <h2 className="text-3xl md:text-4xl font-bold text-white mt-2">Industry Solutions</h2>
+                <p className="text-gray-400 mt-2">AI-powered workflows for every field</p>
               </div>
-              <Link href="/solutions" className="text-violet-400 hover:text-violet-300 font-medium">View all →</Link>
+              <Link href="/solutions" className="hidden md:flex items-center gap-1 text-blue-400 hover:text-blue-300 font-medium text-sm transition-colors">
+                View all <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+              </Link>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {featuredSolutions.map((solution) => (
-                <Link href={`/solutions/${solution.slug}`} key={solution.id} className="group bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl border border-gray-800 p-6 hover:border-blue-500/50 transition-all hover:shadow-lg hover:shadow-blue-500/10">
-                  <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mb-5">
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+              {featuredSolutions.map((solution, i) => (
+                <Link
+                  key={solution.id}
+                  href={`/solutions/${solution.slug}`}
+                  className={`group glass glass-hover rounded-2xl p-6 hover:scale-[1.02] hover:-translate-y-1 active:scale-100 transition-all duration-300 delay-${(i + 1) * 100}`}
+                >
+                  <div className="w-11 h-11 bg-blue-500/10 rounded-xl flex items-center justify-center mb-5 ring-1 ring-blue-500/20 group-hover:scale-110 transition-transform">
                     <span className="text-blue-400 text-xl">💡</span>
                   </div>
-                  <span className="text-sm text-blue-400 font-medium">{solution.industry}</span>
-                  <h3 className="font-semibold text-lg text-white mb-3 mt-2 group-hover:text-blue-400 transition-colors">{solution.title}</h3>
-                  <p className="text-gray-400 text-sm line-clamp-2">{solution.description}</p>
+                  <span className="text-xs text-blue-400 font-semibold uppercase tracking-wide">{solution.industry}</span>
+                  <h3 className="font-semibold text-base text-white mb-2 mt-1.5 group-hover:text-blue-300 transition-colors line-clamp-2">{solution.title}</h3>
+                  <p className="text-gray-400 text-sm line-clamp-2 leading-relaxed">{solution.description}</p>
                 </Link>
               ))}
             </div>
@@ -198,21 +316,47 @@ export default function Home() {
         </section>
       )}
 
-      {/* CTA Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4 max-w-7xl">
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-violet-600 to-blue-600 p-12 md:p-16 text-center">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1),transparent_50%)]"></div>
-            <div className="relative z-10">
-              <h2 className="text-4xl font-bold text-white mb-4">Ready to find your perfect AI tool?</h2>
-              <p className="text-xl mb-8 text-white/80">Join thousands of professionals who trust AIGC Room for AI tool recommendations</p>
-              <Link href="/tools" className="bg-white text-violet-600 px-8 py-4 rounded-xl font-semibold hover:bg-gray-100 inline-block transition-colors shadow-lg">
-                Get Started Free
-              </Link>
+      {/* ─── CTA ────────────────────────────────────────────────────────── */}
+      <section className="py-24 px-4">
+        <div ref={ctaRef} className="reveal container mx-auto max-w-5xl">
+          <div className="relative overflow-hidden rounded-3xl p-[1px] gradient-border">
+            <div className="relative rounded-3xl bg-gradient-to-br from-violet-950/80 via-gray-950 to-blue-950/80 p-12 md:p-16 text-center overflow-hidden">
+              {/* Background orbs inside CTA */}
+              <div className="orb absolute -top-20 -left-20 w-64 h-64 bg-violet-600/20" style={{ animationDelay: '2s' }} />
+              <div className="orb absolute -bottom-20 -right-20 w-64 h-64 bg-blue-600/20" style={{ animationDelay: '5s' }} />
+
+              <div className="relative z-10">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-400 text-sm font-medium mb-6">
+                  🚀 Free to get started
+                </div>
+                <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-4 leading-tight">
+                  Find your perfect<br />
+                  <span className="gradient-text">AI tool stack</span> today
+                </h2>
+                <p className="text-lg text-gray-400 mb-8 max-w-xl mx-auto">
+                  Join thousands of professionals who trust AIGC Room for AI tool discovery and comparison.
+                </p>
+                <div className="flex flex-wrap gap-4 justify-center">
+                  <Link
+                    href="/tools"
+                    className="inline-flex items-center gap-2 bg-gradient-to-r from-violet-600 to-blue-600 text-white px-8 py-3.5 rounded-xl font-semibold shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 hover:scale-[1.03] active:scale-100 transition-all duration-200"
+                  >
+                    Browse Tools
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="inline-flex items-center gap-2 glass glass-hover text-white px-8 py-3.5 rounded-xl font-semibold hover:scale-[1.03] active:scale-100 transition-all duration-200"
+                  >
+                    Create free account
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
+
     </div>
   )
 }

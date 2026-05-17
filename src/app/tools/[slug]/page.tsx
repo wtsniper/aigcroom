@@ -1,50 +1,11 @@
-'use client'
-
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useParams, useRouter } from 'next/navigation'
+import { notFound } from 'next/navigation'
+import { prisma } from '@/lib/prisma'
 import CommentSection from '@/components/CommentSection'
+import FavoriteButton from './FavoriteButton'
 
-interface Tool {
-  id: string
-  name: string
-  slug: string
-  description: string
-  logoUrl: string
-  websiteUrl?: string
-  website?: string
-  affiliateUrl?: string | null
-  category: string
-  rating?: number
-  ratingFeatures?: number
-  ratingEase?: number
-  ratingValue?: number
-  ratingSupport?: number
-  pricingType?: string
-  pricing?: string
-  priceMonthly?: number | null
-  priceYearly?: number | null
-  tags?: string | string[] | null
-  pros?: string | string[] | null
-  cons?: string | string[] | null
-  features?: string[]
-  affiliateLinks?: AffiliateLink[]
-}
-
-interface AffiliateLink {
-  id: string
-  toolId: string | null
-  url: string
-  slug: string
-  clicks: number
-  platform?: string
-}
-
-interface StoredUser {
-  id: string
-  name: string | null
-  email: string
-  role: string
+interface PageProps {
+  params: Promise<{ slug: string }>
 }
 
 function parseJsonArray(val: string | string[] | null | undefined): string[] {
@@ -65,119 +26,36 @@ function RatingBar({ value, max = 10 }: { value: number; max?: number }) {
   )
 }
 
-function ToolLogo({ logoUrl, name }: { logoUrl: string; name: string }) {
-  const [broken, setBroken] = useState(false)
-  if (!logoUrl || broken) {
-    return <span className="text-4xl">🤖</span>
+export async function generateMetadata({ params }: PageProps) {
+  const { slug } = await params
+  const tool = await prisma.tool.findUnique({ where: { slug }, select: { name: true, description: true } })
+  if (!tool) return { title: 'Tool Not Found' }
+  return {
+    title: `${tool.name} | AIGC Room`,
+    description: tool.description,
   }
-  return (
-    <img
-      src={logoUrl}
-      alt={name}
-      className="w-full h-full object-cover"
-      onError={() => setBroken(true)}
-    />
-  )
 }
 
-export default function ToolDetailPage() {
-  const params = useParams()
-  const router = useRouter()
-  const slug = params?.slug as string
+export default async function ToolDetailPage({ params }: PageProps) {
+  const { slug } = await params
 
-  const [tool, setTool] = useState<Tool | null>(null)
-  const [affiliateLinks, setAffiliateLinks] = useState<AffiliateLink[]>([])
-  const [loading, setLoading] = useState(true)
-  const [user, setUser] = useState<StoredUser | null>(null)
-  const [isFavorite, setIsFavorite] = useState(false)
-  const [favBusy, setFavBusy] = useState(false)
-
-  useEffect(() => {
-    const raw = typeof window !== 'undefined' ? localStorage.getItem('user') : null
-    if (raw) {
-      try { setUser(JSON.parse(raw)) } catch { setUser(null) }
-    }
-  }, [])
-
-  useEffect(() => {
-    fetch(`/api/tools/slug/${encodeURIComponent(slug)}`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data: Tool | null) => {
-        setTool(data)
-        setAffiliateLinks(data?.affiliateLinks || [])
-      })
-      .catch(() => setTool(null))
-      .finally(() => setLoading(false))
-  }, [slug])
-
-  useEffect(() => {
-    if (!user || !tool) return
-    fetch(`/api/favorites?userId=${encodeURIComponent(user.id)}`)
-      .then((r) => (r.ok ? r.json() : []))
-      .then((list: { toolId: string }[]) => setIsFavorite(list.some((f) => f.toolId === tool.id)))
-      .catch(() => setIsFavorite(false))
-  }, [user, tool])
-
-  const toggleFavorite = async () => {
-    if (!tool) return
-    if (!user) {
-      router.push(`/login?redirect=${encodeURIComponent(`/tools/${slug}`)}`)
-      return
-    }
-    setFavBusy(true)
-    try {
-      if (isFavorite) {
-        const res = await fetch(
-          `/api/favorites?userId=${encodeURIComponent(user.id)}&toolId=${encodeURIComponent(tool.id)}`,
-          { method: 'DELETE' }
-        )
-        if (res.ok) setIsFavorite(false)
-      } else {
-        const res = await fetch('/api/favorites', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: user.id, toolId: tool.id }),
-        })
-        if (res.ok) setIsFavorite(true)
-      }
-    } catch (e) {
-      console.error(e)
-    } finally {
-      setFavBusy(false)
-    }
+  let tool = null
+  try {
+    tool = await prisma.tool.findUnique({
+      where: { slug },
+      include: { affiliateLinks: true },
+    })
+  } catch (error) {
+    console.error('Error fetching tool:', error)
   }
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-950 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-500 to-blue-500 animate-pulse" />
-          <div className="text-gray-500 text-sm">Loading…</div>
-        </div>
-      </div>
-    )
-  }
-
-  if (!tool) {
-    return (
-      <div className="min-h-screen bg-gray-950 flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-6xl mb-4">🔍</div>
-          <h1 className="text-2xl font-bold text-white mb-3">Tool Not Found</h1>
-          <Link href="/tools" className="text-violet-400 hover:text-violet-300 font-medium">
-            ← Back to Tools
-          </Link>
-        </div>
-      </div>
-    )
-  }
+  if (!tool) notFound()
 
   const tags     = parseJsonArray(tool.tags)
   const pros     = parseJsonArray(tool.pros)
   const cons     = parseJsonArray(tool.cons)
-  const features = tool.features || []
-  const websiteUrl  = tool.websiteUrl || tool.website || '#'
-  const pricingType = tool.pricingType || tool.pricing || 'Unknown'
+  const websiteUrl  = tool.websiteUrl || '#'
+  const pricingType = tool.pricingType || 'Unknown'
   const rating         = tool.rating         || 0
   const ratingFeatures = tool.ratingFeatures || rating
   const ratingEase     = tool.ratingEase     || rating
@@ -196,7 +74,7 @@ export default function ToolDetailPage() {
   return (
     <div className="min-h-screen bg-gray-950">
 
-      {/* ─── Breadcrumb ─── */}
+      {/* Breadcrumb */}
       <div className="border-b border-white/[0.06]">
         <div className="container mx-auto px-4 max-w-5xl py-3 flex items-center gap-2 text-sm text-gray-500">
           <Link href="/" className="hover:text-gray-300 transition-colors">Home</Link>
@@ -213,11 +91,16 @@ export default function ToolDetailPage() {
 
       <div className="container mx-auto px-4 py-10 max-w-5xl">
 
-        {/* ─── Hero card ─── */}
+        {/* Hero card */}
         <div className="glass rounded-2xl p-8 mb-6">
           <div className="flex items-start gap-6">
             <div className="w-20 h-20 bg-gray-800 rounded-2xl flex items-center justify-center overflow-hidden shrink-0 ring-1 ring-white/10">
-              <ToolLogo logoUrl={tool.logoUrl} name={tool.name} />
+              {tool.logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={tool.logoUrl} alt={tool.name} className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-4xl">🤖</span>
+              )}
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex flex-wrap items-center gap-2 mb-1">
@@ -242,18 +125,9 @@ export default function ToolDetailPage() {
 
           {/* CTA buttons */}
           <div className="mt-7 flex gap-3 flex-wrap">
-            <button
-              type="button"
-              disabled={favBusy}
-              onClick={toggleFavorite}
-              className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all disabled:opacity-50 ${
-                isFavorite
-                  ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/20'
-                  : 'bg-white/[0.04] text-gray-300 border border-white/10 hover:border-yellow-500/30 hover:text-yellow-400'
-              }`}
-            >
-              {isFavorite ? '★ Saved' : '☆ Save tool'}
-            </button>
+            {/* Favorite button — client component */}
+            <FavoriteButton toolId={tool.id} toolSlug={tool.slug} />
+
             <a
               href={websiteUrl}
               target="_blank"
@@ -262,8 +136,9 @@ export default function ToolDetailPage() {
             >
               🌐 Visit Website
             </a>
-            {affiliateLinks.length > 0
-              ? affiliateLinks.map((link) => (
+
+            {tool.affiliateLinks.length > 0
+              ? tool.affiliateLinks.map((link) => (
                   <a
                     key={link.id}
                     href={getTrackingUrl(link.slug)}
@@ -290,7 +165,7 @@ export default function ToolDetailPage() {
           </div>
         </div>
 
-        {/* ─── Ratings ─── */}
+        {/* Ratings */}
         <div className="glass rounded-2xl p-7 mb-6">
           <h2 className="text-lg font-bold text-white mb-5 flex items-center gap-2">
             <span>📊</span> Ratings
@@ -315,24 +190,7 @@ export default function ToolDetailPage() {
           </div>
         </div>
 
-        {/* ─── Key Features ─── */}
-        {features.length > 0 && (
-          <div className="glass rounded-2xl p-7 mb-6">
-            <h2 className="text-lg font-bold text-white mb-5 flex items-center gap-2">
-              <span>✨</span> Key Features
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {features.map((feature, i) => (
-                <div key={i} className="flex items-center gap-2.5 text-gray-300 text-sm">
-                  <span className="w-5 h-5 rounded-full bg-violet-500/10 text-violet-400 flex items-center justify-center text-xs shrink-0">✓</span>
-                  {feature}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* ─── Pros & Cons ─── */}
+        {/* Pros & Cons */}
         {(pros.length > 0 || cons.length > 0) && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
             {pros.length > 0 && (
@@ -368,7 +226,7 @@ export default function ToolDetailPage() {
           </div>
         )}
 
-        {/* ─── Comments ─── */}
+        {/* Comments */}
         <CommentSection toolId={tool.id} />
       </div>
     </div>

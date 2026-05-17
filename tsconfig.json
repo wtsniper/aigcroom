@@ -36,6 +36,15 @@
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "prisma",
+    "scripts",
+    "*.js",
+    "*.mjs",
+    "rewrite-all-content.ts",
+    "fix-prisma.js",
+    "seed.js",
+    "server.js",
+    "installer.js"
   ]
 }

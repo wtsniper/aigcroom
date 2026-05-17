@@ -63,55 +63,61 @@ export default async function SolutionDetailPage({ params }: PageProps) {
     : ''
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <div className="mb-4 text-sm text-gray-500">
-        <Link href="/" className="hover:text-blue-600">Home</Link> &gt;{' '}
-        <Link href="/solutions" className="hover:text-blue-600">Solutions</Link> &gt;{' '}
-        <span> {solution.title}</span>
+    <div className="container mx-auto px-4 py-10 max-w-4xl">
+      {/* Breadcrumb */}
+      <div className="mb-6 text-sm text-gray-500 flex items-center gap-2">
+        <Link href="/" className="hover:text-gray-300 transition-colors">Home</Link>
+        <span>&gt;</span>
+        <Link href="/solutions" className="hover:text-gray-300 transition-colors">Solutions</Link>
+        <span>&gt;</span>
+        <span className="text-gray-400 truncate">{solution.title}</span>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8">
+      {/* Header card */}
+      <div className="glass rounded-2xl p-8 mb-6">
         <div className="mb-4">
-          <h1 className="text-3xl font-bold">{solution.title}</h1>
-          <div className="mt-2 flex gap-2">
-            <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+          <h1 className="text-3xl font-extrabold text-white">{solution.title}</h1>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <span className="text-xs px-2.5 py-1 rounded-lg bg-violet-500/10 text-violet-400 border border-violet-500/20 font-medium">
               {solution.industry}
             </span>
             {solution.isFeatured && (
-              <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
+              <span className="text-xs px-2.5 py-1 rounded-lg bg-green-500/10 text-green-400 border border-green-500/20 font-medium">
                 Featured
               </span>
             )}
           </div>
         </div>
-        <p className="text-gray-600 text-lg">{solution.description}</p>
+        <p className="text-gray-400 text-lg leading-relaxed">{solution.description}</p>
       </div>
 
+      {/* Content */}
       {htmlContent && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8">
+        <div className="glass rounded-2xl p-8 mb-6">
           <div
-            className="prose max-w-none"
+            className="prose prose-invert max-w-none text-gray-300 [&_h1]:text-white [&_h2]:text-white [&_h2]:border-b [&_h2]:border-white/10 [&_h2]:pb-2 [&_li]:text-gray-300 [&_p]:text-gray-400"
             dangerouslySetInnerHTML={{ __html: htmlContent }}
           />
         </div>
       )}
 
+      {/* Related tools */}
       {relatedTools.length > 0 && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-          <h2 className="text-xl font-bold mb-6">Recommended Tools</h2>
+        <div className="glass rounded-2xl p-8">
+          <h2 className="text-xl font-bold text-white mb-6">Recommended Tools</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {relatedTools.map((tool) => (
               <Link
                 key={tool.id}
                 href={`/tools/${tool.slug}`}
-                className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors"
+                className="flex items-center gap-4 p-4 rounded-xl border border-white/[0.08] bg-white/[0.03] hover:border-violet-500/30 hover:bg-white/[0.06] transition-all"
               >
-                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                <div className="w-12 h-12 bg-gray-800 rounded-xl flex items-center justify-center shrink-0">
                   <span className="text-2xl">🤖</span>
                 </div>
-                <div>
-                  <h3 className="font-semibold">{tool.name}</h3>
-                  <p className="text-sm text-gray-500 line-clamp-1">{tool.description}</p>
+                <div className="min-w-0">
+                  <h3 className="font-semibold text-white">{tool.name}</h3>
+                  <p className="text-sm text-gray-400 line-clamp-1">{tool.description}</p>
                 </div>
               </Link>
             ))}

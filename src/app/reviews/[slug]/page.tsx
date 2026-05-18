@@ -33,54 +33,68 @@ const renderMarkdown = (content: string) => {
   const lines = content.split('\n')
   const elements: JSX.Element[] = []
   let inList = false
+  let inOrderedList = false
   let listItems: JSX.Element[] = []
   let inTable = false
-  let tableRows: JSX.Element[] = []
+  let tableRows: string[][] = []
+  let isFirstTableRow = true
   let key = 0
 
   const flushList = () => {
     if (listItems.length > 0) {
-      elements.push(<ul key={key++} className="list-disc list-inside space-y-1 mb-4 ml-4">{listItems}</ul>)
+      if (inOrderedList) {
+        elements.push(<ol key={key++} className="list-decimal list-inside space-y-1 mb-4 ml-4">{listItems}</ol>)
+      } else {
+        elements.push(<ul key={key++} className="list-disc list-inside space-y-1 mb-4 ml-4">{listItems}</ul>)
+      }
       listItems = []
       inList = false
+      inOrderedList = false
     }
   }
 
   const flushTable = () => {
-    if (tableRows.length > 0) {
-      const headerRow = tableRows[0]
-      const bodyRows = tableRows.slice(1)
-      elements.push(
-        <div key={key++} className="overflow-x-auto mb-6">
-          <table className="min-w-full divide-y divide-gray-200 border">
-            <thead className="bg-gray-50">{headerRow}</thead>
-            <tbody className="bg-white divide-y divide-gray-200">{bodyRows}</tbody>
-          </table>
-        </div>
-      )
-      tableRows = []
-      inTable = false
-    }
+    if (tableRows.length === 0) return
+    const [header, ...body] = tableRows
+    elements.push(
+      <div key={key++} className="overflow-x-auto mb-6 rounded-lg border border-gray-200">
+        <table className="min-w-full text-sm">
+          <thead>
+            <tr className="bg-gray-100 border-b border-gray-200">
+              {header.map((cell, i) => (
+                <th key={i} className="px-4 py-3 text-left text-gray-900 font-semibold whitespace-nowrap">
+                  {renderInline(cell)}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {body.map((row, ri) => (
+              <tr key={ri} className={ri % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                {row.map((cell, ci) => (
+                  <td key={ci} className="px-4 py-3 text-gray-700">
+                    {renderInline(cell)}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )
+    tableRows = []
+    inTable = false
+    isFirstTableRow = true
   }
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
 
     if (line.startsWith('|') && line.endsWith('|')) {
-      if (!inTable) flushList()
-      inTable = true
-      const cells = line.split('|').filter(c => c.trim())
-      const isSeparator = cells.every(c => c.trim().match(/^[-]+$/))
-      if (isSeparator) continue
-      
-      const row = (
-        <tr key={key++}>
-          {cells.map((cell, idx) => (
-            <td key={idx} className="px-4 py-2 text-sm">{renderInline(cell.trim())}</td>
-          ))}
-        </tr>
-      )
-      tableRows.push(row)
+      if (!inTable) { flushList(); inTable = true }
+      const cells = line.split('|').slice(1, -1).map(c => c.trim())
+      const isSeparator = cells.every(c => /^[-: ]+$/.test(c))
+      if (!isSeparator) tableRows.push(cells)
       continue
     } else if (inTable) {
       flushTable()
@@ -91,19 +105,32 @@ const renderMarkdown = (content: string) => {
       elements.push(<h1 key={key++} className="text-3xl font-bold text-gray-900 mb-4 mt-8">{renderInline(line.slice(2))}</h1>)
     } else if (line.startsWith('## ')) {
       flushList()
-      elements.push(<h2 key={key++} className="text-2xl font-semibold text-gray-800 mb-3 mt-6">{renderInline(line.slice(3))}</h2>)
+      elements.push(<h2 key={key++} className="text-2xl font-semibold text-gray-800 mb-3 mt-6 pb-2 border-b border-gray-200">{renderInline(line.slice(3))}</h2>)
     } else if (line.startsWith('### ')) {
       flushList()
-      elements.push(<h3 key={key++} className="text-xl font-medium text-gray-700 mb-2 mt-4">{renderInline(line.slice(4))}</h3>)
+      elements.push(<h3 key={key++} className="text-lg font-semibold text-gray-800 mb-2 mt-5">{renderInline(line.slice(4))}</h3>)
+    } else if (line.startsWith('#### ')) {
+      flushList()
+      elements.push(<h4 key={key++} className="text-base font-semibold text-gray-700 mb-2 mt-4">{renderInline(line.slice(5))}</h4>)
     } else if (line.startsWith('- ') || line.startsWith('* ')) {
-      if (!inList) inList = true
+      if (!inList) { inList = true; inOrderedList = false }
       listItems.push(<li key={key++} className="text-gray-700">{renderInline(line.slice(2))}</li>)
+    } else if (/^\d+\.\s/.test(line)) {
+      if (!inList) { inList = true; inOrderedList = true }
+      listItems.push(<li key={key++} className="text-gray-700">{renderInline(line.replace(/^\d+\.\s/, ''))}</li>)
+    } else if (line.startsWith('> ')) {
+      flushList()
+      elements.push(
+        <blockquote key={key++} className="border-l-4 border-blue-400 pl-4 py-1 my-4 bg-blue-50 rounded-r-lg">
+          <p className="text-gray-700 italic">{renderInline(line.slice(2))}</p>
+        </blockquote>
+      )
     } else if (line.trim() === '') {
       flushList()
-      elements.push(<div key={key++} className="h-4" />)
+      elements.push(<div key={key++} className="h-3" />)
     } else {
       flushList()
-      elements.push(<p key={key++} className="text-gray-700 mb-4 leading-relaxed">{renderInline(line)}</p>)
+      elements.push(<p key={key++} className="text-gray-700 mb-3 leading-relaxed">{renderInline(line)}</p>)
     }
   }
 
@@ -114,7 +141,7 @@ const renderMarkdown = (content: string) => {
 
 const renderInline = (text: string): JSX.Element | string => {
   const parts: JSX.Element[] = []
-  const regex = /\*\*(.+?)\*\*|`(.+?)`/g
+  const regex = /\*\*(.+?)\*\*|\*(.+?)\*|`(.+?)`|\[(.+?)\]\((.+?)\)/g
   let lastIndex = 0
   let match
   let key = 0
@@ -124,9 +151,13 @@ const renderInline = (text: string): JSX.Element | string => {
       parts.push(<span key={key++}>{text.slice(lastIndex, match.index)}</span>)
     }
     if (match[1]) {
-      parts.push(<strong key={key++} className="font-semibold">{match[1]}</strong>)
+      parts.push(<strong key={key++} className="font-semibold text-gray-900">{match[1]}</strong>)
     } else if (match[2]) {
-      parts.push(<code key={key++} className="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono">{match[2]}</code>)
+      parts.push(<em key={key++} className="italic">{match[2]}</em>)
+    } else if (match[3]) {
+      parts.push(<code key={key++} className="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-sm font-mono">{match[3]}</code>)
+    } else if (match[4] && match[5]) {
+      parts.push(<a key={key++} href={match[5]} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{match[4]}</a>)
     }
     lastIndex = regex.lastIndex
   }

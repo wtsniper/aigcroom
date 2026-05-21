@@ -1537,15 +1537,15 @@ For developers and teams working within the GitHub ecosystem, Copilot Workspace 
     try {
       await prisma.review.create({ data: review });
       added++;
-      console.log(\`âœ?Added: \${review.title}\`);
+      console.log(\`ï¿½?Added: \${review.title}\`);
     } catch (error) {
       errors++;
-      console.error(\`âœ?Error for \${review.title}:\`, (error instanceof Error ? error.message : error));
+      console.error(\`ï¿½?Error for \${review.title}:\`, (error instanceof Error ? error.message : error));
     }
   }
 
   console.log(\`\\n Added: \${added}, Errors: \${errors}\`);
-  console.log(\`\\nâœ?\${added} in-depth reviews added to database.\`);
+  console.log(\`\\nï¿½?\${added} in-depth reviews added to database.\`);
 }
 
 main()

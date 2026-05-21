@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: PageProps) {
 export default async function ToolDetailPage({ params }: PageProps) {
   const { slug } = await params
 
-  let tool = null
+  let tool: (Awaited<ReturnType<typeof prisma.tool.findUnique>> & { affiliateLinks: { id: string; slug: string; platform: string | null }[] }) | null = null
   try {
     tool = await prisma.tool.findUnique({
       where: { slug },
@@ -189,6 +189,28 @@ export default async function ToolDetailPage({ params }: PageProps) {
             ))}
           </div>
         </div>
+
+        {/* Demo Video */}
+        {tool.videoUrl && (() => {
+          const ytMatch = tool.videoUrl!.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/)
+          if (!ytMatch) return null
+          return (
+            <div className="glass rounded-2xl p-7 mb-6">
+              <h2 className="text-lg font-bold text-white mb-5 flex items-center gap-2">
+                <span>▶</span> Demo Video
+              </h2>
+              <div className="rounded-xl overflow-hidden aspect-video">
+                <iframe
+                  src={`https://www.youtube.com/embed/${ytMatch[1]}`}
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title={`${tool.name} demo`}
+                />
+              </div>
+            </div>
+          )
+        })()}
 
         {/* Pros & Cons */}
         {(pros.length > 0 || cons.length > 0) && (

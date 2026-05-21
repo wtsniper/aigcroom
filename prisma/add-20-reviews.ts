@@ -505,9 +505,9 @@ async function main() {
         role: 'ADMIN',
       }
     });
-    console.log('âœ?Created admin user');
+    console.log('ï¿½?Created admin user');
   } else {
-    console.log('âœ?Admin user exists');
+    console.log('ï¿½?Admin user exists');
   }
 
   // Add tools
@@ -518,9 +518,9 @@ async function main() {
         update: tool,
         create: tool,
       });
-      console.log(`âœ?Tool: ${tool.name}`);
+      console.log(`ï¿½?Tool: ${tool.name}`);
     } catch (error) {
-      console.error(`âœ?Tool error: ${tool.name}`, error instanceof Error ? (error instanceof Error ? error.message : error) : error);
+      console.error(`ï¿½?Tool error: ${tool.name}`, error instanceof Error ? (error instanceof Error ? error.message : error) : error);
     }
   }
 
@@ -552,9 +552,9 @@ async function main() {
           publishedAt: review.status === 'published' ? new Date() : null,
         },
       });
-      console.log(`âœ?Review: ${review.title.substring(0, 50)}...`);
+      console.log(`ï¿½?Review: ${review.title.substring(0, 50)}...`);
     } catch (error) {
-      console.error(`âœ?Review error: ${review.id}`, (error instanceof Error ? error.message : error));
+      console.error(`ï¿½?Review error: ${review.id}`, (error instanceof Error ? error.message : error));
     }
   }
 

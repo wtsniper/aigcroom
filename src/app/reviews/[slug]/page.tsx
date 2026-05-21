@@ -118,6 +118,22 @@ const renderMarkdown = (content: string) => {
     } else if (/^\d+\.\s/.test(line)) {
       if (!inList) { inList = true; inOrderedList = true }
       listItems.push(<li key={key++} className="text-gray-700">{renderInline(line.replace(/^\d+\.\s/, ''))}</li>)
+    } else if (/https?:\/\/(www\.)?(youtube\.com\/watch|youtu\.be\/)/.test(line.trim())) {
+      flushList()
+      const ytMatch = line.trim().match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/)
+      if (ytMatch) {
+        elements.push(
+          <div key={key++} className="my-6 rounded-xl overflow-hidden aspect-video">
+            <iframe
+              src={`https://www.youtube.com/embed/${ytMatch[1]}`}
+              className="w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              title="Video"
+            />
+          </div>
+        )
+      }
     } else if (line.startsWith('> ')) {
       flushList()
       elements.push(

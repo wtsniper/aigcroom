@@ -78,6 +78,7 @@ model Tool {
   logoUrl         String
   websiteUrl      String
   affiliateUrl    String?
+  videoUrl        String?       // YouTube URL for demo video
   category        String
   rating          Float         @default(0)
   ratingFeatures  Float         @default(0)

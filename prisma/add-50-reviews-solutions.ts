@@ -41,9 +41,9 @@ async function main() {
 
   const now = new Date();
 
-  // ===== 50篇评测文�?=====
+  // ===== 50篇评测文�?=====
   const reviews = [
-    // AI视频评测 (10�?
+    // AI视频评测 (10�?
     {
       title: 'Pika Labs Review 2026: Is This the Best AI Video Generator?',
       slug: 'pika-labs-review-2026',
@@ -145,7 +145,7 @@ async function main() {
       publishedAt: new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000),
     },
 
-    // AI图像评测 (12�?
+    // AI图像评测 (12�?
     {
       title: 'Flux AI Review: The Best Open-Weight Image Generator',
       slug: 'flux-ai-review-2026',
@@ -267,7 +267,7 @@ async function main() {
       publishedAt: new Date(now.getTime() - 22 * 24 * 60 * 60 * 1000),
     },
 
-    // AI写作评测 (8�?
+    // AI写作评测 (8�?
     {
       title: 'Claude Review 2026: The Best AI for Long-Form Writing',
       slug: 'claude-writing-review-2026',
@@ -349,7 +349,7 @@ async function main() {
       publishedAt: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000),
     },
 
-    // AI音频评测 (6�?
+    // AI音频评测 (6�?
     {
       title: 'Suno v4 Review: Create Complete Songs with AI',
       slug: 'suno-v4-review-2026',
@@ -411,7 +411,7 @@ async function main() {
       publishedAt: new Date(now.getTime() - 36 * 24 * 60 * 60 * 1000),
     },
 
-    // AI编程评测 (6�?
+    // AI编程评测 (6�?
     {
       title: 'Bolt.new Review: Build Complete Web Apps From Prompts',
       slug: 'bolt-new-review-2026',
@@ -473,7 +473,7 @@ async function main() {
       publishedAt: new Date(now.getTime() - 42 * 24 * 60 * 60 * 1000),
     },
 
-    // AI办公效率评测 (8�?
+    // AI办公效率评测 (8�?
     {
       title: 'Gamma AI v2 Review: Beautiful AI Presentations',
       slug: 'gamma-ai-v2-review-2026',
@@ -572,23 +572,23 @@ async function main() {
           data: review
         });
         updatedReviews++;
-        console.log(`�?Updated review: ${review.title}`);
+        console.log(`�?Updated review: ${review.title}`);
       } else {
         await prisma.review.create({
           data: review
         });
         addedReviews++;
-        console.log(`�?Added review: ${review.title}`);
+        console.log(`�?Added review: ${review.title}`);
       }
     } catch (error) {
       errors++;
-      console.error(`�?Error for ${review.title}:`, (error instanceof Error ? error.message : error));
+      console.error(`�?Error for ${review.title}:`, (error instanceof Error ? error.message : error));
     }
   }
 
   console.log(`\n Reviews: ${addedReviews} added, ${updatedReviews} updated, ${errors} errors`);
 
-  // ===== 行业解决方案 (10�? =====
+  // ===== 行业解决方案 (10�? =====
   const solutions = [
     {
       title: 'AI-Powered Content Creation for Marketing Teams',
@@ -645,7 +645,7 @@ async function main() {
       slug: 'ai-podcast-production-guide',
       description: 'From recording to publishing: complete AI-powered podcast production workflow.',
       industry: 'Media & Entertainment',
-      icon: '🎙�?,
+      icon: '🎙�?,
       content: `## AI Podcast Production Workflow\n\n### Pre-Production\n1. **Topic Research**: ChatGPT for trending topics\n2. **Script Writing**: Claude for engaging episode scripts\n3. **Show Notes**: ChatGPT for episode summaries\n\n### Recording\n1. **Audio Recording**: Adobe Podcast for studio-quality recording\n2. **Remote Recording**: Adobe Podcast for guest interviews\n3. **Voice Enhancement**: Adobe Podcast AI enhancement\n\n### Post-Production\n1. **Editing**: Descript Overdub for text-based editing\n2. **Audio Cleanup**: Podcastle AI Magic Dust\n3. **Voice Cloning**: ElevenLabs for consistent voice\n4. **Music**: Suno v4 or Udio AI for intro/outro music\n5. **Transcription**: Podcastle AI automatic transcription\n\n### Publishing\n1. **Show Notes**: Claude for detailed episode notes\n2. **Social Promotion**: ChatGPT for social media posts\n3. **Video Clips**: InVideo AI for video podcast clips\n4. **Audiograms**: CapCut AI for social media snippets\n\n### Recommended Stack\n- Recording: Adobe Podcast\n- Editing: Descript, Podcastle AI\n- Voice: ElevenLabs\n- Music: Suno v4, Udio AI\n- Writing: Claude, ChatGPT\n\n### Monthly Cost\n- Basic: $40-70/month\n- Professional: $100-200/month`,
       toolIds: JSON.stringify(['chatgpt-writing', 'claude-writing', 'adobe-podcast', 'descript-overdub', 'podcastle-ai', 'elevenlabs-v2', 'suno-v4', 'udio-ai', 'invideo-ai', 'capcut-ai']),
       isFeatured: true,
@@ -708,23 +708,23 @@ async function main() {
           data: solution
         });
         updatedSolutions++;
-        console.log(`�?Updated solution: ${solution.title}`);
+        console.log(`�?Updated solution: ${solution.title}`);
       } else {
         await prisma.solution.create({
           data: solution
         });
         addedSolutions++;
-        console.log(`�?Added solution: ${solution.title}`);
+        console.log(`�?Added solution: ${solution.title}`);
       }
     } catch (error) {
       solutionErrors++;
-      console.error(`�?Error for ${solution.title}:`, (error instanceof Error ? error.message : error));
+      console.error(`�?Error for ${solution.title}:`, (error instanceof Error ? error.message : error));
     }
   }
 
   console.log(`\n Solutions: ${addedSolutions} added, ${updatedSolutions} updated, ${solutionErrors} errors`);
   console.log(`\n Total: ${addedReviews + addedSolutions} items added to database.`);
-  console.log(`\n�?Done! 50 reviews and 10 solutions have been added.`);
+  console.log(`\n�?Done! 50 reviews and 10 solutions have been added.`);
 }
 
 main()

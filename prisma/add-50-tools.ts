@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 const tools = [
-  // ===== AI视频制作 (10�? =====
+  // ===== AI视频制作 (10�? =====
   {
     id: 'pika-labs',
     name: 'Pika Labs',
@@ -155,7 +155,7 @@ const tools = [
     cons: JSON.stringify(['Pro features require subscription', 'Watermark on some exports', 'Desktop version less polished than mobile']),
   },
 
-  // ===== AI图像处理 (12�? =====
+  // ===== AI图像处理 (12�? =====
   {
     id: 'flux-ai',
     name: 'Flux AI',
@@ -337,7 +337,7 @@ const tools = [
     cons: JSON.stringify(['Quality varies by model', 'Western art styles less developed', 'Interface can be cluttered']),
   },
 
-  // ===== AI写作工具 (8�? =====
+  // ===== AI写作工具 (8�? =====
   {
     id: 'claude-writing',
     name: 'Claude (Writing Assistant)',
@@ -459,7 +459,7 @@ const tools = [
     cons: JSON.stringify(['Content can feel generic', 'Learning curve for SEO features', 'Pricing for teams is high']),
   },
 
-  // ===== AI音频工具 (6�? =====
+  // ===== AI音频工具 (6�? =====
   {
     id: 'suno-v4',
     name: 'Suno v4',
@@ -551,7 +551,7 @@ const tools = [
     cons: JSON.stringify(['Limited free tier', 'Requires Adobe account', 'Advanced features need Premium']),
   },
 
-  // ===== AI编程工具 (6�? =====
+  // ===== AI编程工具 (6�? =====
   {
     id: 'bolt-new',
     name: 'Bolt.new',
@@ -643,7 +643,7 @@ const tools = [
     cons: JSON.stringify(['Requires technical setup', 'No GUI', 'Depends on external LLM APIs']),
   },
 
-  // ===== AI办公与效率工�?(8�? =====
+  // ===== AI办公与效率工�?(8�? =====
   {
     id: 'gamma-ai-v2',
     name: 'Gamma AI v2',
@@ -804,7 +804,7 @@ async function main() {
           },
         });
         updated++;
-        console.log(`�?Updated: ${tool.name}`);
+        console.log(`�?Updated: ${tool.name}`);
       } else {
         // Create new tool
         await prisma.tool.create({
@@ -813,11 +813,11 @@ async function main() {
           },
         });
         added++;
-        console.log(`�?Added: ${tool.name}`);
+        console.log(`�?Added: ${tool.name}`);
       }
     } catch (error) {
       errors++;
-      console.error(`�?Error for ${tool.name}:`, (error instanceof Error ? error.message : error));
+      console.error(`�?Error for ${tool.name}:`, (error instanceof Error ? error.message : error));
     }
   }
 
@@ -825,7 +825,7 @@ async function main() {
   console.log(`  Added: ${added}`);
   console.log(`  Updated: ${updated}`);
   console.log(`  Errors: ${errors}`);
-  console.log(`\n�?Done! 50 AI tools with reviews have been added to the database.`);
+  console.log(`\n�?Done! 50 AI tools with reviews have been added to the database.`);
 }
 
 main()

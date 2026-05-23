@@ -54,12 +54,12 @@ export default function ToolLogo({
   const exts = ['png', 'webp', 'jpg', 'svg']
 
   let src: string | null = null
-  if (logoUrl?.startsWith('/logos/')) {
+  if (slug) {
+    src = `/logos/${slug}.${exts[extIndex]}`
+  } else if (logoUrl?.startsWith('/logos/')) {
     src = logoUrl
   } else if (logoUrl && !/^https?:\/\//i.test(logoUrl)) {
     src = logoUrl
-  } else if (slug) {
-    src = `/logos/${slug}.${exts[extIndex]}`
   } else {
     src = logoUrl || null
   }

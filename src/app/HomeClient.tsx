@@ -116,6 +116,13 @@ interface Solution {
   isFeatured: boolean
 }
 
+interface CategoryItem {
+  slug: string
+  name: string
+  icon: string
+  count: number
+}
+
 // ─── Scroll reveal — callback ref fires the moment the element mounts ─────────
 function useReveal() {
   return useCallback((el: HTMLElement | null) => {
@@ -163,22 +170,26 @@ export default function HomeClient({
   initialTools = [],
   initialReviews = [],
   initialSolutions = [],
+  initialCategories = [],
 }: {
   initialTools?: Tool[]
   initialReviews?: Review[]
   initialSolutions?: Solution[]
+  initialCategories?: CategoryItem[]
 }) {
   const [featuredTools, setFeaturedTools] = useState<Tool[]>(initialTools)
   const [recentReviews, setRecentReviews] = useState<Review[]>(initialReviews)
   const [featuredSolutions, setFeaturedSolutions] = useState<Solution[]>(initialSolutions)
+  const [categories] = useState<CategoryItem[]>(initialCategories)
   const [loading, setLoading] = useState(
     initialTools.length === 0 && initialReviews.length === 0 && initialSolutions.length === 0
   )
   const [error, setError] = useState(false)
 
   const heroRef      = useRef<HTMLElement>(null)
-  const statsReveal     = useReveal()
-  const toolsReveal     = useReveal()
+  const statsReveal       = useReveal()
+  const categoriesReveal  = useReveal()
+  const toolsReveal       = useReveal()
   const reviewsReveal   = useReveal()
   const solutionsReveal = useReveal()
   const ctaReveal       = useReveal()
@@ -300,6 +311,54 @@ export default function HomeClient({
           </div>
         </div>
       </section>
+
+      {/* ─── Browse by Category ─────────────────────────────────────────── */}
+      {categories.length > 0 && (
+        <section className="py-20 border-b border-white/[0.05]">
+          <div ref={categoriesReveal} className="reveal container mx-auto px-4 max-w-7xl">
+            <div className="flex items-end justify-between mb-10">
+              <div>
+                <span className="text-violet-400 text-sm font-semibold uppercase tracking-widest">Browse</span>
+                <h2 className="text-3xl md:text-4xl font-bold text-white mt-2">By Category</h2>
+                <p className="text-gray-400 mt-2">Find the right AI tools for your needs</p>
+              </div>
+              <Link
+                href="/category"
+                className="hidden md:flex items-center gap-1 text-violet-400 hover:text-violet-300 font-medium text-sm transition-colors"
+              >
+                View all{' '}
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {categories.map((cat, i) => (
+                <Link
+                  key={cat.slug}
+                  href={`/category/${cat.slug}`}
+                  className={`group glass glass-hover rounded-2xl p-5 hover:scale-[1.02] hover:-translate-y-1 active:scale-100 transition-all duration-300 delay-${(i + 1) * 100}`}
+                >
+                  <span className="text-2xl mb-3 block group-hover:scale-110 transition-transform duration-300">
+                    {cat.icon}
+                  </span>
+                  <h3 className="font-semibold text-white text-sm md:text-base group-hover:text-violet-300 transition-colors">
+                    {cat.name}
+                  </h3>
+                  <p className="text-xs text-gray-500 mt-1.5">{cat.count} tools</p>
+                </Link>
+              ))}
+            </div>
+
+            <div className="mt-8 text-center md:hidden">
+              <Link href="/category" className="text-violet-400 hover:text-violet-300 font-medium text-sm">
+                View all categories →
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ─── Featured Tools ─────────────────────────────────────────────── */}
       <section className="py-24">

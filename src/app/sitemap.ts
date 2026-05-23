@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { prisma } from '@/lib/prisma'
+import { TOOL_CATEGORIES } from '@/lib/categories'
 
 // Always render at request time so DATABASE_URL is available and content stays fresh
 export const dynamic = 'force-dynamic'
@@ -10,6 +11,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticEntries: MetadataRoute.Sitemap = [
     { url: baseUrl, lastModified: new Date(), changeFrequency: 'daily', priority: 1 },
     { url: `${baseUrl}/tools`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
+    { url: `${baseUrl}/category`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.85 },
     { url: `${baseUrl}/reviews`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
     { url: `${baseUrl}/solutions`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
     { url: `${baseUrl}/pricing`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.6 },
@@ -52,7 +54,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.65,
     }))
 
-    return [...staticEntries, ...toolUrls, ...reviewUrls, ...solutionUrls]
+    const categoryUrls: MetadataRoute.Sitemap = TOOL_CATEGORIES.map((c) => ({
+      url: `${baseUrl}/category/${c.slug}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    }))
+
+    return [...staticEntries, ...categoryUrls, ...toolUrls, ...reviewUrls, ...solutionUrls]
   } catch (e) {
     console.warn('[sitemap] Dynamic URLs skipped (database unavailable):', e)
     return staticEntries

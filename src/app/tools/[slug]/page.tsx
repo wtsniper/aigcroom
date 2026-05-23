@@ -5,6 +5,7 @@ import CommentSection from '@/components/CommentSection'
 import FavoriteButton from './FavoriteButton'
 import ToolLogo from '@/components/ToolLogo'
 import { RATING_MAX, normalizeRating, ratingBarPercent } from '@/lib/ratings'
+import { categorySlugForDbValue, getCategoryForDbValue } from '@/lib/categories'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -72,6 +73,8 @@ export default async function ToolDetailPage({ params }: PageProps) {
     PAID:     'bg-orange-500/10 text-orange-400 border border-orange-500/20',
   }
   const priceColor = PRICE_COLOR[pricingType] || PRICE_COLOR.PAID
+  const categorySlug = categorySlugForDbValue(tool.category)
+  const canonicalCategory = getCategoryForDbValue(tool.category)
 
   return (
     <div className="min-h-screen bg-gray-950">
@@ -84,6 +87,16 @@ export default async function ToolDetailPage({ params }: PageProps) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
           <Link href="/tools" className="hover:text-gray-300 transition-colors">Tools</Link>
+          {categorySlug && canonicalCategory && (
+            <>
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+              <Link href={`/category/${categorySlug}`} className="hover:text-gray-300 transition-colors">
+                {canonicalCategory.name}
+              </Link>
+            </>
+          )}
           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
@@ -114,9 +127,18 @@ export default async function ToolDetailPage({ params }: PageProps) {
               </div>
               <p className="text-gray-400 mt-1 leading-relaxed">{tool.description}</p>
               <div className="mt-3 flex flex-wrap gap-2">
-                <span className="px-2.5 py-1 bg-violet-500/10 text-violet-400 border border-violet-500/20 text-xs rounded-lg font-medium">
-                  {tool.category}
-                </span>
+                {categorySlug && canonicalCategory ? (
+                  <Link
+                    href={`/category/${categorySlug}`}
+                    className="px-2.5 py-1 bg-violet-500/10 text-violet-400 border border-violet-500/20 text-xs rounded-lg font-medium hover:bg-violet-500/20 transition-colors"
+                  >
+                    {canonicalCategory.name}
+                  </Link>
+                ) : (
+                  <span className="px-2.5 py-1 bg-violet-500/10 text-violet-400 border border-violet-500/20 text-xs rounded-lg font-medium">
+                    {tool.category}
+                  </span>
+                )}
                 {tags.map((tag, i) => (
                   <span key={i} className="px-2.5 py-1 bg-white/[0.04] text-gray-400 border border-white/[0.08] text-xs rounded-lg">
                     {tag}

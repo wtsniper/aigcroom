@@ -15,6 +15,7 @@ export default function Footer() {
             <h4 className="font-semibold mb-4">Resources</h4>
             <ul className="space-y-2 text-sm text-gray-400">
               <li><Link href="/tools" className="hover:text-white">AI Tools</Link></li>
+              <li><Link href="/category" className="hover:text-white">Categories</Link></li>
               <li><Link href="/reviews" className="hover:text-white">Reviews</Link></li>
               <li><Link href="/solutions" className="hover:text-white">Solutions</Link></li>
               <li><Link href="/compare" className="hover:text-white">Compare</Link></li>

@@ -171,11 +171,13 @@ export default function HomeClient({
   initialReviews = [],
   initialSolutions = [],
   initialCategories = [],
+  pinnedReview = null,
 }: {
   initialTools?: Tool[]
   initialReviews?: Review[]
   initialSolutions?: Solution[]
   initialCategories?: CategoryItem[]
+  pinnedReview?: Review | null
 }) {
   const [featuredTools, setFeaturedTools] = useState<Tool[]>(initialTools)
   const [recentReviews, setRecentReviews] = useState<Review[]>(initialReviews)
@@ -187,6 +189,7 @@ export default function HomeClient({
   const [error, setError] = useState(false)
 
   const heroRef      = useRef<HTMLElement>(null)
+  const pinnedReveal    = useReveal()
   const statsReveal       = useReveal()
   const categoriesReveal  = useReveal()
   const toolsReveal       = useReveal()
@@ -297,6 +300,43 @@ export default function HomeClient({
           </div>
         </div>
       </section>
+
+      {/* ─── Pinned Featured Review ─────────────────────────────────────── */}
+      {pinnedReview && (
+        <section className="py-6 px-4">
+          <div ref={pinnedReveal} className="reveal container mx-auto max-w-7xl">
+            <Link
+              href={`/reviews/${pinnedReview.slug}`}
+              className="group block relative overflow-hidden rounded-2xl p-[1px] gradient-border hover:scale-[1.005] transition-transform duration-300"
+            >
+              <div className="relative rounded-2xl bg-gradient-to-br from-amber-950/40 via-gray-950 to-violet-950/40 p-6 md:p-8 overflow-hidden">
+                <div className="orb absolute -top-16 -right-16 w-48 h-48 bg-amber-500/10" />
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center gap-5">
+                  <div className="flex-1 min-w-0">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-400 text-xs font-semibold uppercase tracking-wider mb-3">
+                      📌 Featured Guide
+                    </div>
+                    <h2 className="text-xl md:text-2xl font-bold text-white group-hover:text-amber-200 transition-colors leading-snug">
+                      {pinnedReview.title}
+                    </h2>
+                    <p className="text-gray-400 text-sm md:text-base mt-2 line-clamp-2 leading-relaxed">
+                      {pinnedReview.excerpt}
+                    </p>
+                  </div>
+                  <div className="shrink-0">
+                    <span className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-600 to-orange-600 text-white px-6 py-3 rounded-xl font-semibold text-sm shadow-lg shadow-amber-500/20 group-hover:shadow-amber-500/40 transition-all">
+                      Read now
+                      <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </div>
+        </section>
+      )}
 
       {/* ─── Stats ──────────────────────────────────────────────────────── */}
       <section className="py-12 border-y border-white/[0.05]">

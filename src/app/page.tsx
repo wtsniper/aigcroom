@@ -2,25 +2,17 @@ import { prisma } from '@/lib/prisma'
 import HomeClient from './HomeClient'
 import { getHomeFeaturedTools } from '@/lib/featured-tools'
 import { buildCategoriesWithCounts } from '@/lib/categories'
+import { getHomePinnedReview, getHomeRecentReviews } from '@/lib/featured-reviews'
 
 export const revalidate = 300
 
 export default async function HomePage() {
+  const pinnedReview = await getHomePinnedReview()
+  const excludeSlugs = pinnedReview ? [pinnedReview.slug] : []
+
   const [featuredTools, recentReviews, featuredSolutions, categoryTools] = await Promise.all([
     getHomeFeaturedTools(4),
-    prisma.review.findMany({
-      where: { status: 'PUBLISHED' },
-      orderBy: { createdAt: 'desc' },
-      take: 3,
-      select: {
-        id: true,
-        title: true,
-        slug: true,
-        excerpt: true,
-        status: true,
-        createdAt: true,
-      },
-    }),
+    getHomeRecentReviews(3, excludeSlugs),
     prisma.solution.findMany({
       orderBy: { createdAt: 'desc' },
       take: 4,
@@ -42,6 +34,11 @@ export default async function HomePage() {
     <HomeClient
       initialTools={featuredTools}
       initialCategories={categories}
+      pinnedReview={
+        pinnedReview
+          ? { ...pinnedReview, createdAt: pinnedReview.createdAt.toISOString() }
+          : null
+      }
       initialReviews={recentReviews.map((r) => ({
         ...r,
         createdAt: r.createdAt.toISOString(),

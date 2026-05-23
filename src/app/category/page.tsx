@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { buildCategoriesWithCounts } from '@/lib/categories'
+import MonetizationPicks from '@/components/MonetizationPicks'
 import type { Metadata } from 'next'
 
 export const revalidate = 300
@@ -45,6 +46,8 @@ export default async function CategoryIndexPage() {
             </Link>
           ))}
         </div>
+
+        <MonetizationPicks title="Recommended for AI Builders" />
       </div>
     </div>
   )

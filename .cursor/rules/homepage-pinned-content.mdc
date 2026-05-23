@@ -1,0 +1,40 @@
+---
+description: Homepage pinned review article — Featured Guide banner placement and config
+alwaysApply: true
+---
+
+# Homepage Pinned Articles
+
+When the user asks to pin, feature, or 置顶 a review/article on the homepage, use the **Featured Guide banner** — not the Latest Reviews grid.
+
+## Placement
+
+- **Location**: directly below the Hero, above Stats (`HomeClient.tsx` pinned section)
+- **Label**: "Featured Guide" banner with prominent CTA
+- **Do not** only reorder Latest Reviews; the pinned article gets its own top banner
+
+## How to pin
+
+1. Set slug in `src/lib/featured-reviews.ts`:
+
+```typescript
+export const HOME_PINNED_REVIEW_SLUG = 'your-review-slug'
+```
+
+2. `src/app/page.tsx` loads it via `getHomePinnedReview()` and passes `pinnedReview` to `HomeClient`
+3. Pinned slug is excluded from Latest Reviews so it never appears twice
+
+## Current default
+
+- Slug: `best-ai-books-2026` — Amazon Associates AI books comparison article
+- User preference: affiliate/monetization articles (especially Amazon book picks) should stay pinned here when requested
+
+## Related pattern
+
+Featured **tools** on homepage use the same idea in `src/lib/featured-tools.ts` (`HOME_AFFILIATE_TOOL_SLUGS`). Reviews and tools are separate pinned slots.
+
+## When publishing a new pinned article
+
+- Article must be `status: 'PUBLISHED'` in the database
+- Update `HOME_PINNED_REVIEW_SLUG` to the new slug
+- No schema change needed unless pinning multiple articles at once (user has not asked for that)

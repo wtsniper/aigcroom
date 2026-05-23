@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
+import MonetizationPicks from '@/components/MonetizationPicks'
 
 export const metadata = {
   title: 'AI Tool Reviews | AIGC Room',
@@ -38,7 +39,9 @@ export default async function ReviewsPage() {
   return (
     <div className="container mx-auto px-4 py-10 max-w-7xl">
       <h1 className="text-3xl font-extrabold text-white mb-3">AI Tool Reviews</h1>
-      <p className="text-gray-400 mb-10">In-depth analysis and expert reviews of the best AI tools</p>
+      <p className="text-gray-400 mb-8">In-depth analysis and expert reviews of the best AI tools</p>
+
+      <MonetizationPicks />
 
       {reviews.length === 0 ? (
         <div className="text-center py-12 text-gray-500">

@@ -20,13 +20,24 @@ interface Review {
 }
 
 async function getReview(slug: string): Promise<Review | null> {
-  const review = await prisma.review.findUnique({
-    where: { slug },
-    include: {
-      tool: true,
-    },
+  const review = await prisma.review.findFirst({
+    where: { slug, status: 'PUBLISHED' },
+    include: { tool: true },
   })
   return review
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const review = await prisma.review.findFirst({
+    where: { slug, status: 'PUBLISHED' },
+    select: { title: true, excerpt: true },
+  })
+  if (!review) return { title: 'Review Not Found' }
+  return {
+    title: review.title,
+    description: review.excerpt,
+  }
 }
 
 const renderMarkdown = (content: string) => {

@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { withAdmin } from '@/lib/api-guard'
 
-export async function GET() {
+export const GET = withAdmin(async () => {
   try {
     const totalUsers = await prisma.user.count()
     const totalTools = await prisma.tool.count()
@@ -35,7 +36,7 @@ export async function GET() {
       .slice(0, 5)
       .map((link) => ({
         id: link.toolId || link.id,
-        name: 'General',
+        name: link.platform || link.slug,
         clicks: link.clicks,
         revenue: link.revenue,
       }))
@@ -57,9 +58,6 @@ export async function GET() {
     })
   } catch (error) {
     console.error('Error fetching analytics:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch analytics', details: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch analytics' }, { status: 500 })
   }
-}
+})

@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import CommentSection from '@/components/CommentSection'
 import FavoriteButton from './FavoriteButton'
+import ToolLogo from '@/components/ToolLogo'
+import { RATING_MAX, normalizeRating, ratingBarPercent } from '@/lib/ratings'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -14,8 +16,8 @@ function parseJsonArray(val: string | string[] | null | undefined): string[] {
   try { return JSON.parse(val) as string[] } catch { return [] }
 }
 
-function RatingBar({ value, max = 10 }: { value: number; max?: number }) {
-  const pct = Math.min((value / max) * 100, 100)
+function RatingBar({ value }: { value: number }) {
+  const pct = ratingBarPercent(value)
   return (
     <div className="h-1.5 w-full bg-white/[0.06] rounded-full overflow-hidden mt-1.5">
       <div
@@ -56,11 +58,11 @@ export default async function ToolDetailPage({ params }: PageProps) {
   const cons     = parseJsonArray(tool.cons)
   const websiteUrl  = tool.websiteUrl || '#'
   const pricingType = tool.pricingType || 'Unknown'
-  const rating         = tool.rating         || 0
-  const ratingFeatures = tool.ratingFeatures || rating
-  const ratingEase     = tool.ratingEase     || rating
-  const ratingValue    = tool.ratingValue    || rating
-  const ratingSupport  = tool.ratingSupport  || rating
+  const rating         = normalizeRating(tool.rating         || 0)
+  const ratingFeatures = normalizeRating(tool.ratingFeatures || tool.rating || 0)
+  const ratingEase     = normalizeRating(tool.ratingEase     || tool.rating || 0)
+  const ratingValue    = normalizeRating(tool.ratingValue    || tool.rating || 0)
+  const ratingSupport  = normalizeRating(tool.ratingSupport  || tool.rating || 0)
 
   const getTrackingUrl = (linkSlug: string) => `/api/affiliate/track/${linkSlug}`
 
@@ -95,12 +97,13 @@ export default async function ToolDetailPage({ params }: PageProps) {
         <div className="glass rounded-2xl p-8 mb-6">
           <div className="flex items-start gap-6">
             <div className="w-20 h-20 bg-gray-800 rounded-2xl flex items-center justify-center overflow-hidden shrink-0 ring-1 ring-white/10">
-              {tool.logoUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={tool.logoUrl} alt={tool.name} className="w-full h-full object-cover" />
-              ) : (
-                <span className="text-4xl">🤖</span>
-              )}
+              <ToolLogo
+                logoUrl={tool.logoUrl}
+                slug={tool.slug}
+                name={tool.name}
+                category={tool.category}
+                fallbackClassName="text-4xl font-bold text-violet-300"
+              />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex flex-wrap items-center gap-2 mb-1">
@@ -172,7 +175,7 @@ export default async function ToolDetailPage({ params }: PageProps) {
           </h2>
           <div className="flex items-end gap-3 mb-6">
             <span className="text-5xl font-extrabold gradient-text-vb">{rating.toFixed(1)}</span>
-            <span className="text-gray-500 text-lg mb-1">/ 10</span>
+            <span className="text-gray-500 text-lg mb-1">/ {RATING_MAX}</span>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
             {[

@@ -3,54 +3,44 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
-interface StoredUser {
-  id: string
-  name: string | null
-  email: string
-  role: string
-}
-
 export default function FavoriteButton({ toolId, toolSlug }: { toolId: string; toolSlug: string }) {
   const router = useRouter()
-  const [user, setUser] = useState<StoredUser | null>(null)
+  const [loggedIn, setLoggedIn] = useState(false)
   const [isFavorite, setIsFavorite] = useState(false)
   const [busy, setBusy] = useState(false)
 
   useEffect(() => {
-    const raw = localStorage.getItem('user')
-    if (raw) {
-      try { setUser(JSON.parse(raw)) } catch { /* ignore */ }
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!user) return
-    fetch(`/api/favorites?userId=${encodeURIComponent(user.id)}`)
-      .then((r) => (r.ok ? r.json() : []))
-      .then((list: { toolId: string }[]) =>
-        setIsFavorite(list.some((f) => f.toolId === toolId))
-      )
-      .catch(() => setIsFavorite(false))
-  }, [user, toolId])
+    fetch('/api/auth/me', { credentials: 'include' })
+      .then((r) => {
+        setLoggedIn(r.ok)
+        if (!r.ok) return []
+        return fetch('/api/favorites', { credentials: 'include' }).then((res) => (res.ok ? res.json() : []))
+      })
+      .then((list: { toolId: string }[]) => {
+        if (Array.isArray(list)) setIsFavorite(list.some((f) => f.toolId === toolId))
+      })
+      .catch(() => setLoggedIn(false))
+  }, [toolId])
 
   const toggle = async () => {
-    if (!user) {
+    if (!loggedIn) {
       router.push(`/login?redirect=${encodeURIComponent(`/tools/${toolSlug}`)}`)
       return
     }
     setBusy(true)
     try {
       if (isFavorite) {
-        const res = await fetch(
-          `/api/favorites?userId=${encodeURIComponent(user.id)}&toolId=${encodeURIComponent(toolId)}`,
-          { method: 'DELETE' }
-        )
+        const res = await fetch(`/api/favorites?toolId=${encodeURIComponent(toolId)}`, {
+          method: 'DELETE',
+          credentials: 'include',
+        })
         if (res.ok) setIsFavorite(false)
       } else {
         const res = await fetch('/api/favorites', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: user.id, toolId }),
+          credentials: 'include',
+          body: JSON.stringify({ toolId }),
         })
         if (res.ok) setIsFavorite(true)
       }

@@ -1,22 +1,14 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-
-/** MVP: userId from client (same trust model as subscription APIs). Prefer JWT in a later hardening pass. */
+import { requireAuth } from '@/lib/auth'
 
 export async function GET(request: Request) {
+  const auth = await requireAuth(request)
+  if (auth instanceof NextResponse) return auth
+
   try {
-    const userId = new URL(request.url).searchParams.get('userId')
-    if (!userId) {
-      return NextResponse.json({ error: 'userId is required' }, { status: 400 })
-    }
-
-    const user = await prisma.user.findUnique({ where: { id: userId } })
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
-    }
-
     const favorites = await prisma.favorite.findMany({
-      where: { userId },
+      where: { userId: auth.id },
       include: {
         tool: {
           select: {
@@ -41,23 +33,23 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const auth = await requireAuth(request)
+  if (auth instanceof NextResponse) return auth
+
   try {
-    const { userId, toolId } = await request.json()
-    if (!userId || !toolId) {
-      return NextResponse.json({ error: 'userId and toolId are required' }, { status: 400 })
+    const { toolId } = await request.json()
+    if (!toolId) {
+      return NextResponse.json({ error: 'toolId is required' }, { status: 400 })
     }
 
-    const [user, tool] = await Promise.all([
-      prisma.user.findUnique({ where: { id: userId } }),
-      prisma.tool.findUnique({ where: { id: toolId } }),
-    ])
-    if (!user || !tool) {
-      return NextResponse.json({ error: 'User or tool not found' }, { status: 404 })
+    const tool = await prisma.tool.findUnique({ where: { id: toolId } })
+    if (!tool) {
+      return NextResponse.json({ error: 'Tool not found' }, { status: 404 })
     }
 
     const fav = await prisma.favorite.upsert({
-      where: { userId_toolId: { userId, toolId } },
-      create: { userId, toolId },
+      where: { userId_toolId: { userId: auth.id, toolId } },
+      create: { userId: auth.id, toolId },
       update: {},
       include: {
         tool: {
@@ -82,15 +74,16 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  const auth = await requireAuth(request)
+  if (auth instanceof NextResponse) return auth
+
   try {
-    const { searchParams } = new URL(request.url)
-    const userId = searchParams.get('userId')
-    const toolId = searchParams.get('toolId')
-    if (!userId || !toolId) {
-      return NextResponse.json({ error: 'userId and toolId are required' }, { status: 400 })
+    const toolId = new URL(request.url).searchParams.get('toolId')
+    if (!toolId) {
+      return NextResponse.json({ error: 'toolId is required' }, { status: 400 })
     }
 
-    await prisma.favorite.deleteMany({ where: { userId, toolId } })
+    await prisma.favorite.deleteMany({ where: { userId: auth.id, toolId } })
     return NextResponse.json({ ok: true })
   } catch (error) {
     console.error('Favorites DELETE error:', error)

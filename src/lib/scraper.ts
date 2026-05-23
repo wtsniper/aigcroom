@@ -224,7 +224,7 @@ function generateToolData(toolName: string): AIToolData | null {
       website: 'https://chat.openai.com',
       category: 'Chat Assistant',
       description: 'OpenAI\'s conversational AI that excels in writing, coding, analysis, and creative tasks.',
-      rating: 9.2,
+      rating: 4.6,
       pros: [
         'Exceptional natural language understanding',
         'Excellent at code generation and debugging',
@@ -244,7 +244,7 @@ function generateToolData(toolName: string): AIToolData | null {
       website: 'https://claude.ai',
       category: 'Chat Assistant',
       description: 'Anthropic\'s advanced AI assistant known for long context, honesty, and safety.',
-      rating: 9.0,
+      rating: 4.5,
       pros: [
         '200K token context window',
         'More honest and transparent responses',
@@ -264,7 +264,7 @@ function generateToolData(toolName: string): AIToolData | null {
       website: 'https://midjourney.com',
       category: 'Image Generation',
       description: 'The leading AI image generation tool. Creates stunning artistic and photorealistic images.',
-      rating: 8.8,
+      rating: 4.4,
       pros: [
         'Best-in-class artistic quality',
         'Active and helpful community',
@@ -284,7 +284,7 @@ function generateToolData(toolName: string): AIToolData | null {
       website: 'https://github.com/features/copilot',
       category: 'Coding',
       description: 'AI-powered pair programmer that suggests code completions and helps debug.',
-      rating: 8.9,
+      rating: 4.5,
       pros: [
         'Excellent IDE integration',
         'Significantly speeds up development',
@@ -303,7 +303,7 @@ function generateToolData(toolName: string): AIToolData | null {
       website: 'https://gemini.google.com',
       category: 'Chat Assistant',
       description: 'Google\'s multimodal AI with excellent image understanding and Workspace integration.',
-      rating: 8.5,
+      rating: 4.3,
       pros: [
         'Excellent at image understanding',
         'YouTube video summarization',
@@ -337,7 +337,7 @@ function generateReviewContent(toolName: string, reviewType: 'single' | 'compari
 
 ${tool.description}
 
-**Overall Rating: ${tool.rating}/10**
+**Overall Rating: ${tool.rating}/5**
 
 ## Pricing
 
@@ -363,9 +363,9 @@ ${tool.tags.includes('Image') ? '- Designers and creative professionals\n- Marke
 
 ## Final Verdict
 
-${tool.rating >= 9 ? 'Highly recommended. One of the best AI tools available in 2026.' : ''}
-${tool.rating >= 8 && tool.rating < 9 ? 'Strong choice with excellent capabilities. Worth considering for your workflow.' : ''}
-${tool.rating < 8 ? 'Good tool but has some limitations. Consider alternatives based on your specific needs.' : ''}
+${tool.rating >= 4.5 ? 'Highly recommended. One of the best AI tools available in 2026.' : ''}
+${tool.rating >= 4.0 && tool.rating < 4.5 ? 'Strong choice with excellent capabilities. Worth considering for your workflow.' : ''}
+${tool.rating < 4.0 ? 'Good tool but has some limitations. Consider alternatives based on your specific needs.' : ''}
 `;
   }
   

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { escapeHtml } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
 interface PageProps {
@@ -50,14 +51,15 @@ export default async function SolutionDetailPage({ params }: PageProps) {
     ? solution.content
         .split('\n')
         .map((line) => {
+          const safe = escapeHtml(line)
           if (line.startsWith('## '))
-            return `<h2 class="text-xl font-bold mt-6 mb-3">${line.slice(3)}</h2>`
+            return `<h2 class="text-xl font-bold mt-6 mb-3">${escapeHtml(line.slice(3))}</h2>`
           if (line.startsWith('# '))
-            return `<h1 class="text-2xl font-bold mt-6 mb-3">${line.slice(2)}</h1>`
-          if (line.startsWith('- ')) return `<li class="ml-4">${line.slice(2)}</li>`
-          if (line.match(/^\d+\.\s/)) return `<li class="ml-4">${line}</li>`
+            return `<h1 class="text-2xl font-bold mt-6 mb-3">${escapeHtml(line.slice(2))}</h1>`
+          if (line.startsWith('- ')) return `<li class="ml-4">${escapeHtml(line.slice(2))}</li>`
+          if (line.match(/^\d+\.\s/)) return `<li class="ml-4">${escapeHtml(line)}</li>`
           if (line.trim() === '') return '<br/>'
-          return `<p>${line}</p>`
+          return `<p>${safe}</p>`
         })
         .join('')
     : ''

@@ -16,7 +16,7 @@ interface FavoriteRow {
   tool: ToolBrief
 }
 
-interface StoredUser {
+interface SessionUser {
   id: string
   name: string | null
   email: string
@@ -25,38 +25,31 @@ interface StoredUser {
 
 export default function AccountPage() {
   const router = useRouter()
-  const [user, setUser] = useState<StoredUser | null>(null)
+  const [user, setUser] = useState<SessionUser | null>(null)
   const [favorites, setFavorites] = useState<FavoriteRow[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const raw = localStorage.getItem('user')
-    if (!raw) {
-      router.replace('/login?redirect=/account')
-      return
-    }
-    let u: StoredUser
-    try {
-      u = JSON.parse(raw) as StoredUser
-    } catch {
-      router.replace('/login?redirect=/account')
-      return
-    }
-    setUser(u)
-
-    fetch(`/api/favorites?userId=${encodeURIComponent(u.id)}`)
+    fetch('/api/auth/me', { credentials: 'include' })
+      .then((r) => {
+        if (!r.ok) throw new Error('unauthorized')
+        return r.json()
+      })
+      .then((data: { user: SessionUser }) => {
+        setUser(data.user)
+        return fetch('/api/favorites', { credentials: 'include' })
+      })
       .then((r) => (r.ok ? r.json() : []))
       .then((data: FavoriteRow[]) => setFavorites(Array.isArray(data) ? data : []))
-      .catch(() => setFavorites([]))
+      .catch(() => router.replace('/login?redirect=/account'))
       .finally(() => setLoading(false))
   }, [router])
 
   const removeFavorite = async (toolId: string) => {
-    if (!user) return
-    const res = await fetch(
-      `/api/favorites?userId=${encodeURIComponent(user.id)}&toolId=${encodeURIComponent(toolId)}`,
-      { method: 'DELETE' }
-    )
+    const res = await fetch(`/api/favorites?toolId=${encodeURIComponent(toolId)}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    })
     if (res.ok) {
       setFavorites((prev) => prev.filter((f) => f.toolId !== toolId))
     }

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import bcrypt from 'bcrypt'
 import { prisma } from '@/lib/prisma'
+import { signSessionToken, setSessionCookie } from '@/lib/auth'
 
 function validateEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
@@ -80,13 +81,14 @@ export async function POST(request: Request) {
       data: { userId: user.id, planType: 'FREE', status: 'ACTIVE' },
     })
 
-    return NextResponse.json(
-      {
-        message: 'User created successfully',
-        user: { id: user.id, name: user.name, email: user.email, role: user.role },
-      },
+    const userPayload = { id: user.id, name: user.name, email: user.email, role: user.role }
+    const token = signSessionToken(userPayload)
+    const response = NextResponse.json(
+      { message: 'User created successfully', user: userPayload },
       { status: 201 }
     )
+    setSessionCookie(response, token)
+    return response
   } catch (error) {
     console.error('Registration error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

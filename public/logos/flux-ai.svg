@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <rect width="128" height="128" rx="24" fill="#d97706"/>
+  <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle"
+    fill="#ffffff" font-family="system-ui,Segoe UI,sans-serif" font-size="56" font-weight="700">F</text>
+</svg>

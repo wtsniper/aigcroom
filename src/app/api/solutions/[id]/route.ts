@@ -1,10 +1,8 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { withAdmin } from '@/lib/api-guard'
 
-export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
     const solution = await prisma.solution.findUnique({ where: { id } })
@@ -18,12 +16,9 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export const PUT = withAdmin(async (request: Request, context: { params: Promise<{ id: string }> }) => {
   try {
-    const { id } = await params
+    const { id } = await context.params
     const data = await request.json()
     const solution = await prisma.solution.update({
       where: { id },
@@ -43,18 +38,15 @@ export async function PUT(
     console.error('Error updating solution:', error)
     return NextResponse.json({ error: 'Failed to update solution' }, { status: 500 })
   }
-}
+})
 
-export async function DELETE(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export const DELETE = withAdmin(async (_request: Request, context: { params: Promise<{ id: string }> }) => {
   try {
-    const { id } = await params
+    const { id } = await context.params
     await prisma.solution.delete({ where: { id } })
-    return NextResponse.json({ success: true })
+    return NextResponse.json({ message: 'Solution deleted successfully' })
   } catch (error) {
     console.error('Error deleting solution:', error)
     return NextResponse.json({ error: 'Failed to delete solution' }, { status: 500 })
   }
-}
+})

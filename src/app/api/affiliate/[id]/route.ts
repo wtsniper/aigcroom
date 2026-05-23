@@ -1,30 +1,15 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { withAdmin } from '@/lib/api-guard'
+import { isSafeRedirectUrl } from '@/lib/auth'
 
-export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export const PUT = withAdmin(async (request: Request, context: { params: Promise<{ id: string }> }) => {
   try {
-    const { id } = await params
-    const link = await prisma.affiliateLink.findUnique({ where: { id } })
-    if (!link) {
-      return NextResponse.json({ error: 'Affiliate link not found' }, { status: 404 })
-    }
-    return NextResponse.json(link)
-  } catch (error) {
-    console.error('Error fetching affiliate link:', error)
-    return NextResponse.json({ error: 'Failed to fetch affiliate link' }, { status: 500 })
-  }
-}
-
-export async function PUT(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await params
+    const { id } = await context.params
     const data = await request.json()
+    if (data.url && !isSafeRedirectUrl(data.url)) {
+      return NextResponse.json({ error: 'Invalid URL' }, { status: 400 })
+    }
     const link = await prisma.affiliateLink.update({
       where: { id },
       data: {
@@ -39,18 +24,15 @@ export async function PUT(
     console.error('Error updating affiliate link:', error)
     return NextResponse.json({ error: 'Failed to update affiliate link' }, { status: 500 })
   }
-}
+})
 
-export async function DELETE(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export const DELETE = withAdmin(async (_request: Request, context: { params: Promise<{ id: string }> }) => {
   try {
-    const { id } = await params
+    const { id } = await context.params
     await prisma.affiliateLink.delete({ where: { id } })
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Error deleting affiliate link:', error)
     return NextResponse.json({ error: 'Failed to delete affiliate link' }, { status: 500 })
   }
-}
+})

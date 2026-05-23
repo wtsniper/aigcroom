@@ -1,12 +1,14 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { requireAuth } from '@/lib/auth'
 
 export async function POST(request: Request) {
   try {
-    const { userId } = await request.json()
+    const session = await requireAuth(request)
+    if (session instanceof NextResponse) return session
 
     await prisma.subscription.update({
-      where: { userId },
+      where: { userId: session.id },
       data: { cancelAtPeriodEnd: true },
     })
 

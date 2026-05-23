@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { formatRating } from '@/lib/ratings'
 
 interface Tool {
   id: string
@@ -116,7 +117,7 @@ export default function AdminTools() {
                     <div className="text-sm text-gray-500">{tool.description?.substring(0, 50)}...</div>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-500">{tool.category}</td>
-                  <td className="px-6 py-4 text-sm text-gray-500">{tool.rating}/5</td>
+                  <td className="px-6 py-4 text-sm text-gray-500">{formatRating(tool.rating)}</td>
                   <td className="px-6 py-4 text-sm text-gray-500">
                     {tool.pricingType}{tool.priceMonthly ? ` - $${tool.priceMonthly}/月` : ''}
                   </td>

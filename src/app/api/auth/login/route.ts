@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import bcrypt from 'bcrypt'
 import { prisma } from '@/lib/prisma'
 import { verifyCaptchaToken } from '../captcha/route'
+import { signSessionToken, setSessionCookie } from '@/lib/auth'
 
 const WINDOW_MS = 15 * 60 * 1000   // 15-minute window
 const MAX_FAILS  = 5                // lockout after 5 failures
@@ -112,10 +113,14 @@ export async function POST(request: Request) {
     // ── Success ───────────────────────────────────────────────────────────────
     await clearFails(email)
 
-    return NextResponse.json({
+    const userPayload = { id: user.id, name: user.name, email: user.email, role: user.role }
+    const token = signSessionToken(userPayload)
+    const response = NextResponse.json({
       message: 'Login successful',
-      user: { id: user.id, name: user.name, email: user.email, role: user.role },
+      user: userPayload,
     })
+    setSessionCookie(response, token)
+    return response
   } catch (error) {
     console.error('Login error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

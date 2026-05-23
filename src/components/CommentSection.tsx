@@ -110,12 +110,12 @@ export default function CommentSection({ toolId, reviewId }: CommentSectionProps
   const [currentUser, setCurrentUser] = useState<User | null>(null)
 
   useEffect(() => {
-    const userStr = localStorage.getItem('user')
-    if (userStr) {
-      try {
-        setCurrentUser(JSON.parse(userStr))
-      } catch {}
-    }
+    fetch('/api/auth/me', { credentials: 'include' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data?.user) setCurrentUser(data.user)
+      })
+      .catch(() => {})
   }, [])
 
   useEffect(() => {
@@ -144,10 +144,7 @@ export default function CommentSection({ toolId, reviewId }: CommentSectionProps
 
     setLoading(true)
     try {
-      const body: any = {
-        content: content.trim(),
-        userId: currentUser.id,
-      }
+      const body: Record<string, string> = { content: content.trim() }
       if (toolId) body.toolId = toolId
       if (reviewId) body.reviewId = reviewId
       if (replyTo) body.parentId = replyTo.id
@@ -155,6 +152,7 @@ export default function CommentSection({ toolId, reviewId }: CommentSectionProps
       const res = await fetch('/api/comments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(body),
       })
 
@@ -179,8 +177,9 @@ export default function CommentSection({ toolId, reviewId }: CommentSectionProps
     if (!currentUser || !confirm('Delete this comment?')) return
 
     try {
-      const res = await fetch(`/api/comments/${commentId}?userId=${currentUser.id}`, {
+      const res = await fetch(`/api/comments/${commentId}`, {
         method: 'DELETE',
+        credentials: 'include',
       })
       if (res.ok) fetchComments()
     } catch (error) {

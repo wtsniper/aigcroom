@@ -128,15 +128,16 @@ export default function NewTool() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Logo URL</label>
+            <label className="block text-sm font-medium mb-2">Logo 路径</label>
             <input
-              type="url"
+              type="text"
               name="logoUrl"
               value={formData.logoUrl}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-              placeholder="https://example.com/logo.png"
+              placeholder="/logos/your-tool-slug.png"
             />
+            <p className="text-xs text-gray-500 mt-1">推荐本地路径。新增工具后运行 npm run logos:localize 自动下载。</p>
           </div>
 
           <div>

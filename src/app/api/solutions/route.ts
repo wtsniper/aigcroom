@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { withAdmin } from '@/lib/api-guard'
 
 export async function GET() {
   try {
-    const solutions = await prisma.solution.findMany({
-      orderBy: { createdAt: 'desc' },
-    })
+    const solutions = await prisma.solution.findMany({ orderBy: { createdAt: 'desc' } })
     return NextResponse.json(solutions)
   } catch (error) {
     console.error('Error fetching solutions:', error)
@@ -13,7 +12,7 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+export const POST = withAdmin(async (request: Request) => {
   try {
     const data = await request.json()
     const solution = await prisma.solution.create({
@@ -33,4 +32,4 @@ export async function POST(request: Request) {
     console.error('Error creating solution:', error)
     return NextResponse.json({ error: 'Failed to create solution' }, { status: 500 })
   }
-}
+})

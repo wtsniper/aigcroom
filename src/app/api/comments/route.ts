@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { requireAuth } from '@/lib/auth'
 
 export async function GET(request: Request) {
   try {
@@ -11,7 +12,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'toolId or reviewId is required' }, { status: 400 })
     }
 
-    const where: any = { parentId: null }
+    const where: { parentId: null; toolId?: string; reviewId?: string } = { parentId: null }
     if (toolId) where.toolId = toolId
     if (reviewId) where.reviewId = reviewId
 
@@ -37,12 +38,15 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const auth = await requireAuth(request)
+  if (auth instanceof NextResponse) return auth
+
   try {
     const body = await request.json()
-    const { content, userId, toolId, reviewId, parentId } = body
+    const { content, toolId, reviewId, parentId } = body
 
-    if (!content || !userId) {
-      return NextResponse.json({ error: 'Content and userId are required' }, { status: 400 })
+    if (!content) {
+      return NextResponse.json({ error: 'Content is required' }, { status: 400 })
     }
 
     if (content.length > 2000) {
@@ -51,11 +55,6 @@ export async function POST(request: Request) {
 
     if (!toolId && !reviewId) {
       return NextResponse.json({ error: 'toolId or reviewId is required' }, { status: 400 })
-    }
-
-    const user = await prisma.user.findUnique({ where: { id: userId } })
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
     if (parentId) {
@@ -68,7 +67,7 @@ export async function POST(request: Request) {
     const comment = await prisma.comment.create({
       data: {
         content,
-        userId,
+        userId: auth.id,
         toolId: toolId || null,
         reviewId: reviewId || null,
         parentId: parentId || null,

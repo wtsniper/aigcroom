@@ -19,8 +19,12 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
-    const stored = localStorage.getItem('user')
-    if (stored) setUser(JSON.parse(stored))
+    fetch('/api/auth/me', { credentials: 'include' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data?.user) setUser(data.user)
+      })
+      .catch(() => setUser(null))
   }, [])
 
   useEffect(() => {
@@ -32,7 +36,8 @@ export default function Header() {
   // Close mobile menu on route change
   useEffect(() => { setMobileMenuOpen(false) }, [pathname])
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await fetch('/api/auth/me', { method: 'POST', credentials: 'include' }).catch(() => {})
     localStorage.removeItem('user')
     setUser(null)
     router.push('/')

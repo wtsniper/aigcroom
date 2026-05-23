@@ -1,0 +1,18 @@
+import { NextResponse } from 'next/server'
+import { getSession, clearSessionCookie } from '@/lib/auth'
+
+export async function GET() {
+  const session = await getSession()
+  if (!session) {
+    return NextResponse.json({ user: null }, { status: 401 })
+  }
+  return NextResponse.json({
+    user: { id: session.id, name: session.name, email: session.email, role: session.role },
+  })
+}
+
+export async function POST() {
+  const response = NextResponse.json({ message: 'Logged out' })
+  clearSessionCookie(response)
+  return response
+}

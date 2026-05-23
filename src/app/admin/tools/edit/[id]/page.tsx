@@ -165,13 +165,14 @@ export default function EditTool() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Logo URL</label>
+            <label className="block text-sm font-medium mb-2">Logo 路径</label>
             <input
-              type="url"
+              type="text"
               name="logoUrl"
               value={formData.logoUrl}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              placeholder="/logos/tool-slug.png"
             />
           </div>
 

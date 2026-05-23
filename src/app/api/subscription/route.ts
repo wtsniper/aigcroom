@@ -1,17 +1,14 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { requireAuth } from '@/lib/auth'
 
 export async function GET(request: Request) {
   try {
-    const { searchParams } = new URL(request.url)
-    const userId = searchParams.get('userId')
-
-    if (!userId) {
-      return NextResponse.json({ error: 'User ID is required' }, { status: 400 })
-    }
+    const session = await requireAuth(request)
+    if (session instanceof NextResponse) return session
 
     const subscription = await prisma.subscription.findUnique({
-      where: { userId },
+      where: { userId: session.id },
     })
 
     if (!subscription) {

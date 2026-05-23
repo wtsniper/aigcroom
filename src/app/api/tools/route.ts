@@ -1,13 +1,31 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { withAdmin } from '@/lib/api-guard'
+import { getHomeFeaturedTools } from '@/lib/featured-tools'
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url)
+    if (searchParams.get('homepage') === '1') {
+      const tools = await getHomeFeaturedTools(4)
+      return NextResponse.json(tools)
+    }
+
     const tools = await prisma.tool.findMany({
       orderBy: { createdAt: 'desc' },
-      include: {
-        pricingPlans: true,
-        affiliateLinks: true,
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        description: true,
+        logoUrl: true,
+        category: true,
+        rating: true,
+        pricingType: true,
+        priceMonthly: true,
+        tags: true,
+        isFeatured: true,
+        createdAt: true,
       },
     })
     return NextResponse.json(tools)
@@ -17,10 +35,10 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+export const POST = withAdmin(async (request: Request) => {
   try {
     const data = await request.json()
-    
+
     const tool = await prisma.tool.create({
       data: {
         name: data.name,
@@ -44,27 +62,33 @@ export async function POST(request: Request) {
         isFeatured: data.isFeatured || false,
       },
     })
-    
-    if (data.pricingPlans && data.pricingPlans.length > 0) {
-      for (const plan of data.pricingPlans) {
-        await prisma.pricingPlan.create({
-          data: {
-            name: plan.name,
-            description: plan.description,
-            priceMonthly: plan.priceMonthly,
-            priceYearly: plan.priceYearly,
-            features: Array.isArray(plan.features) ? JSON.stringify(plan.features) : plan.features,
-            affiliateUrl: plan.affiliateUrl,
-            isPopular: plan.isPopular || false,
-            toolId: tool.id,
-          },
-        })
-      }
+
+    if (data.pricingPlans?.length > 0) {
+      await prisma.pricingPlan.createMany({
+        data: data.pricingPlans.map((plan: {
+          name: string
+          description?: string
+          priceMonthly?: number
+          priceYearly?: number
+          features?: string[]
+          affiliateUrl?: string
+          isPopular?: boolean
+        }) => ({
+          name: plan.name,
+          description: plan.description,
+          priceMonthly: plan.priceMonthly,
+          priceYearly: plan.priceYearly,
+          features: Array.isArray(plan.features) ? JSON.stringify(plan.features) : plan.features,
+          affiliateUrl: plan.affiliateUrl,
+          isPopular: plan.isPopular || false,
+          toolId: tool.id,
+        })),
+      })
     }
-    
+
     return NextResponse.json(tool, { status: 201 })
   } catch (error) {
     console.error('Error creating tool:', error)
     return NextResponse.json({ error: 'Failed to create tool' }, { status: 500 })
   }
-}
+})

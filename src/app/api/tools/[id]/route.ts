@@ -1,21 +1,19 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { withAdmin } from '@/lib/api-guard'
 
-export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
     const tool = await prisma.tool.findUnique({
       where: { id },
-      include: {
-        pricingPlans: true,
-        affiliateLinks: true,
-      },
+      include: { pricingPlans: true, affiliateLinks: true },
     })
-    
+
     if (!tool) {
       return NextResponse.json({ error: 'Tool not found' }, { status: 404 })
     }
-    
+
     return NextResponse.json(tool)
   } catch (error) {
     console.error('Error fetching tool:', error)
@@ -23,11 +21,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   }
 }
 
-export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
+export const PUT = withAdmin(async (request: Request, context: { params: Promise<{ id: string }> }) => {
   try {
-    const { id } = await params
+    const { id } = await context.params
     const data = await request.json()
-    
+
     const tool = await prisma.tool.update({
       where: { id },
       data: {
@@ -52,21 +50,21 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         isFeatured: data.isFeatured,
       },
     })
-    
+
     return NextResponse.json(tool)
   } catch (error) {
     console.error('Error updating tool:', error)
     return NextResponse.json({ error: 'Failed to update tool' }, { status: 500 })
   }
-}
+})
 
-export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+export const DELETE = withAdmin(async (_request: Request, context: { params: Promise<{ id: string }> }) => {
   try {
-    const { id } = await params
+    const { id } = await context.params
     await prisma.tool.delete({ where: { id } })
     return NextResponse.json({ message: 'Tool deleted successfully' })
   } catch (error) {
     console.error('Error deleting tool:', error)
     return NextResponse.json({ error: 'Failed to delete tool' }, { status: 500 })
   }
-}
+})

@@ -15,13 +15,12 @@ export function verifyCaptchaToken(token: string, answer: string): boolean {
   const [encodedAnswer, expiry, sig] = parts
   const expectedSig = sign(`${encodedAnswer}.${expiry}`)
   if (sig !== expectedSig) return false
-  if (Date.now() > parseInt(expiry)) return false
-  // constant-time compare
+  if (Date.now() > parseInt(expiry, 10)) return false
   const decodedAnswer = Buffer.from(encodedAnswer, 'base64').toString()
-  return crypto.timingSafeEqual(
-    Buffer.from(decodedAnswer.toLowerCase().trim()),
-    Buffer.from(answer.toLowerCase().trim()),
-  )
+  const a = Buffer.from(decodedAnswer.toLowerCase().trim())
+  const b = Buffer.from(answer.toLowerCase().trim())
+  if (a.length !== b.length) return false
+  return crypto.timingSafeEqual(a, b)
 }
 
 export async function GET() {

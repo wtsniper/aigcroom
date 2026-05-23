@@ -22,7 +22,12 @@ function getSmtpTransport(): ReturnType<typeof nodemailer.createTransport> | nul
   })
 }
 
-function buildHtml(code: string, siteUrl: string, fromName: string): string {
+function buildHtml(code: string, siteUrl: string, fromName: string, purpose: 'register' | 'reset'): string {
+  const title = purpose === 'reset' ? 'Reset your password' : 'Verify your email address'
+  const body = purpose === 'reset'
+    ? 'Use the 6-digit code below to reset your password. Expires in <strong>10 minutes</strong>.'
+    : 'Use the 6-digit code below to complete your registration. Expires in <strong>10 minutes</strong>.'
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/></head>
@@ -34,9 +39,9 @@ function buildHtml(code: string, siteUrl: string, fromName: string): string {
           <a href="${siteUrl}" style="color:#fff;font-size:22px;font-weight:700;text-decoration:none;">${fromName}</a>
         </td></tr>
         <tr><td style="padding:36px 32px 24px;">
-          <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">Verify your email address</h2>
+          <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">${title}</h2>
           <p style="margin:0 0 24px;color:#6b7280;font-size:15px;line-height:1.6;">
-            Use the 6-digit code below to complete your registration. Expires in <strong>10 minutes</strong>.
+            ${body}
           </p>
           <div style="background:#f0f4ff;border:2px solid #2563eb;border-radius:10px;padding:20px;text-align:center;margin:0 0 24px;">
             <span style="font-size:36px;font-weight:800;letter-spacing:10px;color:#2563eb;font-family:monospace;">${code}</span>
@@ -54,12 +59,24 @@ function buildHtml(code: string, siteUrl: string, fromName: string): string {
 }
 
 export async function sendVerificationEmail(email: string, code: string): Promise<boolean> {
+  return sendCodeEmail(email, code, 'register')
+}
+
+export async function sendPasswordResetEmail(email: string, code: string): Promise<boolean> {
+  return sendCodeEmail(email, code, 'reset')
+}
+
+async function sendCodeEmail(email: string, code: string, purpose: 'register' | 'reset'): Promise<boolean> {
   const siteUrl   = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.aigcroom.shop'
   const fromName  = process.env.EMAIL_FROM_NAME || 'AIGC Room'
   const fromEmail = process.env.EMAIL_FROM || 'noreply@aigcroom.shop'
-  const subject   = `${code} is your ${fromName} verification code`
-  const html      = buildHtml(code, siteUrl, fromName)
-  const text      = `Your ${fromName} verification code is: ${code}\n\nExpires in 10 minutes.`
+  const subject   = purpose === 'reset'
+    ? `${code} is your ${fromName} password reset code`
+    : `${code} is your ${fromName} verification code`
+  const html      = buildHtml(code, siteUrl, fromName, purpose)
+  const text      = purpose === 'reset'
+    ? `Your ${fromName} password reset code is: ${code}\n\nExpires in 10 minutes.`
+    : `Your ${fromName} verification code is: ${code}\n\nExpires in 10 minutes.`
 
   // Try Resend first
   const resend = getResendClient()

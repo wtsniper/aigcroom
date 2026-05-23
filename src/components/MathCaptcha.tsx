@@ -43,14 +43,17 @@ export default function MathCaptcha({
           {loading ? '...' : question}
         </span>
         <input
-          type="number"
+          type="text"
+          inputMode="numeric"
+          autoComplete="off"
           value={answer}
           onChange={(e) => {
-            setAnswer(e.target.value)
-            onVerify(token, e.target.value)
+            const val = e.target.value.replace(/[^\d-]/g, '')
+            setAnswer(val)
+            onVerify(token, val)
           }}
           placeholder="Answer"
-          className="w-24 px-3 py-2 border border-gray-300 rounded-lg text-center text-lg font-bold focus:ring-2 focus:ring-blue-500"
+          className="w-24 px-3 py-2 border border-gray-300 rounded-lg text-center text-lg font-bold text-gray-900 bg-white placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
         />
         <button
           type="button"

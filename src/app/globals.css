@@ -30,6 +30,16 @@ a {
   text-decoration: none;
 }
 
+/* Light auth cards sit on dark site theme — force readable inputs */
+.auth-page input {
+  color: #111827;
+  background-color: #ffffff;
+}
+
+.auth-page input::placeholder {
+  color: #9ca3af;
+}
+
 /* ─── Scroll-triggered entrance animations ─────────────────────────── */
 .reveal {
   opacity: 0;

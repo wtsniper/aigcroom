@@ -101,7 +101,7 @@ export default function AccountPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-2xl">
+    <div className="container mx-auto px-4 py-8 max-w-2xl auth-page">
       <h1 className="text-2xl font-bold mb-1">My account</h1>
       <p className="text-gray-600 mb-1">{user.email}</p>
       {user.name && <p className="text-sm text-gray-500 mb-8">{user.name}</p>}

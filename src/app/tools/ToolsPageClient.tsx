@@ -181,7 +181,7 @@ export default function ToolsPageClient({
                   className="group glass glass-hover rounded-2xl p-6 hover:scale-[1.02] hover:-translate-y-0.5 transition-all duration-300"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-gray-800 rounded-xl flex items-center justify-center overflow-hidden shrink-0 ring-1 ring-white/10 group-hover:scale-110 transition-transform duration-300">
+                    <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center overflow-hidden shrink-0 ring-1 ring-white/20 group-hover:scale-110 transition-transform duration-300">
                       <ToolLogo logoUrl={tool.logoUrl} slug={tool.slug} name={tool.name} category={tool.category} useCategoryEmoji fallbackClassName="text-xl" />
                     </div>
                     <div className="flex-1 min-w-0">

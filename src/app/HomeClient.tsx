@@ -331,7 +331,7 @@ export default function HomeClient({
                       href={`/tools/${tool.slug}`}
                       className={`group glass glass-hover rounded-2xl p-6 hover:scale-[1.02] hover:-translate-y-1 active:scale-100 transition-all duration-300 delay-${(i + 1) * 100}`}
                     >
-                      <div className="w-14 h-14 bg-gray-800 rounded-xl flex items-center justify-center mb-5 overflow-hidden group-hover:scale-110 transition-transform duration-300 ring-1 ring-white/10">
+                      <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-5 overflow-hidden group-hover:scale-110 transition-transform duration-300 ring-1 ring-white/20">
                         <ToolLogo
                           logoUrl={tool.logoUrl}
                           slug={tool.slug}

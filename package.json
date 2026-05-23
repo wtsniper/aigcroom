@@ -13,7 +13,8 @@
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate",
-    "logos:localize": "node scripts/localize-logos.mjs"
+    "logos:localize": "node scripts/localize-logos.mjs",
+    "logos:affiliate": "node scripts/refresh-affiliate-logos.mjs"
   },
   "dependencies": {
     "@prisma/client": "^5.0.0",

@@ -96,7 +96,7 @@ export default async function ToolDetailPage({ params }: PageProps) {
         {/* Hero card */}
         <div className="glass rounded-2xl p-8 mb-6">
           <div className="flex items-start gap-6">
-            <div className="w-20 h-20 bg-gray-800 rounded-2xl flex items-center justify-center overflow-hidden shrink-0 ring-1 ring-white/10">
+            <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center overflow-hidden shrink-0 ring-1 ring-white/20">
               <ToolLogo
                 logoUrl={tool.logoUrl}
                 slug={tool.slug}

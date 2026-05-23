@@ -45,7 +45,7 @@ export default function ToolLogo({
   slug,
   name,
   category = '',
-  className = 'w-full h-full object-cover',
+  className = 'w-full h-full object-contain p-1.5',
   fallbackClassName = 'text-xl font-bold text-violet-300',
   useCategoryEmoji = false,
 }: ToolLogoProps) {

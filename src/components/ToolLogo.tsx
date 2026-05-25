@@ -82,7 +82,7 @@ export default function ToolLogo({
   return (
     <img
       src={src}
-      alt=""
+      alt={name}
       className={className}
       loading="lazy"
       decoding="async"

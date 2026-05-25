@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma'
 
 /** Affiliate tools pinned to the homepage Featured section (in order). */
-export const HOME_AFFILIATE_TOOL_SLUGS = ['speak-ai', 'robofy'] as const
+export const HOME_AFFILIATE_TOOL_SLUGS = ['speak-ai', 'robofy', 'suno-v4'] as const
 
 const homeToolSelect = {
   id: true,

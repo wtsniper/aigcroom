@@ -36,12 +36,17 @@ export default async function HomePage() {
       initialCategories={categories}
       pinnedReview={
         pinnedReview
-          ? { ...pinnedReview, createdAt: pinnedReview.createdAt.toISOString() }
+          ? {
+              ...pinnedReview,
+              createdAt: pinnedReview.createdAt.toISOString(),
+              publishedAt: pinnedReview.publishedAt?.toISOString() ?? null,
+            }
           : null
       }
       initialReviews={recentReviews.map((r) => ({
         ...r,
         createdAt: r.createdAt.toISOString(),
+        publishedAt: r.publishedAt?.toISOString() ?? null,
       }))}
       initialSolutions={featuredSolutions}
     />

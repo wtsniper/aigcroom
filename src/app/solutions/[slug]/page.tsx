@@ -2,19 +2,19 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { escapeHtml } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import type { Metadata } from 'next'
+import { pageMetadata, buildArticleJsonLd, buildBreadcrumbJsonLd, JsonLd } from '@/lib/seo'
 
 interface PageProps {
   params: Promise<{ slug: string }>
 }
 
-export async function generateMetadata({ params }: PageProps) {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
   const solution = await prisma.solution.findUnique({ where: { slug } })
   if (!solution) return { title: 'Solution Not Found' }
-  return {
-    title: `${solution.title} | AIGC Room`,
-    description: solution.description,
-  }
+  const desc = solution.description?.slice(0, 160) || solution.title
+  return pageMetadata(`/solutions/${slug}`, `${solution.title} | AIGC Room`, desc)
 }
 
 export default async function SolutionDetailPage({ params }: PageProps) {
@@ -64,7 +64,23 @@ export default async function SolutionDetailPage({ params }: PageProps) {
         .join('')
     : ''
 
+  const jsonLd = [
+    buildArticleJsonLd({
+      title: solution.title,
+      description: solution.description || '',
+      url: `/solutions/${slug}`,
+      datePublished: solution.createdAt.toISOString(),
+      dateModified: solution.updatedAt.toISOString(),
+    }),
+    buildBreadcrumbJsonLd([
+      { name: 'Home', path: '/' },
+      { name: 'Solutions', path: '/solutions' },
+      { name: solution.title, path: `/solutions/${slug}` },
+    ]),
+  ]
+
   return (
+    <>
     <div className="container mx-auto px-4 py-10 max-w-4xl">
       {/* Breadcrumb */}
       <div className="mb-6 text-sm text-gray-500 flex items-center gap-2">
@@ -127,5 +143,7 @@ export default async function SolutionDetailPage({ params }: PageProps) {
         </div>
       )}
     </div>
+    <JsonLd data={jsonLd} />
+    </>
   )
 }

@@ -8,6 +8,8 @@ import {
 } from '@/lib/categories'
 import ToolLogo from '@/components/ToolLogo'
 import { formatRating } from '@/lib/ratings'
+import { getSiteUrl } from '@/lib/site-url'
+import { pageMetadata, buildBreadcrumbJsonLd, JsonLd } from '@/lib/seo'
 import type { Metadata } from 'next'
 
 export const revalidate = 300
@@ -26,17 +28,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!category) return { title: 'Category Not Found' }
 
   const year = new Date().getFullYear()
-  return {
-    title: `${category.seoTitle} (${year})`,
-    description: category.description,
-    alternates: {
-      canonical: `/category/${slug}`,
-    },
-    openGraph: {
-      title: `${category.seoTitle} | AIGC Room`,
-      description: category.description,
-    },
-  }
+  return pageMetadata(
+    `/category/${slug}`,
+    `${category.seoTitle} (${year})`,
+    category.description
+  )
 }
 
 const PRICE_BADGE: Record<string, string> = {
@@ -66,8 +62,31 @@ export default async function CategoryPage({ params }: PageProps) {
   })
 
   const year = new Date().getFullYear()
+  const baseUrl = getSiteUrl()
+
+  const jsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      name: category.seoTitle,
+      description: category.description,
+      numberOfItems: tools.length,
+      itemListElement: tools.slice(0, 20).map((tool, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: tool.name,
+        url: `${baseUrl}/tools/${tool.slug}`,
+      })),
+    },
+    buildBreadcrumbJsonLd([
+      { name: 'Home', path: '/' },
+      { name: 'Categories', path: '/category' },
+      { name: category.name, path: `/category/${slug}` },
+    ]),
+  ]
 
   return (
+    <>
     <div className="min-h-screen bg-gray-950">
       <div className="border-b border-white/[0.06]">
         <div className="container mx-auto px-4 max-w-5xl py-3 flex items-center gap-2 text-sm text-gray-500">
@@ -142,25 +161,9 @@ export default async function CategoryPage({ params }: PageProps) {
           </div>
         </div>
       </div>
-
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'ItemList',
-            name: category.seoTitle,
-            description: category.description,
-            numberOfItems: tools.length,
-            itemListElement: tools.slice(0, 20).map((tool, i) => ({
-              '@type': 'ListItem',
-              position: i + 1,
-              name: tool.name,
-              url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://aigcroom.shop'}/tools/${tool.slug}`,
-            })),
-          }),
-        }}
-      />
     </div>
+
+      <JsonLd data={jsonLd} />
+    </>
   )
 }

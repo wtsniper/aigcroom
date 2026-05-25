@@ -7,9 +7,9 @@ import { useRouter, usePathname } from 'next/navigation'
 const NAV_LINKS = [
   { href: '/tools',     label: 'Tools' },
   { href: '/category',  label: 'Categories' },
+  { href: '/compare',   label: 'Compare' },
   { href: '/reviews',   label: 'Reviews' },
   { href: '/solutions', label: 'Solutions' },
-  { href: '/compare',   label: 'Compare' },
 ]
 
 export default function Header() {

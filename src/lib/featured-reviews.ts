@@ -10,6 +10,7 @@ const reviewSelect = {
   excerpt: true,
   status: true,
   createdAt: true,
+  publishedAt: true,
 } as const
 
 export type HomeReview = {
@@ -19,6 +20,7 @@ export type HomeReview = {
   excerpt: string
   status: string
   createdAt: Date
+  publishedAt: Date | null
 }
 
 export async function getHomePinnedReview(): Promise<HomeReview | null> {
@@ -38,7 +40,7 @@ export async function getHomeRecentReviews(
       status: 'PUBLISHED',
       slug: { notIn: excludeSlugs },
     },
-    orderBy: { createdAt: 'desc' },
+    orderBy: [{ publishedAt: 'desc' }, { createdAt: 'desc' }],
     take: limit,
     select: reviewSelect,
   })

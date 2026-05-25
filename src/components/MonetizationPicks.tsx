@@ -1,7 +1,14 @@
 import Link from 'next/link'
 import { MONETIZATION_PICKS } from '@/lib/monetization-picks'
 
-export default function MonetizationPicks({ title = 'Start Earning with AI' }: { title?: string }) {
+export default function MonetizationPicks({
+  title = 'Start Earning with AI',
+  limit,
+}: {
+  title?: string
+  limit?: number
+}) {
+  const picks = limit ? MONETIZATION_PICKS.slice(0, limit) : MONETIZATION_PICKS
   return (
     <section className="mb-10">
       <div className="flex items-end justify-between mb-5">
@@ -10,9 +17,17 @@ export default function MonetizationPicks({ title = 'Start Earning with AI' }: {
           <h2 className="text-xl md:text-2xl font-bold text-white mt-1">{title}</h2>
           <p className="text-gray-500 text-sm mt-1">Hand-picked resources we use to grow AIGC Room</p>
         </div>
+        {!limit && (
+          <Link
+            href="/compare"
+            className="hidden sm:block text-sm text-violet-400 hover:text-violet-300 font-medium transition-colors"
+          >
+            All comparisons →
+          </Link>
+        )}
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        {MONETIZATION_PICKS.map((pick) => {
+        {picks.map((pick) => {
           const className =
             'group glass glass-hover rounded-xl p-4 flex gap-3 hover:scale-[1.01] transition-all duration-200'
           const inner = (

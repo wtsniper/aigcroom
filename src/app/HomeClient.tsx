@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { formatRating } from '@/lib/ratings'
 import ToolLogo from '@/components/ToolLogo'
+import MonetizationPicks from '@/components/MonetizationPicks'
 
 // ─── Particle canvas background ───────────────────────────────────────────────
 function ParticleCanvas() {
@@ -105,6 +106,7 @@ interface Review {
   excerpt: string
   status: string
   createdAt: string
+  publishedAt?: string | null
 }
 
 interface Solution {
@@ -280,10 +282,10 @@ export default function HomeClient({
               </svg>
             </Link>
             <Link
-              href="/reviews"
+              href="/compare"
               className="inline-flex items-center gap-2 glass glass-hover text-white px-8 py-3.5 rounded-xl font-semibold hover:scale-[1.03] active:scale-100 transition-all duration-200"
             >
-              Read Reviews
+              Compare Tools
             </Link>
           </div>
 
@@ -337,6 +339,13 @@ export default function HomeClient({
           </div>
         </section>
       )}
+
+      {/* ─── Monetization Picks ─────────────────────────────────────────── */}
+      <section className="py-8 px-4">
+        <div className="container mx-auto max-w-7xl">
+          <MonetizationPicks title="30-Day Priority Articles" limit={5} />
+        </div>
+      </section>
 
       {/* ─── Stats ──────────────────────────────────────────────────────── */}
       <section className="py-12 border-y border-white/[0.05]">
@@ -505,7 +514,7 @@ export default function HomeClient({
                           <span className="text-violet-400 text-sm">📝</span>
                         </div>
                         <span className="text-xs text-gray-500">
-                          {new Date(review.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                          {new Date(review.publishedAt ?? review.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                         </span>
                       </div>
                       <h3 className="font-semibold text-lg text-white mb-3 line-clamp-2 group-hover:text-violet-300 transition-colors leading-snug">{review.title}</h3>
@@ -597,19 +606,19 @@ export default function HomeClient({
                 </p>
                 <div className="flex flex-wrap gap-4 justify-center">
                   <Link
-                    href="/tools"
+                    href="/compare"
                     className="inline-flex items-center gap-2 bg-gradient-to-r from-violet-600 to-blue-600 text-white px-8 py-3.5 rounded-xl font-semibold shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 hover:scale-[1.03] active:scale-100 transition-all duration-200"
                   >
-                    Browse Tools
+                    Compare AI Tools
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>
                   </Link>
                   <Link
-                    href="/register"
+                    href="/reviews/best-ai-tools-make-money-online-2026"
                     className="inline-flex items-center gap-2 glass glass-hover text-white px-8 py-3.5 rounded-xl font-semibold hover:scale-[1.03] active:scale-100 transition-all duration-200"
                   >
-                    Create free account
+                    Make Money with AI
                   </Link>
                 </div>
               </div>

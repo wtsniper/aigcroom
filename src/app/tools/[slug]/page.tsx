@@ -5,7 +5,9 @@ import CommentSection from '@/components/CommentSection'
 import FavoriteButton from './FavoriteButton'
 import ToolLogo from '@/components/ToolLogo'
 import { RATING_MAX, normalizeRating, ratingBarPercent } from '@/lib/ratings'
+import type { Metadata } from 'next'
 import { categorySlugForDbValue, getCategoryForDbValue } from '@/lib/categories'
+import { pageMetadata, buildSoftwareApplicationJsonLd, buildBreadcrumbJsonLd, JsonLd } from '@/lib/seo'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -29,14 +31,15 @@ function RatingBar({ value }: { value: number }) {
   )
 }
 
-export async function generateMetadata({ params }: PageProps) {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
-  const tool = await prisma.tool.findUnique({ where: { slug }, select: { name: true, description: true } })
+  const tool = await prisma.tool.findUnique({
+    where: { slug },
+    select: { name: true, description: true, category: true },
+  })
   if (!tool) return { title: 'Tool Not Found' }
-  return {
-    title: `${tool.name} | AIGC Room`,
-    description: tool.description,
-  }
+  const desc = tool.description?.slice(0, 160) || `In-depth review of ${tool.name} — features, pricing, and alternatives on AIGC Room.`
+  return pageMetadata(`/tools/${slug}`, `${tool.name} Review & Pricing`, desc)
 }
 
 export default async function ToolDetailPage({ params }: PageProps) {
@@ -76,7 +79,28 @@ export default async function ToolDetailPage({ params }: PageProps) {
   const categorySlug = categorySlugForDbValue(tool.category)
   const canonicalCategory = getCategoryForDbValue(tool.category)
 
+  const breadcrumbItems = [
+    { name: 'Home', path: '/' },
+    { name: 'Tools', path: '/tools' },
+    ...(categorySlug && canonicalCategory
+      ? [{ name: canonicalCategory.name, path: `/category/${categorySlug}` }]
+      : []),
+    { name: tool.name, path: `/tools/${slug}` },
+  ]
+
+  const jsonLd = [
+    buildSoftwareApplicationJsonLd({
+      name: tool.name,
+      description: tool.description || '',
+      url: `/tools/${slug}`,
+      applicationCategory: tool.category || 'BusinessApplication',
+      rating,
+    }),
+    buildBreadcrumbJsonLd(breadcrumbItems),
+  ]
+
   return (
+    <>
     <div className="min-h-screen bg-gray-950">
 
       {/* Breadcrumb */}
@@ -277,5 +301,7 @@ export default async function ToolDetailPage({ params }: PageProps) {
         <CommentSection toolId={tool.id} />
       </div>
     </div>
+    <JsonLd data={jsonLd} />
+    </>
   )
 }

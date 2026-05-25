@@ -1,11 +1,14 @@
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import MonetizationPicks from '@/components/MonetizationPicks'
+import { getFeaturedComparisons } from '@/lib/comparison-reviews'
+import { pageMetadata } from '@/lib/seo'
 
-export const metadata = {
-  title: 'AI Tool Reviews | AIGC Room',
-  description: 'In-depth reviews and analysis of the best AI tools',
-}
+export const metadata = pageMetadata(
+  '/reviews',
+  'AI Tool Reviews | AIGC Room',
+  'In-depth reviews and analysis of the best AI tools for business, creators, and developers.'
+)
 
 export default async function ReviewsPage() {
   let reviews: {
@@ -18,20 +21,25 @@ export default async function ReviewsPage() {
     tool: { name: string } | null
   }[] = []
 
+  let featuredComparisons: Awaited<ReturnType<typeof getFeaturedComparisons>> = []
+
   try {
-    reviews = await prisma.review.findMany({
-      where: { status: 'PUBLISHED' },
-      orderBy: { publishedAt: 'desc' },
-      select: {
-        id: true,
-        title: true,
-        slug: true,
-        excerpt: true,
-        publishedAt: true,
-        createdAt: true,
-        tool: { select: { name: true } },
-      },
-    })
+    ;[reviews, featuredComparisons] = await Promise.all([
+      prisma.review.findMany({
+        where: { status: 'PUBLISHED' },
+        orderBy: { publishedAt: 'desc' },
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          excerpt: true,
+          publishedAt: true,
+          createdAt: true,
+          tool: { select: { name: true } },
+        },
+      }),
+      getFeaturedComparisons(6),
+    ])
   } catch (error) {
     console.error('Error fetching reviews:', error)
   }
@@ -43,6 +51,30 @@ export default async function ReviewsPage() {
 
       <MonetizationPicks />
 
+      {featuredComparisons.length > 0 && (
+        <section className="mb-10">
+          <div className="flex items-end justify-between mb-4">
+            <h2 className="text-xl font-bold text-white">Popular Comparisons</h2>
+            <Link href="/compare" className="text-sm text-violet-400 hover:text-violet-300 font-medium">
+              View all →
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {featuredComparisons.map((review) => (
+              <Link
+                key={review.id}
+                href={`/reviews/${review.slug}`}
+                className="glass glass-hover rounded-xl p-4 hover:scale-[1.01] transition-all"
+              >
+                <h3 className="text-sm font-semibold text-white line-clamp-2 mb-1">{review.title}</h3>
+                <p className="text-xs text-gray-500 line-clamp-2">{review.excerpt}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <h2 className="text-xl font-bold text-white mb-4">All Reviews</h2>
       {reviews.length === 0 ? (
         <div className="text-center py-12 text-gray-500">
           No reviews published yet. Check back soon!

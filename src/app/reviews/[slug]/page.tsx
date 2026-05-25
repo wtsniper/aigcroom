@@ -1,8 +1,18 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import CommentSection from '@/components/CommentSection'
-
+import ReviewSidebar from '@/components/ReviewSidebar'
+import { getRelatedComparisons, getFocusArticles } from '@/lib/comparison-reviews'
+import {
+  pageMetadata,
+  extractFaqsFromMarkdown,
+  buildArticleJsonLd,
+  buildFaqJsonLd,
+  buildBreadcrumbJsonLd,
+  JsonLd,
+} from '@/lib/seo'
 interface Review {
   id: string
   title: string
@@ -27,19 +37,15 @@ async function getReview(slug: string): Promise<Review | null> {
   return review
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
   const review = await prisma.review.findFirst({
     where: { slug, status: 'PUBLISHED' },
     select: { title: true, excerpt: true },
   })
   if (!review) return { title: 'Review Not Found' }
-  return {
-    title: review.title,
-    description: review.excerpt,
-  }
+  return pageMetadata(`/reviews/${slug}`, review.title, review.excerpt)
 }
-
 const renderMarkdown = (content: string) => {
   const lines = content.split('\n')
   const elements: JSX.Element[] = []
@@ -184,7 +190,17 @@ const renderInline = (text: string): JSX.Element | string => {
     } else if (match[3]) {
       parts.push(<code key={key++} className="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-sm font-mono">{match[3]}</code>)
     } else if (match[4] && match[5]) {
-      parts.push(<a key={key++} href={match[5]} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{match[4]}</a>)
+      const href = match[5]
+      const isInternal = href.startsWith('/') || href.startsWith('#')
+      if (isInternal) {
+        parts.push(<Link key={key++} href={href} className="text-blue-600 hover:underline">{match[4]}</Link>)
+      } else {
+        parts.push(
+          <a key={key++} href={href} target="_blank" rel="noopener noreferrer sponsored" className="text-blue-600 hover:underline">
+            {match[4]}
+          </a>
+        )
+      }
     }
     lastIndex = regex.lastIndex
   }
@@ -198,37 +214,69 @@ const renderInline = (text: string): JSX.Element | string => {
 
 export default async function ReviewDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const review = await getReview(slug)
+  const [review, relatedComparisons, focusArticles] = await Promise.all([
+    getReview(slug),
+    getRelatedComparisons(slug, 5),
+    getFocusArticles(slug),
+  ])
 
   if (!review) {
     notFound()
   }
 
+  const published = (review.publishedAt || review.createdAt).toISOString()
+  const faqs = extractFaqsFromMarkdown(review.content)
+  const faqSchema = buildFaqJsonLd(faqs)
+  const jsonLd = [
+    buildArticleJsonLd({
+      title: review.title,
+      description: review.excerpt,
+      url: `/reviews/${slug}`,
+      datePublished: published,
+    }),
+    buildBreadcrumbJsonLd([
+      { name: 'Home', path: '/' },
+      { name: 'Reviews', path: '/reviews' },
+      { name: review.title, path: `/reviews/${slug}` },
+    ]),
+    ...(faqSchema ? [faqSchema] : []),
+  ]
+
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <>
+    <div className="container mx-auto px-4 py-8 max-w-6xl">
       <Link href="/reviews" className="text-blue-600 hover:underline text-sm mb-6 inline-block">← Back to Reviews</Link>
-      
-      <article className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-        <header className="mb-8 pb-6 border-b border-gray-200">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">{review.title}</h1>
-          
-          {review.tool && (
-            <Link href={`/tools/${review.tool.slug}`} className="inline-block bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium hover:bg-blue-200">
-              {review.tool.name}
-            </Link>
-          )}
-          
-          <div className="flex items-center gap-4 mt-4 text-sm text-gray-500">
-            <span>Published: {new Date(review.publishedAt || review.createdAt).toLocaleDateString()}</span>
+
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-8 items-start">
+        <article className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 min-w-0">
+          <header className="mb-8 pb-6 border-b border-gray-200">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">{review.title}</h1>
+
+            {review.tool && (
+              <Link href={`/tools/${review.tool.slug}`} className="inline-block bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium hover:bg-blue-200">
+                {review.tool.name}
+              </Link>
+            )}
+
+            <div className="flex items-center gap-4 mt-4 text-sm text-gray-500">
+              <span>Published: {new Date(review.publishedAt || review.createdAt).toLocaleDateString()}</span>
+              <Link href="/compare" className="text-blue-600 hover:underline">More comparisons</Link>
+            </div>
+          </header>
+
+          <div className="prose prose-lg max-w-none">
+            {renderMarkdown(review.content)}
           </div>
-        </header>
+        </article>
 
-        <div className="prose prose-lg max-w-none">
-          {renderMarkdown(review.content)}
-        </div>
-      </article>
+        <ReviewSidebar related={relatedComparisons} focusArticles={focusArticles} currentSlug={slug} />
+      </div>
 
-      <CommentSection reviewId={review.id} />
+      <div className="mt-8">
+        <CommentSection reviewId={review.id} />
+      </div>
     </div>
+    <JsonLd data={jsonLd} />
+    </>
   )
 }

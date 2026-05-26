@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { formatRating } from '@/lib/ratings'
 import ToolLogo from '@/components/ToolLogo'
 import MonetizationPicks from '@/components/MonetizationPicks'
+import ViralAiShortsSection from '@/components/ViralAiShortsSection'
 
 // ─── Particle canvas background ───────────────────────────────────────────────
 function ParticleCanvas() {
@@ -346,6 +347,9 @@ export default function HomeClient({
           <MonetizationPicks title="30-Day Priority Articles" limit={5} />
         </div>
       </section>
+
+      {/* ─── Viral AI Shorts ────────────────────────────────────────────── */}
+      <ViralAiShortsSection compact />
 
       {/* ─── Stats ──────────────────────────────────────────────────────── */}
       <section className="py-12 border-y border-white/[0.05]">

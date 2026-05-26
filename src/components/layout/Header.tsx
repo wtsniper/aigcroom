@@ -6,6 +6,7 @@ import { useRouter, usePathname } from 'next/navigation'
 
 const NAV_LINKS = [
   { href: '/tools',     label: 'Tools' },
+  { href: '/ai-shorts', label: 'AI Shorts' },
   { href: '/category',  label: 'Categories' },
   { href: '/compare',   label: 'Compare' },
   { href: '/reviews',   label: 'Reviews' },

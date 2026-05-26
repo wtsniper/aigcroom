@@ -26,6 +26,7 @@ export default function Footer() {
               <li><Link href="/tools" className="hover:text-white">AI Tools</Link></li>
               <li><Link href="/category" className="hover:text-white">Categories</Link></li>
               <li><Link href="/reviews" className="hover:text-white">Reviews</Link></li>
+              <li><Link href="/ai-shorts" className="hover:text-white">AI Shorts</Link></li>
               <li><Link href="/compare" className="hover:text-white">Comparisons</Link></li>
               <li><Link href="/solutions" className="hover:text-white">Solutions</Link></li>
             </ul>

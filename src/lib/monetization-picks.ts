@@ -4,6 +4,20 @@
  */
 export const MONETIZATION_PICKS = [
   {
+    title: 'Runway vs Pika vs Kling',
+    description: 'AI video stack comparison — readers coming from viral shorts.',
+    href: '/reviews/runway-vs-pika-vs-kling-2026',
+    badge: 'Video',
+    icon: '🎬',
+  },
+  {
+    title: 'Viral AI Shorts Hub',
+    description: 'Watch 2026 films + see every tool used — funnel to comparisons.',
+    href: '/ai-shorts',
+    badge: 'Hub',
+    icon: '📺',
+  },
+  {
     title: 'Best AI Books 2026',
     description: 'Amazon links — our #1 focus article for early commissions.',
     href: '/reviews/best-ai-books-2026',

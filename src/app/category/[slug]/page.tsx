@@ -108,6 +108,23 @@ export default async function CategoryPage({ params }: PageProps) {
           <p className="text-sm text-gray-500 mt-3">{tools.length} tools in this category</p>
         </div>
 
+        {slug === 'ai-video' && (
+          <Link
+            href="/ai-shorts"
+            className="group block mb-10 rounded-xl border border-pink-500/25 bg-gradient-to-r from-pink-950/30 to-violet-950/30 p-5 hover:border-pink-500/40 transition-colors"
+          >
+            <span className="text-pink-400 text-xs font-semibold uppercase tracking-widest">
+              Inspiration
+            </span>
+            <p className="text-white font-semibold mt-1 group-hover:text-pink-200 transition-colors">
+              Watch viral AI shorts (2026) — then compare Runway, Kling &amp; Seedance stacks →
+            </p>
+            <p className="text-sm text-gray-500 mt-1">
+              Hell Grind, Zephyr, Zombie Scavenger and more with tools listed per film.
+            </p>
+          </Link>
+        )}
+
         {tools.length === 0 ? (
           <p className="text-gray-500">No tools in this category yet.</p>
         ) : (

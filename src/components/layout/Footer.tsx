@@ -2,6 +2,8 @@ import Link from 'next/link'
 
 const GUIDE_LINKS = [
   { href: '/reviews/best-ai-books-2026', label: 'Best AI Books 2026' },
+  { href: '/reviews/runway-vs-pika-vs-kling-2026', label: 'Runway vs Pika vs Kling' },
+  { href: '/ai-shorts', label: 'Viral AI Shorts 2026' },
   { href: '/reviews/best-ai-tools-make-money-online-2026', label: 'Make Money with AI' },
   { href: '/reviews/chatgpt-plus-vs-claude-pro-2026', label: 'ChatGPT Plus vs Claude Pro' },
   { href: '/reviews/best-web-hosting-for-ai-projects-2026', label: 'Web Hosting for AI Sites' },

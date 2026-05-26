@@ -47,6 +47,15 @@ export default async function ComparePage() {
         </p>
       </div>
 
+      <Link
+        href="/ai-shorts"
+        className="mb-8 block rounded-xl border border-pink-500/20 bg-pink-950/20 px-5 py-4 hover:border-pink-500/35 transition-colors"
+      >
+        <p className="text-sm text-pink-300 font-medium">
+          🎬 Watching viral AI films? See the tools behind each short →
+        </p>
+      </Link>
+
       <MonetizationPicks title="30-Day Priority Articles" limit={5} />
 
       {featuredGuides.length > 0 && (

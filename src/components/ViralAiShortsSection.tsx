@@ -8,6 +8,8 @@ import {
   displayTitle,
   getFeaturedViralShort,
 } from '@/lib/viral-ai-shorts'
+import { resolveShortToolHref } from '@/lib/ai-shorts-monetization'
+import AiShortsMonetizationCta from '@/components/AiShortsMonetizationCta'
 import ViralShortPlayer from '@/components/ViralShortPlayer'
 
 export default function ViralAiShortsSection({ compact = false }: { compact?: boolean }) {
@@ -16,6 +18,14 @@ export default function ViralAiShortsSection({ compact = false }: { compact?: bo
   const active = VIRAL_AI_SHORTS.find((s) => s.id === activeId) ?? featured
   const list = compact ? VIRAL_AI_SHORTS.slice(0, 6) : VIRAL_AI_SHORTS
   const activeSubtitle = displaySubtitle(active)
+
+  const activeToolLinks = active.tools
+    .map((tool) => {
+      const resolved = resolveShortToolHref(tool)
+      if (!resolved) return null
+      return { name: resolved.label, href: resolved.href, external: resolved.external }
+    })
+    .filter(Boolean) as { name: string; href: string; external: boolean }[]
 
   return (
     <section className="py-10 md:py-14 px-4 border-b border-white/[0.05]">
@@ -29,8 +39,8 @@ export default function ViralAiShortsSection({ compact = false }: { compact?: bo
               Viral AI Short Films
             </h2>
             <p className="text-gray-400 text-sm mt-2 max-w-xl">
-              Watch on YouTube or Bilibili — plus the AI tools behind each film. View counts are
-              cited from public reports, not measured by us.
+              Watch on YouTube or Bilibili — then jump to the tools and comparisons behind each
+              film.
             </p>
           </div>
           <Link
@@ -61,6 +71,47 @@ export default function ViralAiShortsSection({ compact = false }: { compact?: bo
                   {active.viralNote}
                 </p>
               )}
+
+              {activeToolLinks.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {activeToolLinks.map((tool) =>
+                    tool.external ? (
+                      <a
+                        key={tool.href}
+                        href={tool.href}
+                        target="_blank"
+                        rel="noopener noreferrer sponsored"
+                        className="text-xs px-2.5 py-1 rounded-lg bg-violet-500/10 text-violet-300 border border-violet-500/25 hover:bg-violet-500/20 transition-colors"
+                      >
+                        {tool.name} ↗
+                      </a>
+                    ) : (
+                      <Link
+                        key={tool.href}
+                        href={tool.href}
+                        className="text-xs px-2.5 py-1 rounded-lg bg-violet-500/10 text-violet-300 border border-violet-500/25 hover:bg-violet-500/20 transition-colors"
+                      >
+                        {tool.name}
+                      </Link>
+                    )
+                  )}
+                </div>
+              )}
+
+              <div className="mt-3 flex flex-wrap gap-3">
+                <Link
+                  href="/reviews/runway-vs-pika-vs-kling-2026"
+                  className="text-xs font-medium text-amber-400 hover:text-amber-300 transition-colors"
+                >
+                  Compare AI video tools →
+                </Link>
+                <Link
+                  href="/reviews/best-ai-tools-make-money-online-2026"
+                  className="text-xs text-gray-500 hover:text-violet-400 transition-colors"
+                >
+                  Make money with AI →
+                </Link>
+              </div>
             </div>
           </div>
 
@@ -108,6 +159,10 @@ export default function ViralAiShortsSection({ compact = false }: { compact?: bo
               )
             })}
           </div>
+        </div>
+
+        <div className="mt-8">
+          <AiShortsMonetizationCta variant="compact" toolLinks={activeToolLinks} />
         </div>
       </div>
     </section>

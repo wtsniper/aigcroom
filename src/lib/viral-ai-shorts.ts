@@ -47,8 +47,8 @@ export const VIRAL_AI_SHORTS: ViralAiShort[] = [
     tools: [
       { name: 'Seedance 2.0', role: 'Primary video (Xiao Yunque app)' },
       { name: 'Midjourney', slug: 'midjourney', role: 'Concept stills' },
-      { name: 'Flux', role: 'Select frames' },
-      { name: 'CapCut Pro', role: 'Edit, grade, subtitles' },
+      { name: 'Flux', slug: 'flux-ai', role: 'Select frames' },
+      { name: 'CapCut Pro', slug: 'capcut-ai', role: 'Edit, grade, subtitles' },
     ],
     bilibiliBvid: 'BV1FFRQB2Eqw',
     galleryUrl: 'https://curiousrefuge.com/ai-film-gallery',

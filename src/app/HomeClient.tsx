@@ -145,14 +145,6 @@ function useReveal() {
   }, [])
 }
 
-// ─── Stats ────────────────────────────────────────────────────────────────────
-const STATS = [
-  { value: '50K+',   label: 'Professionals' },
-  { value: '500+',   label: 'AI Tools' },
-  { value: '1,200+', label: 'Expert Reviews' },
-  { value: '98%',    label: 'Satisfaction' },
-]
-
 // ─── Skeleton card ────────────────────────────────────────────────────────────
 function SkeletonCard() {
   return (
@@ -193,7 +185,6 @@ export default function HomeClient({
 
   const heroRef      = useRef<HTMLElement>(null)
   const pinnedReveal    = useReveal()
-  const statsReveal       = useReveal()
   const categoriesReveal  = useReveal()
   const toolsReveal       = useReveal()
   const reviewsReveal   = useReveal()
@@ -250,7 +241,7 @@ export default function HomeClient({
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-400 text-sm font-medium mb-8 animate-fade-up">
             <span className="w-2 h-2 rounded-full bg-violet-400 animate-pulse" />
-            Trusted by 50,000+ professionals worldwide
+            Honest AI tool reviews & comparisons
           </div>
 
           {/* Headline */}
@@ -341,27 +332,13 @@ export default function HomeClient({
         </section>
       )}
 
+      {/* ─── Viral AI Shorts ────────────────────────────────────────────── */}
+      <ViralAiShortsSection compact />
+
       {/* ─── Monetization Picks ─────────────────────────────────────────── */}
       <section className="py-8 px-4">
         <div className="container mx-auto max-w-7xl">
           <MonetizationPicks title="30-Day Priority Articles" limit={5} />
-        </div>
-      </section>
-
-      {/* ─── Viral AI Shorts ────────────────────────────────────────────── */}
-      <ViralAiShortsSection compact />
-
-      {/* ─── Stats ──────────────────────────────────────────────────────── */}
-      <section className="py-12 border-y border-white/[0.05]">
-        <div ref={statsReveal} className="reveal container mx-auto px-4 max-w-7xl">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {STATS.map(({ value, label }, i) => (
-              <div key={label} className={`text-center delay-${(i + 1) * 100}`}>
-                <div className="text-3xl md:text-4xl font-extrabold gradient-text-vb mb-1">{value}</div>
-                <div className="text-sm text-gray-500">{label}</div>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 

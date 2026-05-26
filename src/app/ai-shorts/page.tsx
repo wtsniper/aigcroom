@@ -5,7 +5,10 @@ import {
   displaySubtitle,
   displayTitle,
 } from '@/lib/viral-ai-shorts'
+import { getLinkedToolsFromShorts } from '@/lib/ai-shorts-monetization'
+import AiShortsMonetizationCta from '@/components/AiShortsMonetizationCta'
 import ViralShortPlayer from '@/components/ViralShortPlayer'
+import ViralShortToolsList from '@/components/ViralShortToolsList'
 
 export const metadata = pageMetadata(
   '/ai-shorts',
@@ -15,6 +18,7 @@ export const metadata = pageMetadata(
 
 export default function AiShortsPage() {
   const sorted = [...VIRAL_AI_SHORTS].sort((a, b) => a.sortOrder - b.sortOrder)
+  const toolLinks = getLinkedToolsFromShorts(sorted.map((s) => s.tools))
 
   return (
     <div className="container mx-auto px-4 py-10 max-w-7xl">
@@ -30,6 +34,10 @@ export default function AiShortsPage() {
           used, and cites public sources. We embed official players only — no self-hosted video.
           View counts come from press reports, not our analytics.
         </p>
+      </div>
+
+      <div className="mb-12">
+        <AiShortsMonetizationCta toolLinks={toolLinks} />
       </div>
 
       <div className="space-y-16">
@@ -88,40 +96,46 @@ export default function AiShortsPage() {
 
                   <div className="mt-6">
                     <h3 className="text-sm font-semibold text-white mb-3">Tools used</h3>
-                    <ul className="space-y-2">
-                      {short.tools.map((tool) => (
-                        <li key={tool.name} className="flex items-start gap-2 text-sm">
-                          {tool.slug ? (
-                            <Link
-                              href={`/tools/${tool.slug}`}
-                              className="text-violet-400 hover:text-violet-300 font-medium shrink-0"
-                            >
-                              {tool.name}
-                            </Link>
-                          ) : (
-                            <span className="text-white font-medium shrink-0">{tool.name}</span>
-                          )}
-                          {tool.role && (
-                            <span className="text-gray-500">— {tool.role}</span>
-                          )}
-                        </li>
-                      ))}
-                    </ul>
+                    <ViralShortToolsList tools={short.tools} />
                   </div>
 
-                  <div className="mt-6 flex flex-wrap gap-3">
-                    <Link
-                      href="/reviews/runway-vs-pika-vs-kling-2026"
-                      className="text-xs text-gray-500 hover:text-violet-400 transition-colors"
-                    >
-                      Runway vs Kling comparison →
-                    </Link>
-                    <Link
-                      href="/category/ai-video"
-                      className="text-xs text-gray-500 hover:text-violet-400 transition-colors"
-                    >
-                      More AI video tools →
-                    </Link>
+                  {short.galleryUrl && (
+                    <div className="mt-4">
+                      <a
+                        href={short.galleryUrl}
+                        target="_blank"
+                        rel="noopener noreferrer sponsored"
+                        className="inline-flex items-center gap-1 text-sm text-amber-400 hover:text-amber-300 font-medium transition-colors"
+                      >
+                        Creator / studio page ↗
+                      </a>
+                    </div>
+                  )}
+
+                  <div className="mt-5 p-4 rounded-xl bg-violet-950/20 border border-violet-500/15">
+                    <p className="text-xs font-semibold text-violet-300 uppercase tracking-wider mb-2">
+                      Want to make something similar?
+                    </p>
+                    <div className="flex flex-wrap gap-x-4 gap-y-2">
+                      <Link
+                        href="/reviews/runway-vs-pika-vs-kling-2026"
+                        className="text-sm text-violet-400 hover:text-violet-300 transition-colors"
+                      >
+                        Compare video tools →
+                      </Link>
+                      <Link
+                        href="/reviews/best-ai-tools-make-money-online-2026"
+                        className="text-sm text-violet-400 hover:text-violet-300 transition-colors"
+                      >
+                        Monetize with AI →
+                      </Link>
+                      <Link
+                        href="/category/ai-video"
+                        className="text-sm text-gray-500 hover:text-violet-400 transition-colors"
+                      >
+                        Browse AI video →
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -130,10 +144,18 @@ export default function AiShortsPage() {
         })}
       </div>
 
-      <p className="text-xs text-gray-600 mt-12 leading-relaxed max-w-3xl">
+      <div className="mt-12">
+        <AiShortsMonetizationCta toolLinks={toolLinks} />
+      </div>
+
+      <p className="text-xs text-gray-600 mt-8 leading-relaxed max-w-3xl">
         Videos belong to their creators and hosting platforms. Embeds are for convenience; contact
         us for takedown requests. Tool and viewership details cite public sources and may change —
-        verify on the creator or platform page.
+        verify on the creator or platform page. Some tool links are affiliate links — see our{' '}
+        <Link href="/about" className="text-gray-500 hover:text-violet-400 underline">
+          disclosure
+        </Link>
+        .
       </p>
     </div>
   )

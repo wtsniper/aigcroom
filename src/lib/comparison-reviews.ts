@@ -15,6 +15,7 @@ export const FEATURED_COMPARISON_SLUGS = [
   'speak-ai-vs-otter-ai-vs-fireflies-2026',
   'jasper-vs-copyai-vs-writesonic-2026',
   'runway-vs-pika-vs-kling-2026',
+  'seedance-vs-runway-vs-kling-2026',
   'notion-ai-vs-obsidian-vs-roam-2026',
   'semrush-vs-ahrefs-seo-tools-2026',
 ] as const
@@ -24,6 +25,8 @@ export const FEATURED_GUIDE_SLUGS = [
   ...FOCUS_ARTICLE_SLUGS,
   'best-vpn-for-ai-developers-2026',
   'best-ai-tools-for-students-2026',
+  'best-ai-video-tools-for-shorts-2026',
+  'best-ai-tools-for-youtube-creators-2026',
 ] as const
 
 const reviewCardSelect = {

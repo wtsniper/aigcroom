@@ -14,6 +14,20 @@ export type AiShortsGuide = {
 /** Primary CTAs shown on /ai-shorts and below the homepage player */
 export const AI_SHORTS_GUIDES: AiShortsGuide[] = [
   {
+    title: 'Best AI Video Tools for Shorts',
+    description: 'Seedance, Runway, Kling, CapCut — stack guide tied to our viral films hub.',
+    href: '/reviews/best-ai-video-tools-for-shorts-2026',
+    badge: 'Guide',
+    icon: '🎬',
+  },
+  {
+    title: 'Seedance vs Runway vs Kling',
+    description: 'Which video model fits cinematic AI shorts in 2026?',
+    href: '/reviews/seedance-vs-runway-vs-kling-2026',
+    badge: 'Compare',
+    icon: '⚡',
+  },
+  {
     title: 'Runway vs Pika vs Kling',
     description: 'Side-by-side pricing, quality, and workflow — pick one video stack.',
     href: '/reviews/runway-vs-pika-vs-kling-2026',
@@ -52,7 +66,7 @@ export const AI_SHORTS_TOOL_LINKS: Record<
   Runway: { href: '/tools/runway-ml' },
   'Kling AI': { href: '/tools/kling-ai' },
   'CapCut Pro': { href: '/tools/capcut-ai', label: 'CapCut AI' },
-  'Seedance 2.0': { href: '/reviews/runway-vs-pika-vs-kling-2026', label: 'AI video tools →' },
+  'Seedance 2.0': { href: '/reviews/seedance-vs-runway-vs-kling-2026', label: 'Seedance vs Runway vs Kling' },
   'TopView AI': { href: '/category/ai-video', label: 'AI video category' },
   'Soul Cinema': { href: 'https://higgsfield.ai/soul-cinema', external: true },
   'Soul Cast': { href: 'https://higgsfield.ai', external: true },

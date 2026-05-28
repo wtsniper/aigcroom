@@ -10,6 +10,7 @@ import { getPillarFaqs } from '@/lib/pillar-faqs'
 import AiShortsMonetizationCta from '@/components/AiShortsMonetizationCta'
 import PillarFaqSection from '@/components/PillarFaqSection'
 import ToolStackCta from '@/components/ToolStackCta'
+import { SHOW_TOOL_STACK_CTA } from '@/lib/site-features'
 import ViralShortPlayer from '@/components/ViralShortPlayer'
 import ViralShortToolsList from '@/components/ViralShortToolsList'
 
@@ -55,9 +56,11 @@ export default function AiShortsPage() {
         </Link>
       </div>
 
-      <div className="mb-8">
-        <ToolStackCta source="ai-shorts" />
-      </div>
+      {SHOW_TOOL_STACK_CTA && (
+        <div className="mb-8">
+          <ToolStackCta source="ai-shorts" />
+        </div>
+      )}
 
       <div className="mb-12">
         <AiShortsMonetizationCta toolLinks={toolLinks} />

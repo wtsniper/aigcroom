@@ -291,3 +291,15 @@ model Comment {
   @@index([reviewId])
   @@map("comments")
 }
+
+// ==========================================
+// Newsletter (tool stack / weekly digest opt-in)
+// ==========================================
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  source    String?  // homepage, ai-shorts, etc.
+  createdAt DateTime @default(now())
+
+  @@map("newsletter_subscribers")
+}

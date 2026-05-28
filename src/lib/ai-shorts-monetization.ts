@@ -14,6 +14,13 @@ export type AiShortsGuide = {
 /** Primary CTAs shown on /ai-shorts and below the homepage player */
 export const AI_SHORTS_GUIDES: AiShortsGuide[] = [
   {
+    title: 'Zombie Scavenger & Hell Grind Workflow',
+    description: 'How two viral 2026 AI shorts were made — Seedance, CapCut, Higgsfield.',
+    href: '/reviews/zombie-scavenger-hell-grind-ai-workflow-2026',
+    badge: 'Guide',
+    icon: '🎞️',
+  },
+  {
     title: 'Best AI Video Tools for Shorts',
     description: 'Seedance, Runway, Kling, CapCut — stack guide tied to our viral films hub.',
     href: '/reviews/best-ai-video-tools-for-shorts-2026',

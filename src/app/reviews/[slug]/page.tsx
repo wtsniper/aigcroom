@@ -5,6 +5,8 @@ import { prisma } from '@/lib/prisma'
 import CommentSection from '@/components/CommentSection'
 import ReviewSidebar from '@/components/ReviewSidebar'
 import { getRelatedComparisons, getFocusArticles } from '@/lib/comparison-reviews'
+import { mergeFaqs, isPillarPage, getPillarFaqs } from '@/lib/pillar-faqs'
+import PillarFaqSection from '@/components/PillarFaqSection'
 import {
   pageMetadata,
   extractFaqsFromMarkdown,
@@ -225,7 +227,15 @@ export default async function ReviewDetailPage({ params }: { params: Promise<{ s
   }
 
   const published = (review.publishedAt || review.createdAt).toISOString()
-  const faqs = extractFaqsFromMarkdown(review.content)
+  const markdownFaqs = extractFaqsFromMarkdown(review.content)
+  const faqs = isPillarPage(slug) ? mergeFaqs(markdownFaqs, slug) : markdownFaqs
+  const visibleExtraFaqs = isPillarPage(slug)
+    ? markdownFaqs.length === 0
+      ? getPillarFaqs(slug)
+      : faqs.filter(
+          (f) => !markdownFaqs.some((m) => m.question.toLowerCase() === f.question.toLowerCase())
+        )
+    : []
   const faqSchema = buildFaqJsonLd(faqs)
   const jsonLd = [
     buildArticleJsonLd({
@@ -267,6 +277,10 @@ export default async function ReviewDetailPage({ params }: { params: Promise<{ s
           <div className="prose prose-lg max-w-none">
             {renderMarkdown(review.content)}
           </div>
+
+          {visibleExtraFaqs.length > 0 && (
+            <PillarFaqSection faqs={visibleExtraFaqs} title="More FAQ" />
+          )}
         </article>
 
         <ReviewSidebar related={relatedComparisons} focusArticles={focusArticles} currentSlug={slug} />

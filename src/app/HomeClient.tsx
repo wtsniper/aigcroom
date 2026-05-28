@@ -6,6 +6,7 @@ import { formatRating } from '@/lib/ratings'
 import ToolLogo from '@/components/ToolLogo'
 import MonetizationPicks from '@/components/MonetizationPicks'
 import ViralAiShortsSection from '@/components/ViralAiShortsSection'
+import ToolStackCta from '@/components/ToolStackCta'
 
 // ─── Particle canvas background ───────────────────────────────────────────────
 function ParticleCanvas() {
@@ -334,6 +335,12 @@ export default function HomeClient({
 
       {/* ─── Viral AI Shorts ────────────────────────────────────────────── */}
       <ViralAiShortsSection compact />
+
+      <section className="py-8 px-4 border-b border-white/[0.05]">
+        <div className="container mx-auto max-w-7xl">
+          <ToolStackCta source="homepage" />
+        </div>
+      </section>
 
       {/* ─── Monetization Picks ─────────────────────────────────────────── */}
       <section className="py-8 px-4">

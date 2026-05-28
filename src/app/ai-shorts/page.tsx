@@ -1,12 +1,15 @@
 import Link from 'next/link'
-import { pageMetadata } from '@/lib/seo'
+import { pageMetadata, buildFaqJsonLd, buildBreadcrumbJsonLd, JsonLd } from '@/lib/seo'
 import {
   VIRAL_AI_SHORTS,
   displaySubtitle,
   displayTitle,
 } from '@/lib/viral-ai-shorts'
 import { getLinkedToolsFromShorts } from '@/lib/ai-shorts-monetization'
+import { getPillarFaqs } from '@/lib/pillar-faqs'
 import AiShortsMonetizationCta from '@/components/AiShortsMonetizationCta'
+import PillarFaqSection from '@/components/PillarFaqSection'
+import ToolStackCta from '@/components/ToolStackCta'
 import ViralShortPlayer from '@/components/ViralShortPlayer'
 import ViralShortToolsList from '@/components/ViralShortToolsList'
 
@@ -19,8 +22,18 @@ export const metadata = pageMetadata(
 export default function AiShortsPage() {
   const sorted = [...VIRAL_AI_SHORTS].sort((a, b) => a.sortOrder - b.sortOrder)
   const toolLinks = getLinkedToolsFromShorts(sorted.map((s) => s.tools))
+  const faqs = getPillarFaqs('ai-shorts')
+
+  const jsonLd = [
+    buildBreadcrumbJsonLd([
+      { name: 'Home', path: '/' },
+      { name: 'AI Shorts', path: '/ai-shorts' },
+    ]),
+    ...(buildFaqJsonLd(faqs) ? [buildFaqJsonLd(faqs)!] : []),
+  ]
 
   return (
+    <>
     <div className="container mx-auto px-4 py-10 max-w-7xl">
       <div className="mb-10">
         <span className="text-pink-400 text-xs font-semibold uppercase tracking-widest">
@@ -34,6 +47,16 @@ export default function AiShortsPage() {
           used, and cites public sources. We embed official players only — no self-hosted video.
           View counts come from press reports, not our analytics.
         </p>
+        <Link
+          href="/reviews/zombie-scavenger-hell-grind-ai-workflow-2026"
+          className="inline-flex items-center gap-1 mt-4 text-sm font-medium text-pink-400 hover:text-pink-300 transition-colors"
+        >
+          How Zombie Scavenger &amp; Hell Grind were made (workflow guide) →
+        </Link>
+      </div>
+
+      <div className="mb-8">
+        <ToolStackCta source="ai-shorts" />
       </div>
 
       <div className="mb-12">
@@ -43,6 +66,8 @@ export default function AiShortsPage() {
       <div className="space-y-16">
         {sorted.map((short, index) => {
           const subtitle = displaySubtitle(short)
+          const showWorkflow =
+            short.id === 'zombie-scavenger' || short.id === 'hell-grind' || short.id === 'zephyr'
           return (
             <article
               key={short.id}
@@ -117,23 +142,31 @@ export default function AiShortsPage() {
                       Want to make something similar?
                     </p>
                     <div className="flex flex-wrap gap-x-4 gap-y-2">
+                      {showWorkflow && (
+                        <Link
+                          href="/reviews/zombie-scavenger-hell-grind-ai-workflow-2026"
+                          className="text-sm text-pink-400 hover:text-pink-300 transition-colors"
+                        >
+                          Workflow guide →
+                        </Link>
+                      )}
                       <Link
-                        href="/reviews/runway-vs-pika-vs-kling-2026"
+                        href="/reviews/seedance-vs-runway-vs-kling-2026"
                         className="text-sm text-violet-400 hover:text-violet-300 transition-colors"
                       >
-                        Compare video tools →
+                        Seedance vs Runway →
+                      </Link>
+                      <Link
+                        href="/reviews/best-ai-video-tools-for-shorts-2026"
+                        className="text-sm text-violet-400 hover:text-violet-300 transition-colors"
+                      >
+                        Video tool stack →
                       </Link>
                       <Link
                         href="/reviews/best-ai-tools-make-money-online-2026"
-                        className="text-sm text-violet-400 hover:text-violet-300 transition-colors"
-                      >
-                        Monetize with AI →
-                      </Link>
-                      <Link
-                        href="/category/ai-video"
                         className="text-sm text-gray-500 hover:text-violet-400 transition-colors"
                       >
-                        Browse AI video →
+                        Monetize with AI →
                       </Link>
                     </div>
                   </div>
@@ -148,6 +181,8 @@ export default function AiShortsPage() {
         <AiShortsMonetizationCta toolLinks={toolLinks} />
       </div>
 
+      <PillarFaqSection faqs={faqs} dark />
+
       <p className="text-xs text-gray-600 mt-8 leading-relaxed max-w-3xl">
         Videos belong to their creators and hosting platforms. Embeds are for convenience; contact
         us for takedown requests. Tool and viewership details cite public sources and may change —
@@ -158,5 +193,7 @@ export default function AiShortsPage() {
         .
       </p>
     </div>
+    <JsonLd data={jsonLd} />
+    </>
   )
 }

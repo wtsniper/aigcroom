@@ -27,6 +27,7 @@ export const FEATURED_GUIDE_SLUGS = [
   'best-ai-tools-for-students-2026',
   'best-ai-video-tools-for-shorts-2026',
   'best-ai-tools-for-youtube-creators-2026',
+  'zombie-scavenger-hell-grind-ai-workflow-2026',
 ] as const
 
 const reviewCardSelect = {

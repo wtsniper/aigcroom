@@ -16,6 +16,8 @@ export const FEATURED_COMPARISON_SLUGS = [
   'jasper-vs-copyai-vs-writesonic-2026',
   'runway-vs-pika-vs-kling-2026',
   'seedance-vs-runway-vs-kling-2026',
+  'higgsfield-vs-runway-ai-video-2026',
+  'pika-labs-vs-kling-ai-2026',
   'notion-ai-vs-obsidian-vs-roam-2026',
   'semrush-vs-ahrefs-seo-tools-2026',
 ] as const
@@ -28,6 +30,7 @@ export const FEATURED_GUIDE_SLUGS = [
   'best-ai-video-tools-for-shorts-2026',
   'best-ai-tools-for-youtube-creators-2026',
   'zombie-scavenger-hell-grind-ai-workflow-2026',
+  'capcut-seedance-ai-shorts-workflow-2026',
 ] as const
 
 const reviewCardSelect = {

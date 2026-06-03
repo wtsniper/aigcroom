@@ -3,6 +3,8 @@ import Link from 'next/link'
 const GUIDE_LINKS = [
   { href: '/reviews/best-ai-books-2026', label: 'Best AI Books 2026' },
   { href: '/reviews/runway-vs-pika-vs-kling-2026', label: 'Runway vs Pika vs Kling' },
+  { href: '/reviews/luma-vs-runway-vs-kling-2024', label: 'Luma vs Runway vs Kling' },
+  { href: '/reviews/ai-video-generators-compared-2026-complete-guide', label: 'AI Video Generators Guide' },
   { href: '/ai-shorts', label: 'Viral AI Shorts 2026' },
   { href: '/reviews/best-ai-tools-make-money-online-2026', label: 'Make Money with AI' },
   { href: '/reviews/chatgpt-plus-vs-claude-pro-2026', label: 'ChatGPT Plus vs Claude Pro' },

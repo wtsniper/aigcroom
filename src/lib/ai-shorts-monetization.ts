@@ -28,11 +28,25 @@ export const AI_SHORTS_GUIDES: AiShortsGuide[] = [
     icon: '🎬',
   },
   {
+    title: 'Luma vs Runway vs Kling',
+    description: 'Dream Machine vs Gen-4 vs Kling 3.0 — pick a motion stack.',
+    href: '/reviews/luma-vs-runway-vs-kling-2024',
+    badge: 'Compare',
+    icon: '🎥',
+  },
+  {
     title: 'Seedance vs Runway vs Kling',
     description: 'Which video model fits cinematic AI shorts in 2026?',
     href: '/reviews/seedance-vs-runway-vs-kling-2026',
     badge: 'Compare',
     icon: '⚡',
+  },
+  {
+    title: 'AI Video Generators (Full Guide)',
+    description: '5,000+ word comparison — Runway, Kling, Seedance, Pika, credits & workflow.',
+    href: '/reviews/ai-video-generators-compared-2026-complete-guide',
+    badge: 'Guide',
+    icon: '📖',
   },
   {
     title: 'Runway vs Pika vs Kling',

@@ -1,0 +1,28 @@
+# Review & Comparison Article Accuracy
+
+When writing or publishing reviews/comparisons for AIGC Room:
+
+## Must NOT fabricate
+
+- Fake hands-on tests ("We ran 40 benchmarks", "We audited 200 listings") unless actually done and documented
+- Precise scores (9.2/10), win rates (32/40), or timing (38 min) without real measured data
+- Specific pricing as fact without linking to official pricing pages — use "approx." + "verify on site"
+- Feature claims — confirm against official docs/product pages
+
+## Allowed
+
+- **Editor's pick** recommendations with clear reasoning (no fake numeric scores)
+- Qualitative comparisons ("generally better for X") based on public feature lists
+- Affiliate disclosure on every monetized article
+- "Last checked: Month Year" for pricing/features with link to official source
+
+## Required in every comparison article
+
+1. Affiliate disclosure block
+2. Line: verify pricing/features on official sites before buying
+3. Methodology note: editorial comparison based on public docs + hands-on where stated — not lab benchmarks unless we ran them
+4. FAQ answers must not invent policy (Amazon rules → link Seller Central; tool limits → link vendor)
+
+## Tone
+
+Honest > hype. Readers trust us more than fake precision. Wrong Amazon compliance advice can harm sellers — cite official policy, avoid made-up percentages.

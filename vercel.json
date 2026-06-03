@@ -17,6 +17,11 @@
       "has": [{ "type": "host", "value": "www.aigcroom.com" }],
       "destination": "https://www.aigcroom.shop/:path*",
       "permanent": true
+    },
+    {
+      "source": "/reviews/luma-vs-runway-vs-kling-2026",
+      "destination": "https://www.aigcroom.shop/reviews/luma-vs-runway-vs-kling-2024",
+      "permanent": true
     }
   ]
 }

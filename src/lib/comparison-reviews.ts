@@ -3,6 +3,8 @@ import { FOCUS_ARTICLE_SLUGS } from '@/lib/focus-articles'
 
 /** Curated comparison articles — order matters for /compare hub. */
 export const FEATURED_COMPARISON_SLUGS = [
+  'ai-video-generators-compared-2026-complete-guide',
+  'luma-vs-runway-vs-kling-2024',
   'chatgpt-plus-vs-claude-pro-2026',
   'perplexity-vs-chatgpt-research-2026',
   'gamma-vs-beautiful-ai-vs-tome-2026',
@@ -31,6 +33,14 @@ export const FEATURED_GUIDE_SLUGS = [
   'best-ai-tools-for-youtube-creators-2026',
   'zombie-scavenger-hell-grind-ai-workflow-2026',
   'capcut-seedance-ai-shorts-workflow-2026',
+  'openai-sora-shutdown-ai-video-alternatives-2026',
+  'youtube-ai-video-labels-2026-creator-guide',
+  'google-gemini-managed-agents-2026-developer-guide',
+  'ai-video-generators-compared-2026-complete-guide',
+  'luma-vs-runway-vs-kling-2024',
+  'best-ai-coding-tools-for-beginners-2026',
+  'cursor-ide-beginners-guide-2026',
+  'github-copilot-beginners-guide-2026',
 ] as const
 
 const reviewCardSelect = {

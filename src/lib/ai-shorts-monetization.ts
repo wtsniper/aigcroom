@@ -14,6 +14,20 @@ export type AiShortsGuide = {
 /** Primary CTAs shown on /ai-shorts and below the homepage player */
 export const AI_SHORTS_GUIDES: AiShortsGuide[] = [
   {
+    title: 'Higgsfield Beginner Guide',
+    description: 'Soul Cinema, Seedance, and a realistic first short on Higgsfield.',
+    href: '/reviews/higgsfield-ai-shorts-beginners-guide-2026',
+    badge: 'Guide',
+    icon: '🎬',
+  },
+  {
+    title: 'Seedance 2.0 Access Guide',
+    description: 'Dreamina, CapCut, Higgsfield — how creators actually reach Seedance.',
+    href: '/reviews/seedance-2-access-guide-2026',
+    badge: 'Guide',
+    icon: '🌱',
+  },
+  {
     title: 'Zombie Scavenger & Hell Grind Workflow',
     description: 'How two viral 2026 AI shorts were made — Seedance, CapCut, Higgsfield.',
     href: '/reviews/zombie-scavenger-hell-grind-ai-workflow-2026',

@@ -16,7 +16,7 @@ export default function ViralAiShortsSection({ compact = false }: { compact?: bo
   const featured = getFeaturedViralShort()
   const [activeId, setActiveId] = useState(featured.id)
   const active = VIRAL_AI_SHORTS.find((s) => s.id === activeId) ?? featured
-  const list = compact ? VIRAL_AI_SHORTS.slice(0, 6) : VIRAL_AI_SHORTS
+  const list = compact ? VIRAL_AI_SHORTS.slice(0, 10) : VIRAL_AI_SHORTS
   const activeSubtitle = displaySubtitle(active)
 
   const activeToolLinks = active.tools

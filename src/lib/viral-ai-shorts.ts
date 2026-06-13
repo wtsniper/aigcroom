@@ -61,8 +61,27 @@ export const VIRAL_AI_SHORTS: ViralAiShort[] = [
     sortOrder: 1,
   },
   {
+    id: 'veo-sailor-sea',
+    title: 'Veo 3 Demo — Sailor and the Sea',
+    creator: 'Google DeepMind',
+    description:
+      'Official Google DeepMind Veo 3 clip: a sailor on deck delivers dialogue with native audio, churning sea, and lip-sync — one of the most-watched official AI video demos on YouTube.',
+    tools: [
+      { name: 'Google Veo 3', role: 'Text-to-video + native audio/dialogue' },
+      { name: 'Google Gemini', slug: 'google-gemini', role: 'Consumer access via Gemini app' },
+    ],
+    youtubeVideoId: 'mCFMn0UkRt0',
+    youtubeNote: 'Official Google DeepMind channel. More demos: Feather’s Journey (vcHxAwDwPOg).',
+    galleryUrl: 'https://deepmind.google/models/veo/',
+    duration: '0:08',
+    tags: ['Veo 3', 'Google', 'Native Audio', 'Official'],
+    viralNote:
+      'Google DeepMind upload (May 2025). Public view count on YouTube exceeded 500K — among the most-watched official generative-video demos on the platform.',
+    sortOrder: 2,
+  },
+  {
     id: 'hell-grind',
-    title: 'Hell Grind',
+    title: 'Hell Grind — Episode 1',
     creator: 'Higgsfield AI / Aitore Zholdaskali',
     description:
       'Sci-fi heist AI series expanded into a 95-minute feature — four street kids touch a museum artifact and gain powers. Built on Higgsfield with Dreamina Seedance 2.0; screened at a Cannes side event in May 2026 (not an official festival selection).',
@@ -73,13 +92,74 @@ export const VIRAL_AI_SHORTS: ViralAiShort[] = [
     ],
     youtubeVideoId: 'digHr6k38x0',
     youtubeNote:
-      'Official Episode 1 (22 min) on Higgsfield AI YouTube. Cannes trailer: youtube.com/watch?v=CVzfQuC0aMU. Full series on higgsfield.ai/original-series/hell-grind.',
+      'Official Episode 1 (22 min) on Higgsfield AI YouTube. Trailer listed separately. Full series on higgsfield.ai/original-series/hell-grind.',
     galleryUrl: 'https://higgsfield.ai/original-series/hell-grind/episode-1',
     duration: '22:32 (Ep. 1)',
     tags: ['Seedance', 'Cannes 2026', 'AI Feature', 'Higgsfield'],
     viralNote:
       'Higgsfield reports ~$500K total budget (~$400K compute), 15-person team, 14-day generation window. SCMP and TechNode covered the Cannes city screening (May 2026).',
-    sortOrder: 2,
+    sortOrder: 7,
+  },
+  {
+    id: 'hell-grind-trailer',
+    title: 'Hell Grind — Official Trailer',
+    creator: 'Higgsfield AI / Aitore Zholdaskali',
+    description:
+      'Cannes 2026 industry-preview trailer for Hell Grind — the 95-minute AI-native sci-fi heist feature built entirely on Higgsfield with Dreamina Seedance 2.0, Soul Cinema, and Soul Cast.',
+    tools: [
+      { name: 'Seedance 2.0', role: 'Primary video (Dreamina / Higgsfield)' },
+      { name: 'Soul Cinema', role: 'Character & world consistency' },
+      { name: 'Soul Cast', role: 'Cast / character pipeline' },
+    ],
+    youtubeVideoId: 'CVzfQuC0aMU',
+    youtubeNote: 'Official Higgsfield AI trailer. Full Episode 1 listed separately.',
+    galleryUrl: 'https://higgsfield.ai/original-series/hell-grind',
+    duration: '3:08',
+    tags: ['Seedance', 'Cannes 2026', 'Trailer', 'Higgsfield'],
+    viralNote:
+      'Higgsfield AI official upload (May 2026). Press reported ~150K+ YouTube views on the trailer; SCMP and Joblo covered the Cannes market screening.',
+    sortOrder: 4,
+  },
+  {
+    id: 'dragon-blue',
+    title: 'Dragon Blue',
+    creator: 'Tim Simmons / Theoretically Media',
+    description:
+      'Hyper-stylized action AI short — katana revenge in a neon-soaked world. Widely shared in AI filmmaker circles as a benchmark for Seedance 2.0 + reference-image pipelines in March 2026.',
+    tools: [
+      { name: 'Seedance 2.0', role: 'Video via Dreamina Omni model' },
+      { name: 'Nano Banana Pro', role: 'Reference stills & character frames' },
+      { name: 'Claude Cowork', role: 'Production office / script pipeline' },
+    ],
+    youtubeVideoId: 'dRjN6Cr2Z00',
+    youtubeNote:
+      'Full film. BTS masterclass: youtube.com/watch?v=ORuSQ0Fui-A. Creator reports ~$187 production cost in walkthrough.',
+    galleryUrl: 'https://theoreticallymedia.beehiiv.com/p/the-ultimate-ai-film-pipeline',
+    duration: 'Full short',
+    tags: ['Seedance', 'Action', 'Workflow', 'Theoretically Media'],
+    viralNote:
+      'Covered by Michael Korican, Aatventure, and Draven’s Tales (March–April 2026) as a state-of-the-art GAIV showcase. Creator published free Claude SKILL.md pipeline.',
+    sortOrder: 5,
+  },
+  {
+    id: 'seedance-viral-formats',
+    title: 'Seedance 2.0 — Viral Formats Breakdown',
+    creator: 'Higgsfield AI',
+    description:
+      'Official Higgsfield walkthrough of five Shorts formats going viral in 2026: transformations, POV power sequences, samurai train fights, animation, and fight choreography — all single-generation Seedance 2.0.',
+    tools: [
+      { name: 'Seedance 2.0', role: 'All formats shown' },
+      { name: 'Soul Cinema', role: 'Character references' },
+      { name: 'Claude Cowork', role: 'Prompt skill (linked in video)' },
+    ],
+    youtubeVideoId: 'PsQovs2FwqQ',
+    youtubeNote: 'Official Higgsfield AI channel — includes copy-paste prompts in description.',
+    galleryUrl: 'https://higgsfield.ai/blog/guide-youtube-seedance2.0',
+    duration: '11:34',
+    tags: ['Seedance', 'YouTube Shorts', 'Tutorial', 'Higgsfield'],
+    viralNote:
+      'Higgsfield official upload (April 2026). Describes POV, transformation, and fight formats trending across Shorts/Reels/TikTok.',
+    sortOrder: 6,
   },
   {
     id: 'zephyr',
@@ -116,7 +196,7 @@ export const VIRAL_AI_SHORTS: ViralAiShort[] = [
     galleryUrl: 'https://curiousrefuge.com/ai-film-gallery/the-sister-ai-short-film',
     duration: '~3 min film',
     tags: ['Seedance', 'Sci-Fi', 'Curious Refuge'],
-    sortOrder: 4,
+    sortOrder: 8,
   },
   {
     id: 'live-action-seedance',
@@ -132,7 +212,7 @@ export const VIRAL_AI_SHORTS: ViralAiShort[] = [
     youtubeNote: 'Creator self-reported ~$400 budget (JSFILMZ, March 2026).',
     duration: '~7 min (film + BTS)',
     tags: ['Seedance', 'Live Action', 'Workflow'],
-    sortOrder: 5,
+    sortOrder: 9,
   },
   {
     id: 'black-knight',
@@ -144,7 +224,7 @@ export const VIRAL_AI_SHORTS: ViralAiShort[] = [
     youtubeVideoId: 'wvJvxJiQX4w',
     duration: '5:36',
     tags: ['Seedance', 'Fantasy'],
-    sortOrder: 6,
+    sortOrder: 10,
   },
   {
     id: 'z-world-ep1',
@@ -156,7 +236,7 @@ export const VIRAL_AI_SHORTS: ViralAiShort[] = [
     youtubeVideoId: 'pT0aYqeXog8',
     duration: '17:04',
     tags: ['Seedance', 'Zombie', 'Series'],
-    sortOrder: 7,
+    sortOrder: 11,
   },
   {
     id: 'runway-kingdom',
@@ -171,7 +251,7 @@ export const VIRAL_AI_SHORTS: ViralAiShort[] = [
     youtubeVideoId: 'xksMy0DYmOs',
     duration: '3:23',
     tags: ['Runway', 'Kling', 'Classic AI Film'],
-    sortOrder: 8,
+    sortOrder: 12,
   },
 ]
 

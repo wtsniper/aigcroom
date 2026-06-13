@@ -107,6 +107,8 @@ export const AI_SHORTS_TOOL_LINKS: Record<
   'Soul Cast': { href: 'https://higgsfield.ai', external: true },
   'Nano Banana Pro': { href: 'https://higgsfield.ai', external: true },
   Flux: { href: '/tools/flux-ai', label: 'Flux AI' },
+  'Google Veo 3': { href: '/reviews/google-veo-2-review-2026', label: 'Google Veo review' },
+  'Claude Cowork': { href: '/reviews/chatgpt-vs-claude-2026', label: 'Claude vs ChatGPT' },
 }
 
 export function resolveShortToolHref(tool: {

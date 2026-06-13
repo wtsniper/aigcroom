@@ -17,7 +17,7 @@ import ViralShortToolsList from '@/components/ViralShortToolsList'
 export const metadata = pageMetadata(
   '/ai-shorts',
   'Viral AI Short Films 2026 | YouTube & Bilibili + Tools Used',
-  'Curated 2026 viral AI shorts. Watch on YouTube or Bilibili and see Seedance, Runway, Kling and other tools used.'
+  'Curated 2026 viral AI shorts from YouTube & Bilibili — Veo 3, Seedance, Higgsfield originals, and indie films. See tools used for each.'
 )
 
 export default function AiShortsPage() {
@@ -70,7 +70,10 @@ export default function AiShortsPage() {
         {sorted.map((short, index) => {
           const subtitle = displaySubtitle(short)
           const showWorkflow =
-            short.id === 'zombie-scavenger' || short.id === 'hell-grind' || short.id === 'zephyr'
+            short.id === 'zombie-scavenger' ||
+            short.id === 'hell-grind' ||
+            short.id === 'zephyr' ||
+            short.id === 'dragon-blue'
           return (
             <article
               key={short.id}

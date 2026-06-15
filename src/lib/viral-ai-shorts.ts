@@ -58,7 +58,7 @@ export const VIRAL_AI_SHORTS: ViralAiShort[] = [
       'Sina News and Newswav (May 2026) reported tens of millions of views overseas; Newswav cited 70M+ plays on Douyin alone. Hollywood AI producer PJ Ace publicly searched for the creator on X to collaborate.',
     featured: true,
     preferredPlatform: 'bilibili',
-    sortOrder: 1,
+    sortOrder: 3,
   },
   {
     id: 'veo-sailor-sea',
@@ -77,7 +77,7 @@ export const VIRAL_AI_SHORTS: ViralAiShort[] = [
     tags: ['Veo 3', 'Google', 'Native Audio', 'Official'],
     viralNote:
       'Google DeepMind upload (May 2025). Public view count on YouTube exceeded 500K — among the most-watched official generative-video demos on the platform.',
-    sortOrder: 2,
+    sortOrder: 4,
   },
   {
     id: 'hell-grind',
@@ -286,14 +286,14 @@ export const VIRAL_AI_SHORTS: ViralAiShort[] = [
       { name: 'Runway', slug: 'runway-ml', role: 'Primary video generation and Nano Banana for storyboarding' },
       { name: 'Nano Banana', role: 'Storyboard and concept frames' },
     ],
-    youtubeVideoId: 'FHKjZWjjJg',
+    youtubeVideoId: 'YS8dn-VJBEU',
     youtubeNote: 'ContAnimation official upload. Part of Runway Big Pitch Contest winning entry.',
     galleryUrl: 'https://runwayml.com/bigpitchcontest',
     duration: '2:29',
     tags: ['Runway', 'Contest Winner', 'Love Death + Robots Style', 'Cthulhu'],
     viralNote:
       'Created in just 7 days with under $2,000 budget. Reached 2 million+ views within 2 days of release. Won $50,000 Grand Prize at Runway Big Pitch Contest (May 2026).',
-    sortOrder: 2,
+    sortOrder: 8,
   },
   {
     id: 'runway-pigeon',
@@ -311,6 +311,95 @@ export const VIRAL_AI_SHORTS: ViralAiShort[] = [
     viralNote:
       'Reached millions of views across platforms shortly after release (May 2026). Demonstrates Runway\'s ability to create Pixar-quality animation in under a minute.',
     sortOrder: 3,
+  },
+  {
+    id: 'arena-zero-ep1',
+    title: 'Arena Zero — Episode 1',
+    creator: 'Higgsfield AI',
+    description:
+      'Higgsfield’s long-form AI action series — billed as the first complete AI streaming-style original. Episode 1 showcases Cinema Studio and Seedance 2.0 at feature length.',
+    tools: [
+      { name: 'Seedance 2.0', role: 'Primary video generation' },
+      { name: 'Soul Cinema', role: 'Character & scene consistency' },
+    ],
+    youtubeVideoId: 'qqcH-1Rk-ow',
+    youtubeNote: 'Official Higgsfield AI channel — Higgsfield Original Series.',
+    galleryUrl: 'https://higgsfield.ai/original-series',
+    duration: '10:03',
+    tags: ['Seedance', 'Action', 'Higgsfield', 'Series'],
+    viralNote:
+      'Higgsfield AI official upload (March 2026). Public YouTube view count exceeded 1.8M — among the most-watched AI original series episodes on the platform.',
+    sortOrder: 2,
+  },
+  {
+    id: 'bone-throne',
+    title: 'Bone Throne',
+    creator: 'Lennard Smith',
+    description:
+      'Fantasy action AI short — a warrior infiltrates a desert fortress built around a colossal skeleton to rescue his father from his tyrant brother. Higgsfield Action Contest entry.',
+    tools: [
+      { name: 'Seedance 2.0', role: 'Primary video generation' },
+      { name: 'Kling AI', slug: 'kling-ai', role: 'Select action shots' },
+    ],
+    youtubeVideoId: '6D4_ZMnPx7I',
+    youtubeNote: 'Lennard Smith channel. Creator notes longer-format development in progress.',
+    duration: '5:00',
+    tags: ['Seedance', 'Kling', 'Fantasy', 'Action'],
+    viralNote:
+      'Lennard Smith upload (February 2026). Public YouTube view count ~300K; finalist in Higgsfield Action Contest.',
+    sortOrder: 7,
+  },
+  {
+    id: 'replaced-by-ai',
+    title: 'Replaced by AI!',
+    creator: 'Rogue Cell Pictures',
+    description:
+      'Satirical action AI short — an AI engineer learns his job is being eliminated by the very systems he built, then fights back through the corporate HQ.',
+    tools: [
+      { name: 'Seedance 2.0', role: 'Primary video generation' },
+    ],
+    youtubeVideoId: 'gLTbl8Jfi4s',
+    duration: '4:30',
+    tags: ['Seedance', 'Satire', 'Action', 'Corporate'],
+    viralNote:
+      'Rogue Cell Pictures upload (February 2026). Public YouTube view count exceeded 100K within weeks of release.',
+    sortOrder: 9,
+  },
+  {
+    id: 'ai-man',
+    title: 'AI MAN',
+    creator: 'Heydin',
+    description:
+      'Cinematic sci-fi AI short — creator’s first narrative film built with Seedance 2.0, using Midjourney V7 and Nano Banana Pro for keyframe references.',
+    tools: [
+      { name: 'Seedance 2.0', role: 'Video generation' },
+      { name: 'Midjourney', slug: 'midjourney', role: 'Base stills (V7)' },
+      { name: 'Nano Banana Pro', role: 'Character frames' },
+    ],
+    youtubeVideoId: 'dp4-Sv0uVzE',
+    duration: '4:30',
+    tags: ['Seedance', 'Sci-Fi', 'Indie'],
+    viralNote:
+      'Heydin channel upload (February 2026). Public YouTube view count ~85K.',
+    sortOrder: 10,
+  },
+  {
+    id: 'veo-feather-journey',
+    title: 'Veo 3 Demo — Feather\'s Journey',
+    creator: 'Google DeepMind',
+    description:
+      'Official Veo 3 micro-film: a feather lifts from a fence post and drifts over rooftops with native ambient audio — a poetic physics demo from Google DeepMind.',
+    tools: [
+      { name: 'Google Veo 3', role: 'Text-to-video + native audio' },
+    ],
+    youtubeVideoId: 'vcHxAwDwPOg',
+    youtubeNote: 'Official Google DeepMind channel. Pair with Sailor and the Sea demo on this hub.',
+    galleryUrl: 'https://deepmind.google/models/veo/',
+    duration: '0:08',
+    tags: ['Veo 3', 'Google', 'Official'],
+    viralNote:
+      'Google DeepMind upload (May 2025). Public YouTube view count ~54K.',
+    sortOrder: 14,
   },
 ]
 

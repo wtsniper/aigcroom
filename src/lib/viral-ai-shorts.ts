@@ -253,6 +253,65 @@ export const VIRAL_AI_SHORTS: ViralAiShort[] = [
     tags: ['Runway', 'Kling', 'Classic AI Film'],
     sortOrder: 12,
   },
+  {
+    id: 'the-patchwright',
+    title: 'The Patchwright',
+    creator: 'Gossip Goblin / Zack London',
+    description:
+      'A 21-minute cyberpunk AI short film set in the sprawling slag heaps of NiiroCradle. A fugitive android visits the Patchwright, an unlicensed body mechanic, begging him to trace a fragment of a childhood memory. Photo-realistic visuals compared to Hollywood productions.',
+    tools: [
+      { name: 'Midjourney', slug: 'midjourney', role: 'Character and environment concept design' },
+      { name: 'Nano Banana Pro', role: 'Character-environment fusion and consistency' },
+      { name: 'Kling AI', slug: 'kling-ai', role: 'Main video generation' },
+      { name: 'SyncLabs', role: 'Lip-sync and performance adjustment' },
+    ],
+    youtubeVideoId: '-Rzl7nUdEs4',
+    youtubeNote: 'Official Gossip Goblin channel. Watch in 4K for best results.',
+    galleryUrl: 'https://www.youtube.com/@GossipGoblin',
+    duration: '21:32',
+    tags: ['Cyberpunk', 'Gossip Goblin', 'Viral 2026', 'Hollywood Interest'],
+    viralNote:
+      'Reached 11 million+ views on YouTube since April 2026 release. Hollywood agents, producers, and A-list actors reportedly flying to Stockholm to meet the team. Joe Rogan publicly praised the work.',
+    featured: true,
+    sortOrder: 1,
+  },
+  {
+    id: 'sincitium',
+    title: 'Sincitium',
+    originalTitle: '合胞体',
+    creator: 'ContAnimation / Javier De La Chica & Guillermo Miranda',
+    description:
+      'A 2:29 AI animated short film that won the Grand Prize ($50,000) at Runway\'s inaugural Big Pitch Contest. Set in an isolated desert town where all residents are connected through a mysterious biological network called Sincitium. A female doctor discovers the horrifying truth.',
+    tools: [
+      { name: 'Runway', slug: 'runway-ml', role: 'Primary video generation and Nano Banana for storyboarding' },
+      { name: 'Nano Banana', role: 'Storyboard and concept frames' },
+    ],
+    youtubeVideoId: 'FHKjZWjjJg',
+    youtubeNote: 'ContAnimation official upload. Part of Runway Big Pitch Contest winning entry.',
+    galleryUrl: 'https://runwayml.com/bigpitchcontest',
+    duration: '2:29',
+    tags: ['Runway', 'Contest Winner', 'Love Death + Robots Style', 'Cthulhu'],
+    viralNote:
+      'Created in just 7 days with under $2,000 budget. Reached 2 million+ views within 2 days of release. Won $50,000 Grand Prize at Runway Big Pitch Contest (May 2026).',
+    sortOrder: 2,
+  },
+  {
+    id: 'runway-pigeon',
+    title: 'Push The Button',
+    creator: 'Marko Slavnic / Runway',
+    description:
+      'A 47-second AI-generated Pixar-style animation featuring pigeons in a desert town. Created by Runway\'s Technical Artist Marko Slavnic as a quick demonstration of the platform\'s capabilities. The short went viral with millions of views across platforms.',
+    tools: [
+      { name: 'Runway', slug: 'runway-ml', role: 'Full video generation' },
+    ],
+    youtubeVideoId: 'mRKJxN9b9Yg',
+    youtubeNote: 'Marko Slavnic official upload. Quick demo showcasing Runway\'s animation capabilities.',
+    duration: '0:47',
+    tags: ['Runway', 'Pixar Style', 'Pigeons', 'Viral Demo'],
+    viralNote:
+      'Reached millions of views across platforms shortly after release (May 2026). Demonstrates Runway\'s ability to create Pixar-quality animation in under a minute.',
+    sortOrder: 3,
+  },
 ]
 
 export function getFeaturedViralShort(): ViralAiShort {

@@ -383,3 +383,22 @@ export function displaySubtitle(short: ViralAiShort): string | null {
   }
   return null
 }
+
+export const AI_SHORTS_PAGE_SIZE = 6
+
+export function getSortedViralShorts(): ViralAiShort[] {
+  return [...VIRAL_AI_SHORTS].sort((a, b) => a.sortOrder - b.sortOrder)
+}
+
+export function paginateViralShorts(page: number, pageSize = AI_SHORTS_PAGE_SIZE) {
+  const sorted = getSortedViralShorts()
+  const totalPages = Math.max(1, Math.ceil(sorted.length / pageSize))
+  const currentPage = Math.min(Math.max(1, page), totalPages)
+  const start = (currentPage - 1) * pageSize
+  return {
+    items: sorted.slice(start, start + pageSize),
+    totalPages,
+    currentPage,
+    total: sorted.length,
+  }
+}

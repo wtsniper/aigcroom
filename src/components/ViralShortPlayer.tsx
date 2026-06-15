@@ -18,6 +18,8 @@ type ViralShortPlayerProps = {
   autoplay?: boolean
   className?: string
   onPlatformChange?: (platform: VideoPlatform) => void
+  /** Hide tool chips and extra notes — for paginated list view */
+  minimal?: boolean
 }
 
 function buildEmbedSrc(
@@ -46,6 +48,7 @@ export default function ViralShortPlayer({
   autoplay = false,
   className = '',
   onPlatformChange,
+  minimal = false,
 }: ViralShortPlayerProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [inView, setInView] = useState(false)
@@ -204,10 +207,11 @@ export default function ViralShortPlayer({
         </div>
       )}
 
-      {short.youtubeNote && platform === 'youtube' && (
+      {short.youtubeNote && platform === 'youtube' && !minimal && (
         <p className="text-[11px] text-gray-600 mt-2 leading-relaxed">{short.youtubeNote}</p>
       )}
 
+      {!minimal && (
       <div className="flex flex-wrap gap-1.5 mt-3">
         {short.tools.map((tool) =>
           tool.slug ? (
@@ -230,6 +234,7 @@ export default function ViralShortPlayer({
           )
         )}
       </div>
+      )}
     </div>
   )
 }

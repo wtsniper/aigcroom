@@ -7,6 +7,12 @@ import ToolLogo from '@/components/ToolLogo'
 import MonetizationPicks from '@/components/MonetizationPicks'
 import ViralAiShortsSection from '@/components/ViralAiShortsSection'
 import type { ViralAiShort } from '@/lib/viral-ai-shorts'
+import SiteSearch from '@/components/SiteSearch'
+import HomeTrustBar, {
+  HomeExploreHub,
+  HomeMethodology,
+  type SiteStats,
+} from '@/components/home/HomeEfficientSections'
 import ToolStackCta from '@/components/ToolStackCta'
 import { SHOW_TOOL_STACK_CTA } from '@/lib/site-features'
 
@@ -171,6 +177,7 @@ export default function HomeClient({
   initialCategories = [],
   pinnedReview = null,
   initialAiShorts = [],
+  siteStats,
 }: {
   initialTools?: Tool[]
   initialReviews?: Review[]
@@ -178,6 +185,7 @@ export default function HomeClient({
   initialCategories?: CategoryItem[]
   pinnedReview?: Review | null
   initialAiShorts?: ViralAiShort[]
+  siteStats?: SiteStats
 }) {
   const [featuredTools, setFeaturedTools] = useState<Tool[]>(initialTools)
   const [recentReviews, setRecentReviews] = useState<Review[]>(initialReviews)
@@ -246,27 +254,63 @@ export default function HomeClient({
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-400 text-sm font-medium mb-8 animate-fade-up">
             <span className="w-2 h-2 rounded-full bg-violet-400 animate-pulse" />
-            Honest AI tool reviews & comparisons
+            No fluff — hands-on AI tool testing
           </div>
 
           {/* Headline */}
           <h1
-            className="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-[1.1] tracking-tight animate-fade-up"
+            className="text-4xl sm:text-5xl md:text-7xl font-extrabold text-white mb-6 leading-[1.1] tracking-tight animate-fade-up"
             style={{ animationDelay: '0.1s' }}
           >
-            Discover the{' '}
-            <span className="gradient-text">Best AI Tools</span>
-            <br />
-            <span className="text-gray-300">for Your Workflow</span>
+            Your shortcut to the{' '}
+            <span className="gradient-text">best AI software</span>
           </h1>
 
           <p
-            className="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-up"
+            className="text-lg md:text-xl text-gray-400 mb-8 max-w-2xl mx-auto leading-relaxed animate-fade-up"
             style={{ animationDelay: '0.2s' }}
           >
-            Expert reviews, side-by-side comparisons, and real user insights — everything you need
-            to choose the perfect AI stack.
+            Expert reviews and side-by-side comparisons — so you don&apos;t waste weeks testing
+            every new model.
           </p>
+
+          <div
+            className="max-w-xl mx-auto mb-6 animate-fade-up"
+            style={{ animationDelay: '0.25s' }}
+          >
+            <SiteSearch placeholder="Search tools — Runway, Claude, Seedance…" />
+            <p className="text-xs text-gray-600 mt-3 text-center">
+              Try{' '}
+              <Link href="/compare" className="text-violet-400 hover:text-violet-300">
+                /compare
+              </Link>
+              {' · '}
+              <Link href="/reviews" className="text-violet-400 hover:text-violet-300">
+                /reviews
+              </Link>
+              {' · '}
+              <Link href="/ai-shorts" className="text-violet-400 hover:text-violet-300">
+                /ai-shorts
+              </Link>
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-2 justify-center mb-8 animate-fade-up" style={{ animationDelay: '0.28s' }}>
+            {[
+              { label: 'Best video AI', href: '/reviews/runway-vs-pika-vs-kling-2026' },
+              { label: 'Make money with AI', href: '/reviews/best-ai-tools-make-money-online-2026' },
+              { label: 'ChatGPT vs Claude', href: '/reviews/chatgpt-plus-vs-claude-pro-2026' },
+              { label: 'Midjourney', href: '/tools?q=midjourney' },
+            ].map((chip) => (
+              <Link
+                key={chip.href}
+                href={chip.href}
+                className="px-3 py-1.5 text-xs rounded-full border border-white/10 text-gray-400 bg-white/[0.03] hover:border-violet-500/40 hover:text-violet-300 transition-all"
+              >
+                {chip.label}
+              </Link>
+            ))}
+          </div>
 
           <div className="flex flex-wrap gap-4 justify-center animate-fade-up" style={{ animationDelay: '0.3s' }}>
             <Link
@@ -299,6 +343,8 @@ export default function HomeClient({
           </div>
         </div>
       </section>
+
+      {siteStats && <HomeTrustBar stats={siteStats} />}
 
       {/* ─── Pinned Featured Review ─────────────────────────────────────── */}
       {pinnedReview && (
@@ -351,9 +397,13 @@ export default function HomeClient({
       {/* ─── Monetization Picks ─────────────────────────────────────────── */}
       <section className="py-8 px-4">
         <div className="container mx-auto max-w-7xl">
-          <MonetizationPicks title="30-Day Priority Articles" limit={5} />
+          <MonetizationPicks title="Exclusive deals & priority guides" limit={5} />
         </div>
       </section>
+
+      <HomeExploreHub />
+
+      <HomeMethodology />
 
       {/* ─── Browse by Category ─────────────────────────────────────────── */}
       {categories.length > 0 && (

@@ -163,6 +163,25 @@ export function buildBreadcrumbJsonLd(items: { name: string; path: string }[]) {
   }
 }
 
+export function buildWebSiteJsonLd() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'AIGC Room',
+    url: getSiteUrl(),
+    description:
+      'Independent AI tools directory — expert reviews, comparisons, and viral AI short films.',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: absoluteUrl('/tools?q={search_term_string}'),
+      },
+      'query-input': 'required name=search_term_string',
+    },
+  }
+}
+
 export function buildSoftwareApplicationJsonLd(input: {
   name: string
   description: string

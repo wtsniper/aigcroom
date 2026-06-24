@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter, usePathname } from 'next/navigation'
+import SiteSearch from '@/components/SiteSearch'
 
 const NAV_LINKS = [
   { href: '/tools',     label: 'Tools' },
@@ -67,7 +68,7 @@ export default function Header() {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-1">
             {NAV_LINKS.map(({ href, label }) => {
               const active = pathname === href || pathname?.startsWith(href + '/')
               return (
@@ -85,6 +86,10 @@ export default function Header() {
               )
             })}
           </nav>
+
+          <div className="hidden md:block w-44 lg:w-52 shrink-0">
+            <SiteSearch size="sm" placeholder="Search tools…" />
+          </div>
 
           {/* Right side */}
           <div className="flex items-center gap-2">
@@ -155,6 +160,9 @@ export default function Header() {
           }`}
         >
           <nav className="py-3 border-t border-white/[0.06] flex flex-col gap-1">
+            <div className="px-4 pb-2">
+              <SiteSearch size="sm" placeholder="Search tools…" />
+            </div>
             {NAV_LINKS.map(({ href, label }) => {
               const active = pathname === href || pathname?.startsWith(href + '/')
               return (

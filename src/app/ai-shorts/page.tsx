@@ -4,6 +4,7 @@ import {
   displaySubtitle,
   displayTitle,
   paginateViralShortsList,
+  AI_SHORTS_NO_EMBED_AUTOPLAY_IDS,
 } from '@/lib/viral-ai-shorts'
 import AiShortsPagination from '@/components/AiShortsPagination'
 import ViralShortPlayer from '@/components/ViralShortPlayer'
@@ -47,7 +48,11 @@ export default async function AiShortsPage({ searchParams }: PageProps) {
               <article key={short.id} id={short.id} className="scroll-mt-24">
                 <ViralShortPlayer
                   short={short}
-                  autoplay={currentPage === 1 && index === 0}
+                  autoplay={
+                    currentPage === 1 &&
+                    index === 0 &&
+                    !AI_SHORTS_NO_EMBED_AUTOPLAY_IDS.has(short.id)
+                  }
                   minimal
                 />
                 <h2 className="text-lg font-semibold text-white mt-3 leading-snug">

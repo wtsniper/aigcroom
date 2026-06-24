@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { formatRating, normalizeRating } from '@/lib/ratings'
 import ToolLogo from '@/components/ToolLogo'
 
@@ -35,6 +36,7 @@ export default function ToolsPageClient({
 }: {
   initialTools?: Tool[]
 }) {
+  const searchParams = useSearchParams()
   const [tools, setTools] = useState<Tool[]>(initialTools)
   const [loading, setLoading] = useState(initialTools.length === 0)
   const [searchTerm, setSearchTerm] = useState('')
@@ -51,6 +53,11 @@ export default function ToolsPageClient({
       .catch(() => setTools([]))
       .finally(() => setLoading(false))
   }, [initialTools.length])
+
+  useEffect(() => {
+    const q = searchParams.get('q')
+    if (q) setSearchTerm(q)
+  }, [searchParams])
 
   const categories = useMemo(
     () => ['ALL', ...Array.from(new Set(tools.map((t) => t.category)))],

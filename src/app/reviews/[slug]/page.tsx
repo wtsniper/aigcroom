@@ -7,6 +7,7 @@ import ReviewSidebar from '@/components/ReviewSidebar'
 import { getRelatedComparisons, getFocusArticles } from '@/lib/comparison-reviews'
 import { mergeFaqs, isPillarPage, getPillarFaqs } from '@/lib/pillar-faqs'
 import PillarFaqSection from '@/components/PillarFaqSection'
+import ShareArticle from '@/components/ShareArticle'
 import {
   pageMetadata,
   extractFaqsFromMarkdown,
@@ -261,6 +262,7 @@ export default async function ReviewDetailPage({ params }: { params: Promise<{ s
         <article className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 min-w-0">
           <header className="mb-8 pb-6 border-b border-gray-200">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">{review.title}</h1>
+            <ShareArticle title={review.title} path={`/reviews/${slug}`} />
 
             {review.tool && (
               <Link href={`/tools/${review.tool.slug}`} className="inline-block bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium hover:bg-blue-200">

@@ -3,20 +3,28 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import {
-  VIRAL_AI_SHORTS,
   displaySubtitle,
   displayTitle,
-  getFeaturedViralShort,
+  getFeaturedFromList,
+  type ViralAiShort,
 } from '@/lib/viral-ai-shorts'
 import { resolveShortToolHref } from '@/lib/ai-shorts-monetization'
 import AiShortsMonetizationCta from '@/components/AiShortsMonetizationCta'
 import ViralShortPlayer from '@/components/ViralShortPlayer'
 
-export default function ViralAiShortsSection({ compact = false }: { compact?: boolean }) {
-  const featured = getFeaturedViralShort()
+export default function ViralAiShortsSection({
+  compact = false,
+  shorts,
+}: {
+  compact?: boolean
+  shorts: ViralAiShort[]
+}) {
+  if (shorts.length === 0) return null
+
+  const featured = getFeaturedFromList(shorts)
   const [activeId, setActiveId] = useState(featured.id)
-  const active = VIRAL_AI_SHORTS.find((s) => s.id === activeId) ?? featured
-  const list = compact ? VIRAL_AI_SHORTS.slice(0, 10) : VIRAL_AI_SHORTS
+  const active = shorts.find((s) => s.id === activeId) ?? featured
+  const list = compact ? shorts.slice(0, 10) : shorts
   const activeSubtitle = displaySubtitle(active)
 
   const activeToolLinks = active.tools
@@ -47,7 +55,7 @@ export default function ViralAiShortsSection({ compact = false }: { compact?: bo
             href="/ai-shorts"
             className="shrink-0 inline-flex items-center gap-1 text-sm text-violet-400 hover:text-violet-300 font-medium transition-colors"
           >
-            View all {VIRAL_AI_SHORTS.length} films
+            View all {shorts.length} films
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>

@@ -513,8 +513,12 @@ export function getSortedViralShorts(): ViralAiShort[] {
   return [...VIRAL_AI_SHORTS].sort((a, b) => a.sortOrder - b.sortOrder)
 }
 
-export function paginateViralShorts(page: number, pageSize = AI_SHORTS_PAGE_SIZE) {
-  const sorted = getSortedViralShorts()
+export function paginateViralShortsList(
+  shorts: ViralAiShort[],
+  page: number,
+  pageSize = AI_SHORTS_PAGE_SIZE
+) {
+  const sorted = [...shorts].sort((a, b) => a.sortOrder - b.sortOrder)
   const totalPages = Math.max(1, Math.ceil(sorted.length / pageSize))
   const currentPage = Math.min(Math.max(1, page), totalPages)
   const start = (currentPage - 1) * pageSize
@@ -524,4 +528,13 @@ export function paginateViralShorts(page: number, pageSize = AI_SHORTS_PAGE_SIZE
     currentPage,
     total: sorted.length,
   }
+}
+
+export function paginateViralShorts(page: number, pageSize = AI_SHORTS_PAGE_SIZE) {
+  return paginateViralShortsList(getSortedViralShorts(), page, pageSize)
+}
+
+export function getFeaturedFromList(shorts: ViralAiShort[]): ViralAiShort {
+  const sorted = [...shorts].sort((a, b) => a.sortOrder - b.sortOrder)
+  return sorted.find((s) => s.featured) ?? sorted[0]
 }

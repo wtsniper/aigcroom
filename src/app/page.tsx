@@ -3,6 +3,7 @@ import HomeClient from './HomeClient'
 import { getHomeFeaturedTools } from '@/lib/featured-tools'
 import { buildCategoriesWithCounts } from '@/lib/categories'
 import { getHomePinnedReview, getHomeRecentReviews } from '@/lib/featured-reviews'
+import { getPublishedViralShorts } from '@/lib/ai-shorts-db'
 
 export const revalidate = 300
 
@@ -10,7 +11,8 @@ export default async function HomePage() {
   const pinnedReview = await getHomePinnedReview()
   const excludeSlugs = pinnedReview ? [pinnedReview.slug] : []
 
-  const [featuredTools, recentReviews, featuredSolutions, categoryTools] = await Promise.all([
+  const [featuredTools, recentReviews, featuredSolutions, categoryTools, aiShorts] =
+    await Promise.all([
     getHomeFeaturedTools(4),
     getHomeRecentReviews(3, excludeSlugs),
     prisma.solution.findMany({
@@ -26,6 +28,7 @@ export default async function HomePage() {
       },
     }),
     prisma.tool.findMany({ select: { category: true } }),
+    getPublishedViralShorts(),
   ])
 
   const categories = buildCategoriesWithCounts(categoryTools)
@@ -49,6 +52,7 @@ export default async function HomePage() {
         publishedAt: r.publishedAt?.toISOString() ?? null,
       }))}
       initialSolutions={featuredSolutions}
+      initialAiShorts={aiShorts}
     />
   )
 }

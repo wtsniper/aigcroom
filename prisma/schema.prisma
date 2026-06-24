@@ -303,3 +303,33 @@ model NewsletterSubscriber {
 
   @@map("newsletter_subscribers")
 }
+
+// ==========================================
+// AI Short Films (YouTube / Bilibili embeds)
+// ==========================================
+model AiShort {
+  id                String    @id @default(cuid())
+  slug              String    @unique
+  title             String
+  originalTitle     String?
+  creator           String
+  creatorHandle     String?
+  description       String
+  tools             String    @default("[]") // JSON: ViralShortTool[]
+  youtubeVideoId    String?
+  youtubeNote       String?
+  bilibiliBvid      String?
+  galleryUrl        String?
+  duration          String?
+  tags              String    @default("[]") // JSON string array
+  viralNote         String?
+  featured          Boolean   @default(false)
+  preferredPlatform String?   // youtube | bilibili
+  sortOrder         Int       @default(0)
+  status            String    @default("DRAFT")
+  publishedAt       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@map("ai_shorts")
+}

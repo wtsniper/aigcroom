@@ -1,8 +1,9 @@
 import { pageMetadata, buildBreadcrumbJsonLd, JsonLd } from '@/lib/seo'
+import { getPublishedViralShorts } from '@/lib/ai-shorts-db'
 import {
   displaySubtitle,
   displayTitle,
-  paginateViralShorts,
+  paginateViralShortsList,
 } from '@/lib/viral-ai-shorts'
 import AiShortsPagination from '@/components/AiShortsPagination'
 import ViralShortPlayer from '@/components/ViralShortPlayer'
@@ -20,7 +21,11 @@ type PageProps = {
 export default async function AiShortsPage({ searchParams }: PageProps) {
   const { page: pageParam } = await searchParams
   const requestedPage = Math.max(1, parseInt(pageParam ?? '1', 10) || 1)
-  const { items, totalPages, currentPage, total } = paginateViralShorts(requestedPage)
+  const allShorts = await getPublishedViralShorts()
+  const { items, totalPages, currentPage, total } = paginateViralShortsList(
+    allShorts,
+    requestedPage
+  )
 
   const jsonLd = buildBreadcrumbJsonLd([
     { name: 'Home', path: '/' },

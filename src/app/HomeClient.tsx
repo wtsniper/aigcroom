@@ -6,6 +6,7 @@ import { formatRating } from '@/lib/ratings'
 import ToolLogo from '@/components/ToolLogo'
 import MonetizationPicks from '@/components/MonetizationPicks'
 import ViralAiShortsSection from '@/components/ViralAiShortsSection'
+import type { ViralAiShort } from '@/lib/viral-ai-shorts'
 import ToolStackCta from '@/components/ToolStackCta'
 import { SHOW_TOOL_STACK_CTA } from '@/lib/site-features'
 
@@ -169,12 +170,14 @@ export default function HomeClient({
   initialSolutions = [],
   initialCategories = [],
   pinnedReview = null,
+  initialAiShorts = [],
 }: {
   initialTools?: Tool[]
   initialReviews?: Review[]
   initialSolutions?: Solution[]
   initialCategories?: CategoryItem[]
   pinnedReview?: Review | null
+  initialAiShorts?: ViralAiShort[]
 }) {
   const [featuredTools, setFeaturedTools] = useState<Tool[]>(initialTools)
   const [recentReviews, setRecentReviews] = useState<Review[]>(initialReviews)
@@ -335,7 +338,7 @@ export default function HomeClient({
       )}
 
       {/* ─── Viral AI Shorts ────────────────────────────────────────────── */}
-      <ViralAiShortsSection compact />
+      <ViralAiShortsSection compact shorts={initialAiShorts} />
 
       {SHOW_TOOL_STACK_CTA && (
         <section className="py-8 px-4 border-b border-white/[0.05]">

@@ -36,6 +36,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: '仪表盘', href: '/admin' },
     { name: '工具管理', href: '/admin/tools' },
     { name: '评测管理', href: '/admin/reviews' },
+    { name: 'AI 短片', href: '/admin/ai-shorts' },
     { name: '解决方案', href: '/admin/solutions' },
     { name: '联盟链接', href: '/admin/affiliate' },
     { name: '收入报表', href: '/admin/revenue' },

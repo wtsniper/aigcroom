@@ -37,6 +37,28 @@ export type ViralAiShort = {
 
 export const VIRAL_AI_SHORTS: ViralAiShort[] = [
   {
+    id: 'paperclip-heart',
+    title: 'Paperclip Heart',
+    creator: 'Tim Simmons / Theoretically Media',
+    creatorHandle: '@TheoreticallyMedia',
+    description:
+      'AI dystopia framed as a product launch — Solace, an ambient companion that cures loneliness until comfort becomes control. June 2026 "film of the week" in AI filmmaker circles; title references the paperclip maximizer thought experiment.',
+    tools: [
+      { name: 'Seedance 2.0', role: 'Primary video generation' },
+      { name: 'Claude Cowork', role: 'Production office / MCP workflow' },
+      { name: 'Suno', role: 'Music' },
+    ],
+    youtubeVideoId: 'Wb2AcOVwPQs',
+    youtubeNote: 'Full film (~8 min). Workflow breakdown on Theoretically Media channel.',
+    galleryUrl: 'https://theoreticallymedia.beehiiv.com/',
+    duration: '8:19',
+    tags: ['Seedance', 'Dystopia', 'Film of the Week', 'Theoretically Media'],
+    viralNote:
+      'Featured in AI-Weekly (Jun 2026), Michael Korican SOTA AIGC roundup, and tippet.org Film of the Week community vote — standout AI-as-horror narrative using Seedance 2.0 + Claude MCP workflow.',
+    featured: true,
+    sortOrder: 0,
+  },
+  {
     id: 'zombie-scavenger',
     title: 'Zombie Scavenger',
     originalTitle: '丧尸清道夫',
@@ -399,7 +421,19 @@ export const VIRAL_AI_SHORTS: ViralAiShort[] = [
     tags: ['Veo 3', 'Google', 'Official'],
     viralNote:
       'Google DeepMind upload (May 2025). Public YouTube view count ~54K.',
-    sortOrder: 14,
+    sortOrder: 21,
+  },
+  {
+    id: 'stay-seedance',
+    title: 'STAY',
+    creator: 'ZenityX',
+    description:
+      'Experimental narrative AI short leaning into nostalgia, memory fragments, and aesthetic storytelling — creator pushed Seedance 2.0 beyond typical action/demo clips.',
+    tools: [{ name: 'Seedance 2.0', role: 'Full generation' }],
+    youtubeVideoId: 'lbAV0DgWIyI',
+    duration: '8:59',
+    tags: ['Seedance', 'Experimental', 'Art Film'],
+    sortOrder: 22,
   },
 ]
 

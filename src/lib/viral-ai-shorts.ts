@@ -318,23 +318,6 @@ export const VIRAL_AI_SHORTS: ViralAiShort[] = [
     sortOrder: 8,
   },
   {
-    id: 'runway-pigeon',
-    title: 'Push The Button',
-    creator: 'Marko Slavnic / Runway',
-    description:
-      'A 47-second AI-generated Pixar-style animation featuring pigeons in a desert town. Created by Runway\'s Technical Artist Marko Slavnic as a quick demonstration of the platform\'s capabilities. The short went viral with millions of views across platforms.',
-    tools: [
-      { name: 'Runway', slug: 'runway-ml', role: 'Full video generation' },
-    ],
-    youtubeVideoId: 'mRKJxN9b9Yg',
-    youtubeNote: 'Marko Slavnic official upload. Quick demo showcasing Runway\'s animation capabilities.',
-    duration: '0:47',
-    tags: ['Runway', 'Pixar Style', 'Pigeons', 'Viral Demo'],
-    viralNote:
-      'Reached millions of views across platforms shortly after release (May 2026). Demonstrates Runway\'s ability to create Pixar-quality animation in under a minute.',
-    sortOrder: 3,
-  },
-  {
     id: 'arena-zero-ep1',
     title: 'Arena Zero — Episode 1',
     creator: 'Higgsfield AI',
@@ -462,6 +445,8 @@ export function bilibiliEmbedUrl(
   if (opts?.autoplay) {
     params.set('autoplay', '1')
     params.set('muted', opts.muted === false ? '0' : '1')
+  } else {
+    params.set('autoplay', '0')
   }
   return `https://player.bilibili.com/player.html?${params.toString()}`
 }
@@ -508,6 +493,9 @@ export function displaySubtitle(short: ViralAiShort): string | null {
 }
 
 export const AI_SHORTS_PAGE_SIZE = 6
+
+/** Slugs that must not autoplay on /ai-shorts (e.g. Bilibili-only embeds that ignore muted autoplay) */
+export const AI_SHORTS_NO_EMBED_AUTOPLAY_IDS = new Set(['zombie-scavenger'])
 
 export function getSortedViralShorts(): ViralAiShort[] {
   return [...VIRAL_AI_SHORTS].sort((a, b) => a.sortOrder - b.sortOrder)
